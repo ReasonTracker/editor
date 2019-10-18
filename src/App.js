@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { Component } from 'react';
+import ClaimElement from './ClaimElement';
 import './App.css';
-import { newId } from '@reasonscore/core';
 
-function App() {
-  alert(newId());
+//alert(newId());
 
-  return (
-    <div className="App">
-      <p>
-        Edit <code>src/App.js</code> and save to reload.....
-        </p>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.repository = props.repository;
+  }
+
+  render() {
+    return (
+      <>
+        <ClaimElement class="debate"
+          claimId={this.props.claimId}
+          Repository={this.props.repository}
+          calculationLoop={this.props.calculationLoop}
+        />
+        <hr></hr>
+      </>
+    )
+  }
 }
 
 export default App;
