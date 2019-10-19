@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 //import Editor from './Editor';
 //import ClaimInner from './ClaimInner';
 //import { CSSTransitionGroup } from 'react-transition-group';
-//import { Repository, CalculationInitator, Change, Claim, ClaimEdge, ID } from "@reasonscore/core";
 
 
 class ClaimElement extends Component {
@@ -11,7 +10,6 @@ class ClaimElement extends Component {
         this.score = props.repository.getScoreBySourceClaimId(props.claimId)
         this.claim = props.repository.getItem(props.claimId)
         this.childClaimEedges = props.repository.getClaimEdgesByParentId(props.claimId)
-        //const calcInitator = props.calcInitator;
         this.proMain = this.props.polarityContext;
         if (this.props.claimEdge && !this.props.claimEdge.pro) {
             this.proMain = !this.proMain;

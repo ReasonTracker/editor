@@ -17,7 +17,7 @@ class App extends Component {
           claimId={this.props.claimId}
           repository={this.props.repository}
           calculationInitator={this.props.calculationInitator}
-          polarityContext = {true}
+          polarityContext={true}
         />
         <hr></hr>
       </>
