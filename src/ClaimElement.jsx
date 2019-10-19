@@ -8,15 +8,27 @@ import { Repository, CalculationLooper, Change, Claim, ClaimEdge, ID } from "@re
 class ClaimElement extends Component {
     constructor(props) {
         super(props);
-        this.score = props.Repository.getScoreBySourceClaimId(props.claimId)
-        this.claim = props.Repository.getItem(props.claimId)
+        this.score = props.repository.getScoreBySourceClaimId(props.claimId)
+        this.claim = props.repository.getItem(props.claimId)
+        this.children = props.repository.getClaimEdgesByParentId(props.claimId)
         //const calcInitator = props.calcInitator;
     }
 
     render() {
         return (
             <div className={'claim-outer'}>
-                {this.props.claimId} | {this.claim.content} | {this.score.confidence}
+                {this.props.claimId} | {this.claim.content} | {this.score.confidence} | {this.children.length}
+                <ul>
+                    {this.children.length && this.children.map((child) => (
+                        <li>
+                            <ClaimElement
+                                claimId={child.childId}
+                                repository={this.props.repository}
+                                calculationInitator={this.props.calculationInitator}
+                            />
+                        </li>
+                    ))}
+                </ul>
             </div>
         );
     }

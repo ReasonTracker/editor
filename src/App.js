@@ -15,8 +15,8 @@ class App extends Component {
       <>
         <ClaimElement class="debate"
           claimId={this.props.claimId}
-          Repository={this.props.repository}
-          calculationLoop={this.props.calculationLoop}
+          repository={this.props.repository}
+          calculationInitator={this.props.calculationInitator}
         />
         <hr></hr>
       </>
