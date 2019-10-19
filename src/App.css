@@ -1,2 +1,8 @@
-.App {
+rs-claim ul {
+    padding: 0, 0, 0, 15px;
+    margin: 0;
+}
+
+rs-claim li {
+    list-style-type: none;
 }

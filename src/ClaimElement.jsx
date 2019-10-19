@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import Editor from './Editor';
 //import ClaimInner from './ClaimInner';
 //import { CSSTransitionGroup } from 'react-transition-group';
-import { Repository, CalculationLooper, Change, Claim, ClaimEdge, ID } from "@reasonscore/core";
+//import { Repository, CalculationInitator, Change, Claim, ClaimEdge, ID } from "@reasonscore/core";
 
 
 class ClaimElement extends Component {
@@ -17,9 +17,9 @@ class ClaimElement extends Component {
     render() {
         return (
             <div className={'claim-outer'}>
-                {this.props.claimId} | {this.claim.content} | {this.score.confidence} | {this.children.length}
+                {this.score.confidence} | {this.claim.content}
                 <ul>
-                    {this.children.length && this.children.map((child) => (
+                    {this.children.length > 0 && this.children.map((child) => (
                         <li>
                             <ClaimElement
                                 claimId={child.childId}

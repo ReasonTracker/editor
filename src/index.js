@@ -8,26 +8,28 @@ import { Repository, CalculationInitator, Change, Claim, ClaimEdge, ID, Affects 
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 
-const claims = document.getElementsByTagName('claim');
+const claims = document.getElementsByTagName('rs-claim');
 const repo = new Repository();
-const calcInitator = new CalculationInitator(repo);
-const measuredClaim = new Claim(
-  "Measured Claim", ID("measuredClaim"));
-const childClaim = new Claim("Child Claim", ID("childClaim"));
+const calculationInitator = new CalculationInitator(repo);
+const measuredClaim = new Claim("Measured Claim", ID("measuredClaim"));
+const childClaim1 = new Claim("Child Claim 1", ID("childClaim1"));
+//const childClaim2 = new Claim("Child Claim 2", ID("childClaim2"));
 const descendantClaim = new Claim("Descendant Claim", ID("descendantClaim"));
-calcInitator.notify([
+calculationInitator.notify([
   new Change(measuredClaim),
-  new Change(childClaim),
+  new Change(childClaim1),
+  //new Change(childClaim2),
   new Change(descendantClaim),
-  new Change(new ClaimEdge(measuredClaim.id, childClaim.id, Affects.Confidence, false)),
-  new Change(new ClaimEdge(childClaim.id, descendantClaim.id, Affects.Confidence, false)),
+  new Change(new ClaimEdge(measuredClaim.id, childClaim1.id, Affects.Confidence, false)),
+  //new Change(new ClaimEdge(measuredClaim.id, childClaim2.id, Affects.Confidence, true)),
+  new Change(new ClaimEdge(childClaim1.id, descendantClaim.id, Affects.Confidence, false)),
 ]);
 
 for (const claim of claims) {
   ReactDOM.render(<App
     claimId={claim.getAttribute('claimId')}
     repository={repo}
-    CalculationInitator={CalculationInitator}
+    calculationInitator={calculationInitator}
   />, claim);
 }
 
