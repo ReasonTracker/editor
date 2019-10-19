@@ -12,21 +12,21 @@ class ClaimElement extends Component {
         this.claim = props.repository.getItem(props.claimId)
         this.childClaimEedges = props.repository.getClaimEdgesByParentId(props.claimId)
         //const calcInitator = props.calcInitator;
-        this.polarity = this.props.polarityContext;
-        if (this.props.claimEdge !== undefined && this.props.claimEdge.pro === false ) {
-            this.polarity = !this.polarity;
-        } else {
-            //this.polarity = false;
+        this.proMain = this.props.polarityContext;
+        if (this.props.claimEdge && !this.props.claimEdge.pro) {
+            this.proMain = !this.proMain;
         }
-        this.pro = this.props.claimEdge !== undefined && (this.props.claimEdge.pro ? "pro" : "con") + " | "
+        this.proMainText = this.proMain ? "pro" : "con";
+        this.proParentText = this.props.claimEdge && (this.props.claimEdge.pro ? "pro" : "con");
     }
 
     render() {
         return (
             <div className={'claim-outer'}>
-                ({this.polarity ? "pro" : "con"}) |&nbsp;
-                {this.pro}
-                {this.score.confidence} | {this.claim.content}
+                ({this.proMainText}) |&nbsp;
+                {this.proParentText} |&nbsp;
+                {this.score.confidence} |&nbsp;
+                {this.claim.content}
                 <ul>
                     {this.childClaimEedges.length > 0 && this.childClaimEedges.map((child) => (
                         <li key={child.childId}>
@@ -35,7 +35,7 @@ class ClaimElement extends Component {
                                 repository={this.props.repository}
                                 calculationInitator={this.props.calculationInitator}
                                 claimEdge={child}
-                                polarityContext={this.polarity}
+                                polarityContext={this.proMain}
                             />
                         </li>
                     ))}
