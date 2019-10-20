@@ -6,9 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import { Repository, CalculationInitator, Change, Claim, ClaimEdge, ID, Affects } from "@reasonscore/core";
 
 
-//ReactDOM.render(<App />, document.getElementById('root'));
-
-const claims = document.getElementsByTagName('rs-claim');
+// Generate Data (Might need to move to)
 const repo = new Repository();
 const calculationInitator = new CalculationInitator(repo);
 const measuredClaim = new Claim("Measured Claim", ID("measuredClaim"));
@@ -31,6 +29,9 @@ calculationInitator.notify([
   new Change(new ClaimEdge(childClaim1.id, descendantClaim2.id, Affects.Confidence, true)),
 ]);
 
+
+//Connect to the HTML
+const claims = document.getElementsByTagName('rs-claim');
 for (const claim of claims) {
   ReactDOM.render(<App
     claimId={claim.getAttribute('claimId')}

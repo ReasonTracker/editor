@@ -15,14 +15,12 @@ class ClaimElement extends Component {
             this.proMain = !this.proMain;
         }
         this.proMainText = this.proMain ? "pro" : "con";
-        this.proParentText = this.props.claimEdge && (this.props.claimEdge.pro ? "pro" : "con");
     }
 
     render() {
         return (
             <div className={'claim-outer'}>
                 ({this.proMainText}) |&nbsp;
-                {this.proParentText} |&nbsp;
                 {this.score.confidence} |&nbsp;
                 {this.claim.content}
                 <ul>
@@ -33,7 +31,7 @@ class ClaimElement extends Component {
                                 repository={this.props.repository}
                                 calculationInitator={this.props.calculationInitator}
                                 claimEdge={child}
-                                polarityContext={this.proMain}
+                                proMainContext={this.proMain}
                             />
                         </li>
                     ))}
