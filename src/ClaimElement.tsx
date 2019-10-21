@@ -14,12 +14,14 @@ type MyProps = {
 
 type MyState = {
     //count: number; // like this
+    visible: boolean
 };
 
 class ClaimElement extends React.Component<MyProps, MyState> {
     state: MyState = {
         // optional second annotation for better type inference
         //count: 0
+        visible: false
     };
 
     render() {
@@ -34,9 +36,23 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         const proMainText = proMain ? "pro" : "con";
         return (
             <div className={'claim-outer'}>
-                ({proMainText}) |&nbsp;
-                {score.confidence} |&nbsp;
-                {claim.content}
+
+                {childClaimEedges.length > 0 &&
+                    <div className={"expander" + (this.state.visible ? " expanded" : " collapsed")}  >
+                        &#9701;
+                </div>
+                }
+
+                <div className={'claim ' + proMainText}>
+                    <div className={'claim-inner'}>
+                        <span className={`score`}>
+                            {score.confidence}
+                        </span>
+                        <span>
+                            {claim.content}
+                        </span>
+                    </div>
+                </div>
                 <ul>
                     {childClaimEedges.length > 0 && childClaimEedges.map((child) => (
                         <li key={child.childId.toString()}>
