@@ -10,35 +10,39 @@ import { Repository, CalculationInitator, Change, Claim, ClaimEdge, ID, Affects 
 // Generate Data (Might need to move to)
 const repo = new Repository();
 const calculationInitator = new CalculationInitator(repo);
-const measuredClaim = new Claim("Measured Claim", ID("measuredClaim"));
-const childClaim1 = new Claim("Child Claim 1", ID("childClaim1"));
-const childClaim2 = new Claim("Child Claim 2", ID("childClaim2"));
-const childClaim3 = new Claim("Child Claim 3", ID("childClaim3"));
-const descendantClaim1 = new Claim("Descendant Claim 1", ID("descendantClaim1"));
-const descendantClaim2 = new Claim("Descendant Claim 2", ID("descendantClaim2"));
+const topClaim = new Claim("Fiction City should convert Elm Street to only pedestrian traffic?",ID("1"));
+const increaseBusiness = new Claim("The planning commission estimates this will increase foot traffic to local shops by 12% during peak hours.",ID("2"));
+const increaseTraffic = new Claim("This will result in traffic being diverted down residential streets.");
+const childSafety = new Claim("Children safety is more important than profit for local shops.");
+const newStreet = new Claim("A set of railroad tracks are no longer in use and the City can convert that to a new street.");
+const costs = new Claim("The conversion will cost 2 Million dollars.");
+const payoff = new Claim("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.");
+
 calculationInitator.notify([
-  new Change(measuredClaim),
-  new Change(childClaim1),
-  new Change(childClaim2),
-  new Change(childClaim3),
-  new Change(descendantClaim1),
-  new Change(descendantClaim2),
-  new Change(new ClaimEdge(measuredClaim.id, childClaim1.id, Affects.Confidence, false)),
-  new Change(new ClaimEdge(measuredClaim.id, childClaim2.id, Affects.Confidence, true)),
-  new Change(new ClaimEdge(measuredClaim.id, childClaim3.id, Affects.Confidence, false)),
-  new Change(new ClaimEdge(childClaim1.id, descendantClaim1.id, Affects.Confidence, false)),
-  new Change(new ClaimEdge(childClaim1.id, descendantClaim2.id, Affects.Confidence, true)),
+  new Change(topClaim),
+  new Change(increaseBusiness),
+  new Change(new ClaimEdge(topClaim.id, increaseBusiness.id, Affects.Confidence, true)),
+  new Change(increaseTraffic),
+  new Change(new ClaimEdge(topClaim.id, increaseTraffic.id, Affects.Confidence, false)),
+  new Change(childSafety),
+  new Change(new ClaimEdge(increaseTraffic.id, childSafety.id, Affects.Relevance, true)),
+  new Change(newStreet),
+  new Change(new ClaimEdge(increaseTraffic.id, newStreet.id, Affects.Confidence, false)),
+  new Change(costs),
+  new Change(new ClaimEdge(topClaim.id, costs.id, Affects.Confidence, false)),
+  new Change(payoff),
+  new Change(new ClaimEdge(increaseBusiness.id, payoff.id, Affects.Relevance, true)),
 ]);
 
 
 //Connect to the HTML
 const claims = document.getElementsByTagName('rs-claim');
-for (const claim of claims) { 
-    const possibleClaimId = claim.getAttribute('claimId');
-    let claimId = ID("");
-    if (possibleClaimId){
-        claimId = ID(possibleClaimId);
-    }
+for (const claim of claims) {
+  const possibleClaimId = claim.getAttribute('claimId');
+  let claimId = ID("");
+  if (possibleClaimId) {
+    claimId = ID(possibleClaimId);
+  }
   ReactDOM.render(<App
     claimId={claimId}
     repository={repo}

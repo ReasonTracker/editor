@@ -71,23 +71,25 @@ rs-claim li {
   border-right: 1px solid rgba(0, 0, 0, 0.2);
   background-color: white;
   border-radius: 10px;
+  transition: max-height 500ms ease-in;
+  overflow: hidden;
 }
 
 .expander {
   cursor: pointer;
-  color: darkgray;
+  color: white;
   position: absolute;
-  top: 20px;
-  left: -7px;
+  bottom: 2px;
+  left: 4px;
   z-index: 2;
+  transition: transform .3s;
 }
 
 .collapsed {
   transform: rotate(45deg);
-  transition: transform .3s;
 }
 
 .expanded {
   transform: rotate(135deg);
-  transition: transform .3s;
 }
+
