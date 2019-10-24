@@ -3,6 +3,7 @@ import React from 'react';
 //import ClaimInner from './ClaimInner';
 //import { CSSTransitionGroup } from 'react-transition-group';
 import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects } from "@reasonscore/core";
+import EditorElement from './EditorElement';
 
 type MyProps = {
     claimId: Id,
@@ -13,20 +14,30 @@ type MyProps = {
 };
 
 type MyState = {
-    //count: number; // like this
-    childrenVisible: boolean
+    childrenVisible: boolean,
+    editorVisible: boolean
 };
 
 class ClaimElement extends React.Component<MyProps, MyState> {
     state: MyState = {
-        // optional second annotation for better type inference
-        //count: 0
-        childrenVisible: false
+        childrenVisible: false,
+        editorVisible: false
     };
 
     handleExpanderClick = () => {
         this.setState({
             childrenVisible: !this.state.childrenVisible
+        });
+    }
+    handleEditButtonClick = () => {
+        this.setState({
+            editorVisible: !this.state.editorVisible
+        });
+    }
+
+    handleEditCancel = () => {
+        this.setState({
+            editorVisible: false
         });
     }
 
@@ -47,16 +58,19 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
             }
         }
+
+        let childrenMaxHeight = this.state.childrenVisible ? childClaimEedges.length * 300 + 'px' : '0'
         const proMainText = proMain ? "pro" : "con";
+
         return (
             <div className={'claim-outer'}>
-
-                <div className={'claim ' + proMainText}>
-                {childClaimEedges.length > 0 &&
-                    <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
-                        &#9701;
+                <div className={'claim ' + proMainText} >
+                    <div className={'editor-button'} onClick={this.handleEditButtonClick}>E</div>
+                    {childClaimEedges.length > 0 &&
+                        <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
+                            &#9701;
                     </div>
-                }
+                    }
                     <div className={'claim-inner'}>
                         <span className={`score`}>
                             {scoreText}
@@ -66,8 +80,17 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         </span>
                     </div>
                 </div>
+                {this.state.editorVisible &&
+                    <EditorElement
+                        claimId={claim.id}
+                        repository={props.repository}
+                        calculationInitator={props.calculationInitator}
+                        claimEdge={props.claimEdge}
+                        proMainContext={proMain}
+                        handleEditCancel={this.handleEditCancel}
+                    />}
                 <ul className="children" style={{
-                    maxHeight: this.state.childrenVisible ? childClaimEedges.length * 300 + 'px' : '0'
+                    maxHeight: childrenMaxHeight
                 }}>
                     {childClaimEedges.length > 0 && childClaimEedges.map((child) => (
                         <li key={child.childId.toString()}>
