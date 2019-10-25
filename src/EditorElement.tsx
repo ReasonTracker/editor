@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change } from "@reasonscore/core";
 
 type MyProps = {
     claimId: Id,
@@ -11,16 +11,40 @@ type MyProps = {
 };
 
 type MyState = {
+    content: string,
+    pro?: boolean,
+    affects?: string,
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
-    state: MyState = {
-    };
 
-    handleSubmit = () => {
+    claim = this.props.repository.getItem(this.props.claimId) as Claim || new Claim();
+
+    constructor(props: MyProps) {
+        super(props);
+        this.state = {
+            content: this.claim.content,
+            pro: props.claimEdge ? props.claimEdge.pro : undefined,
+            affects: props.claimEdge ? props.claimEdge.affects.toString() : undefined,
+        };
     }
 
-    handleChange = () => {
+    handleSubmit = () => {
+        this.props.calculationInitator.notify([
+            new Change(new Claim(this.state.content, this.claim.id)),
+        ]);
+    }
+
+    handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
+        this.setState({ content: e.currentTarget.value });
+    }
+
+    handlePro = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({ pro: e.currentTarget.checked });
+    }
+
+    handleAffects = (e: React.FormEvent<HTMLSelectElement>) => {
+        this.setState({ affects: e.currentTarget.value });
     }
 
     handleCancel = () => {
@@ -28,27 +52,24 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const props = this.props;
-        const claim = props.repository.getItem(props.claimId) as Claim || new Claim();
-
         return (
             <form>
                 <div className="form-group">
                     <label htmlFor="content">Content</label>
-                    <textarea className="form-control" id="claim.content" value={claim.content} onChange={this.handleChange} rows={2}></textarea>
+                    <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
                 </div>
                 {this.props.claimEdge &&
                     < >
                         <div className="form-group form-check">
-                            <input type="checkbox" id="claimEdge.pro" checked={this.props.claimEdge.pro} onChange={this.handleChange} />
+                            <input type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
                             <label> Pro Parent</label>
                         </div>
                         <div className="form-group">
                             <label>
                                 Affects:
-                            <select id="claimEdge.affects" value={this.props.claimEdge.affects} onChange={this.handleChange}>
-                                    <option value="truth">truth</option>
-                                    <option value="relevance">relevance</option>
+                            <select id="claimEdge.affects" value={this.state.affects} onChange={this.handleAffects}>
+                                    <option value={Affects.Confidence}>Confidence</option>
+                                    <option value={Affects.Relevance}>Relevance</option>
                                 </select>
                             </label>
                         </div>

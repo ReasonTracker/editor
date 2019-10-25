@@ -2,7 +2,7 @@ import React from 'react';
 //import Editor from './Editor';
 //import ClaimInner from './ClaimInner';
 //import { CSSTransitionGroup } from 'react-transition-group';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 
 type MyProps = {
@@ -15,14 +15,24 @@ type MyProps = {
 
 type MyState = {
     childrenVisible: boolean,
-    editorVisible: boolean
+    editorVisible: boolean,
+    score: Score,
+    claim: Claim,
+    childClaimEedges: ClaimEdge[],
 };
 
 class ClaimElement extends React.Component<MyProps, MyState> {
-    state: MyState = {
-        childrenVisible: false,
-        editorVisible: false
-    };
+
+    constructor(props: MyProps) {
+        super(props);
+        this.state = {
+            childrenVisible: this.props.claimEdge ? false : true,
+            editorVisible: false,
+            score: this.props.repository.getScoreBySourceClaimId(this.props.claimId),
+            claim: this.props.repository.getItem(this.props.claimId) as Claim || new Claim(),
+            childClaimEedges: this.props.repository.getClaimEdgesByParentId(this.props.claimId),
+        };
+    }
 
     handleExpanderClick = () => {
         this.setState({
@@ -43,11 +53,11 @@ class ClaimElement extends React.Component<MyProps, MyState> {
 
     render() {
         const props = this.props;
-        const score = props.repository.getScoreBySourceClaimId(props.claimId);
-        const claim = props.repository.getItem(props.claimId) as Claim || new Claim();
-        const childClaimEedges = props.repository.getClaimEdgesByParentId(props.claimId)
+        const score = this.state.score;
+        const claim = this.state.claim;
+        const childClaimEedges = this.state.childClaimEedges;
         let proMain = props.proMainContext;
-        let scoreText = `${Math.round(score.confidence * 100)}%`
+        let scoreText = `${Math.round(this.state.score.confidence * 100)}%`
         if (props.claimEdge) {
             if (!props.claimEdge.pro) {
                 proMain = !proMain;
@@ -59,7 +69,6 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             }
         }
 
-        let childrenMaxHeight = this.state.childrenVisible ? childClaimEedges.length * 300 + 'px' : '0'
         const proMainText = proMain ? "pro" : "con";
 
         return (
@@ -89,21 +98,21 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         proMainContext={proMain}
                         handleEditCancel={this.handleEditCancel}
                     />}
-                <ul className="children" style={{
-                    maxHeight: childrenMaxHeight
-                }}>
-                    {childClaimEedges.length > 0 && childClaimEedges.map((child) => (
-                        <li key={child.childId.toString()}>
-                            <ClaimElement
-                                claimId={child.childId}
-                                repository={props.repository}
-                                calculationInitator={props.calculationInitator}
-                                claimEdge={child}
-                                proMainContext={proMain}
-                            />
-                        </li>
-                    ))}
-                </ul>
+                {this.state.childrenVisible &&
+                    <ul className="children">
+                        {childClaimEedges.length > 0 && childClaimEedges.map((child) => (
+                            <li key={child.childId.toString()}>
+                                <ClaimElement
+                                    claimId={child.childId}
+                                    repository={props.repository}
+                                    calculationInitator={props.calculationInitator}
+                                    claimEdge={child}
+                                    proMainContext={proMain}
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                }
             </div>
         );
     }
