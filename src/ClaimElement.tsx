@@ -2,7 +2,7 @@ import React from 'react';
 //import Editor from './Editor';
 //import ClaimInner from './ClaimInner';
 //import { CSSTransitionGroup } from 'react-transition-group';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score, Messenger, Change, Type } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 
 type MyProps = {
@@ -11,6 +11,7 @@ type MyProps = {
     calculationInitator: CalculationInitator,
     proMainContext: boolean,
     claimEdge?: ClaimEdge,
+    messenger: Messenger,
 };
 
 type MyState = {
@@ -19,6 +20,7 @@ type MyState = {
     score: Score,
     claim: Claim,
     childClaimEedges: ClaimEdge[],
+    claimEdge?: ClaimEdge,
 };
 
 class ClaimElement extends React.Component<MyProps, MyState> {
@@ -31,7 +33,30 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             score: this.props.repository.getScoreBySourceClaimId(this.props.claimId),
             claim: this.props.repository.getItem(this.props.claimId) as Claim || new Claim(),
             childClaimEedges: this.props.repository.getClaimEdgesByParentId(this.props.claimId),
+            claimEdge: this.props.claimEdge,
         };
+
+        this.props.messenger.subscribe(this.handleDataDispatch)
+    }
+
+    handleDataDispatch = (changes: Change[]) => {
+        for (const change of changes) {
+            const { newItem } = change;
+            let newState : any = {}
+            if (newItem.id === this.props.claimId && newItem.type === Type.claim) {
+                const claim = newItem as Claim;
+                newState.claim = claim;
+            }
+            if (newItem.id === this.state.score.id && newItem.type === Type.score) {
+                const score = newItem as Score;
+                newState.score = score;
+            }
+            if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
+                const claimEdge = newItem as ClaimEdge;
+                newState.claimEdge = claimEdge;
+            }
+            this.setState(newState);
+        }
     }
 
     handleExpanderClick = () => {
@@ -39,6 +64,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             childrenVisible: !this.state.childrenVisible
         });
     }
+
     handleEditButtonClick = () => {
         this.setState({
             editorVisible: !this.state.editorVisible
@@ -58,11 +84,11 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         const childClaimEedges = this.state.childClaimEedges;
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(this.state.score.confidence * 100)}%`
-        if (props.claimEdge) {
-            if (!props.claimEdge.pro) {
+        if (this.state.claimEdge) {
+            if (!this.state.claimEdge.pro) {
                 proMain = !proMain;
             }
-            if (props.claimEdge.affects === Affects.Relevance) {
+            if (this.state.claimEdge.affects === Affects.Relevance) {
                 scoreText = `×${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
@@ -94,9 +120,10 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         claimId={claim.id}
                         repository={props.repository}
                         calculationInitator={props.calculationInitator}
-                        claimEdge={props.claimEdge}
+                        claimEdge={this.state.claimEdge}
                         proMainContext={proMain}
                         handleEditCancel={this.handleEditCancel}
+                        messenger={props.messenger}
                     />}
                 {this.state.childrenVisible &&
                     <ul className="children">
@@ -108,6 +135,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                                     calculationInitator={props.calculationInitator}
                                     claimEdge={child}
                                     proMainContext={proMain}
+                                    messenger={props.messenger}
                                 />
                             </li>
                         ))}

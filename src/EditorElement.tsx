@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change, Messenger } from "@reasonscore/core";
 
 type MyProps = {
     claimId: Id,
@@ -7,7 +7,8 @@ type MyProps = {
     calculationInitator: CalculationInitator,
     proMainContext: boolean,
     claimEdge?: ClaimEdge,
-    handleEditCancel: () => void
+    handleEditCancel: () => void,
+    messenger: Messenger,
 };
 
 type MyState = {
@@ -19,6 +20,7 @@ type MyState = {
 class EditorElement extends React.Component<MyProps, MyState> {
 
     claim = this.props.repository.getItem(this.props.claimId) as Claim || new Claim();
+    claimEdge = this.props.claimEdge
 
     constructor(props: MyProps) {
         super(props);
@@ -30,9 +32,13 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handleSubmit = () => {
-        this.props.calculationInitator.notify([
+        const changes = [
             new Change(new Claim(this.state.content, this.claim.id)),
-        ]);
+        ]
+        if (this.claimEdge) {
+            changes.push(new Change(new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id)))
+        }
+        this.props.calculationInitator.notify(changes);
     }
 
     handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
