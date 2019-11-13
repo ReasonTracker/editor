@@ -4,16 +4,73 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <title>Reason Score Editor</title>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-firestore.js"></script>
+  <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBmu9Lhj9Stp8dhamvCA4oi16o_jU4qnQM",
+      authDomain: "reason-score.firebaseapp.com",
+      databaseURL: "https://reason-score.firebaseio.com",
+      projectId: "reason-score",
+      storageBucket: "reason-score.appspot.com",
+      messagingSenderId: "403624872089",
+      appId: "1:403624872089:web:5d9685888a79f58ebe5008"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+
+    //Detect Logged in
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        document.getElementById('UserName').innerText = user.displayName;
+      } else {
+        //Show LogIn Screen
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', {
+          callbacks: {
+            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+              return false; //Do not redirect
+            },
+          },
+          signInFlow: 'popup',
+          signInOptions: [
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            firebase.auth.GithubAuthProvider.PROVIDER_ID,
+            firebase.auth.EmailAuthProvider.PROVIDER_ID
+          ],
+          tosUrl: 'terms-of-service',
+          privacyPolicyUrl: 'privacy-policy'
+        });
+      }
+    });
+  </script>
+<style>
+  body {
+    padding: 10px
+  }
+</style>
 </head>
 
 <body>
-  <br />
-  <rs-claim claimid="1"></rs-claim>
-  <br />
-  <rs-claim claimid="2"></rs-claim>
-  <br />
+  <div id="UserName" style="text-align: right;"></div>
+  <div id="firebaseui-auth-container"></div>
   <rs-claim claimid="1"></rs-claim>
 </body>
 

@@ -17,6 +17,7 @@ type MyProps = {
 type MyState = {
     childrenVisible: boolean,
     editorVisible: boolean,
+    addMode: boolean,
     score: Score,
     claim: Claim,
     childClaimEedges: ClaimEdge[],
@@ -30,19 +31,23 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         this.state = {
             childrenVisible: this.props.claimEdge ? false : true,
             editorVisible: false,
+            addMode: false,
             score: this.props.repository.getScoreBySourceClaimId(this.props.claimId),
             claim: this.props.repository.getItem(this.props.claimId) as Claim || new Claim(),
             childClaimEedges: this.props.repository.getClaimEdgesByParentId(this.props.claimId),
             claimEdge: this.props.claimEdge,
         };
-
         this.props.messenger.subscribe(this.handleDataDispatch)
+    }
+
+    componentWillUnmount() {
+        this.props.messenger.unsubscribe(this.handleDataDispatch)
     }
 
     handleDataDispatch = (changes: Change[]) => {
         for (const change of changes) {
             const { newItem } = change;
-            let newState : any = {}
+            let newState: any = {}
             if (newItem.id === this.props.claimId && newItem.type === Type.claim) {
                 const claim = newItem as Claim;
                 newState.claim = claim;
@@ -67,11 +72,19 @@ class ClaimElement extends React.Component<MyProps, MyState> {
 
     handleEditButtonClick = () => {
         this.setState({
+            editorVisible: !this.state.editorVisible,
+            addMode: false,
+        });
+    }
+
+    handleAddButtonClick = () => {
+        this.setState({
+            addMode: true,
             editorVisible: !this.state.editorVisible
         });
     }
 
-    handleEditCancel = () => {
+    handleEditClose = () => {
         this.setState({
             editorVisible: false
         });
@@ -81,7 +94,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         const props = this.props;
         const score = this.state.score;
         const claim = this.state.claim;
-        const childClaimEedges = this.state.childClaimEedges;
+        const childClaimEedges = this.props.repository.getClaimEdgesByParentId(this.props.claimId);
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(this.state.score.confidence * 100)}%`
         if (this.state.claimEdge) {
@@ -100,7 +113,8 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         return (
             <div className={'claim-outer'}>
                 <div className={'claim ' + proMainText} >
-                    <div className={'editor-button'} onClick={this.handleEditButtonClick}>E</div>
+                    <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"/><path d="M0 0h48v48h-48z" fill="none"/></svg></div>
+                    <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
                     {childClaimEedges.length > 0 &&
                         <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
                             &#9701;
@@ -122,9 +136,11 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         calculationInitator={props.calculationInitator}
                         claimEdge={this.state.claimEdge}
                         proMainContext={proMain}
-                        handleEditCancel={this.handleEditCancel}
+                        handleEditClose={this.handleEditClose}
                         messenger={props.messenger}
+                        new={this.state.addMode}
                     />}
+
                 {this.state.childrenVisible &&
                     <ul className="children">
                         {childClaimEedges.length > 0 && childClaimEedges.map((child) => (

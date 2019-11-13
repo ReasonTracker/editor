@@ -23,7 +23,6 @@ const App: React.FC<{
           proMainContext={true}
           messenger = {messenger}
         />
-        <hr></hr>
       </>
     );
 

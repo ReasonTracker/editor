@@ -1,5 +1,4 @@
 rs-claim {
-  padding-left: 10px;
   display: block;
 }
 
@@ -95,13 +94,23 @@ rs-claim li {
   transform: rotate(135deg);
 }
 
-.editor-button{
+.editor-button {
   cursor: pointer;
   position: absolute;
   opacity: .5;
+  right: 5px;
+  fill: white;
+  top: 0;
+}
+
+.add-button {
+  cursor: pointer;
+  position: absolute;
+  opacity: .5;
+  top: 20px;
+  right: 5px;
 }
 
 form {
   padding: 10px;
 }
-

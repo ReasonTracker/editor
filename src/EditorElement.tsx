@@ -7,8 +7,9 @@ type MyProps = {
     calculationInitator: CalculationInitator,
     proMainContext: boolean,
     claimEdge?: ClaimEdge,
-    handleEditCancel: () => void,
+    handleEditClose: () => void,
     messenger: Messenger,
+    new?: boolean,
 };
 
 type MyState = {
@@ -24,10 +25,14 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     constructor(props: MyProps) {
         super(props);
+        if (this.props.new) {
+            this.claim = new Claim();
+            this.claimEdge = new ClaimEdge(this.props.claimId,this.claim.id)
+        }
         this.state = {
             content: this.claim.content,
-            pro: props.claimEdge ? props.claimEdge.pro : undefined,
-            affects: props.claimEdge ? props.claimEdge.affects.toString() : undefined,
+            pro: this.claimEdge ? this.claimEdge.pro : undefined,
+            affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
         };
     }
 
@@ -39,6 +44,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             changes.push(new Change(new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id)))
         }
         this.props.calculationInitator.notify(changes);
+        this.props.handleEditClose();
     }
 
     handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -54,7 +60,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handleCancel = () => {
-        this.props.handleEditCancel();
+        this.props.handleEditClose();
     }
 
     render() {
@@ -64,7 +70,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     <label htmlFor="content">Content</label>
                     <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
                 </div>
-                {this.props.claimEdge &&
+                {this.claimEdge &&
                     < >
                         <div className="form-group form-check">
                             <input type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
