@@ -32,6 +32,12 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    // var db = firebase.firestore();
+    // db.collection("transit").get().then((querySnapshot) => {
+    //   querySnapshot.forEach((doc) => {
+    //     console.log(`${doc.id} => ${doc.data()}`);
+    //   });
+    // });
 
 
     //Detect Logged in
@@ -61,17 +67,17 @@
       }
     });
   </script>
-<style>
-  body {
-    padding: 10px
-  }
-</style>
+  <style>
+    body {
+      padding: 10px
+    }
+  </style>
 </head>
 
 <body>
-  <div id="UserName" style="text-align: right;"></div>
+  <div id="UserName" style="text-align: right;min-height: 24px;"></div>
   <div id="firebaseui-auth-container"></div>
-  <rs-claim claimid="1"></rs-claim>
+  <rs-claim claimid="Yk3JDShDv0lm"></rs-claim>
 </body>
 
 </html>
