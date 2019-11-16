@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import ClaimElement from './ClaimElement';
 import { Repository, CalculationInitator, Id, Messenger } from "@reasonscore/core";
+import Menu from './Menu';
 
 
 const App: React.FC<{
@@ -16,6 +17,7 @@ const App: React.FC<{
   messenger
 }) => (
       <>
+      <Menu repository={repository}></Menu>
         <ClaimElement
           claimId={claimId}
           repository={repository}

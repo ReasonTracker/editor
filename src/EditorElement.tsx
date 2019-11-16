@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change, Messenger } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change, Messenger, RsData } from "@reasonscore/core";
 
 type MyProps = {
     claimId: Id,
@@ -27,7 +27,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         super(props);
         if (this.props.new) {
             this.claim = new Claim();
-            this.claimEdge = new ClaimEdge(this.props.claimId,this.claim.id)
+            this.claimEdge = new ClaimEdge(this.props.claimId, this.claim.id)
         }
         this.state = {
             content: this.claim.content,
@@ -59,6 +59,22 @@ class EditorElement extends React.Component<MyProps, MyState> {
         this.setState({ affects: e.currentTarget.value });
     }
 
+    handleDelete = () => {
+        //To Do : move to repository
+        debugger
+        const rsData = this.props.repository.rsData as RsData
+        if (this.claimEdge) {
+            const edges = rsData.claimEdgesByParentId[this.claimEdge.parentId.toString()]
+            const index = edges.indexOf(this.claimEdge.id.toString(), 0);
+            if (index > -1) {
+                edges.splice(index, 1);
+            }
+            const parentClaim = JSON.parse(JSON.stringify(rsData.items[this.claimEdge.parentId.toString()][0])) as Claim
+            this.props.calculationInitator.notify([new Change(parentClaim)])
+            this.props.handleEditClose();
+        }
+    }
+
     handleCancel = () => {
         this.props.handleEditClose();
     }
@@ -69,6 +85,8 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 <div className="form-group">
                     <label htmlFor="content">Content</label>
                     <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
+                    <small className="form-text text-muted">For hyperlinks us <a href="https://spec.commonmark.org/0.29/#links">commonMark</a> syntax:
+                    This is [an example](http://example.com/) inline link.</small>
                 </div>
                 {this.claimEdge &&
                     < >
@@ -84,6 +102,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
                                     <option value={Affects.Relevance}>Relevance</option>
                                 </select>
                             </label>
+                        </div>
+
+                        <div className="btn-group mr-2" role="group" aria-label="Third group">
+                            <button type="button" value="Delete" className="btn btn-secondary" onClick={this.handleDelete}>Delete</button>
                         </div>
                     </>
                 }

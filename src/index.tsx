@@ -5,33 +5,52 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Repository, CalculationInitator, Change, Claim, ID, Messenger } from "@reasonscore/core";
 
+declare global {
+  interface Window {
+    db: any;
+  }
+}
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 // Generate Data (Might need to move to)
 const repo = new Repository();
 const messenger = new Messenger();
-const calculationInitator = new CalculationInitator(repo,messenger.notify);
-const topClaim = new Claim("Should we build the infiniteTransit flyway?",ID("Yk3JDShDv0lm"));
+const calculationInitator = new CalculationInitator(repo, messenger.notify);
+const topClaim = new Claim("Not From Database", ID("Yk3JDShDv0lm"));
 topClaim.reversible = true;
 calculationInitator.notify([
   new Change(topClaim),
 ]);
 
-//Connect to the HTML
-const claims = document.getElementsByTagName('rs-claim');
-for (const claim of claims) {
-  const possibleClaimId = claim.getAttribute('claimId');
-  let claimId = ID("");
-  if (possibleClaimId) {
-    claimId = ID(possibleClaimId);
+window.db.doc("rsData").get().then(function (doc: any) {
+  if (doc.exists) {
+    console.log("Document data:", doc.data());
+    repo.rsData = doc.data();
+    //Connect to the HTML
+    const claims = document.getElementsByTagName('rs-claim');
+    for (const claim of claims) {
+      const possibleClaimId = claim.getAttribute('claimId');
+      let claimId = ID("");
+      if (possibleClaimId) {
+        claimId = ID(possibleClaimId);
+      }
+      ReactDOM.render(<App
+        claimId={claimId}
+        repository={repo}
+        calculationInitator={calculationInitator}
+        messenger={messenger}
+      />, claim);
+    }
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
   }
-  ReactDOM.render(<App
-    claimId={claimId}
-    repository={repo}
-    calculationInitator={calculationInitator}
-    messenger = {messenger}
-  />, claim);
-}
+}).catch(function (error: any) {
+  console.log("Error getting document:", error);
+});
+
+
+
 
 
 // If you want your app to work offline and load faster, you can change
