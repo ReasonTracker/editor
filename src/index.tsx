@@ -13,7 +13,6 @@ const messenger = new Messenger();
 const calculationInitator = new CalculationInitator(repo,messenger.notify);
 const topClaim = new Claim("Should we build the infiniteTransit flyway?",ID("Yk3JDShDv0lm"));
 topClaim.reversible = true;
-
 calculationInitator.notify([
   new Change(topClaim),
 ]);
