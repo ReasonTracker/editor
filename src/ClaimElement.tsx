@@ -5,6 +5,14 @@ import React from 'react';
 import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score, Messenger, Change, Type } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 
+// declare global {
+//     interface Window {
+//       commonmark: any;
+//     }
+//   }
+
+  const commonmark: any = require('commonmark');
+
 type MyProps = {
     claimId: Id,
     repository: Repository,
@@ -110,10 +118,18 @@ class ClaimElement extends React.Component<MyProps, MyState> {
 
         const proMainText = proMain ? "pro" : "con";
 
+        //Commonmark
+        function createMarkup() {
+            var reader = new commonmark.Parser({});
+            var writer = new commonmark.HtmlRenderer({safe: true});
+            var parsed = reader.parse(claim.content);
+            return {__html: writer.render(parsed)};
+          }
+
         return (
             <div className={'claim-outer'}>
                 <div className={'claim ' + proMainText} >
-                    <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"/><path d="M0 0h48v48h-48z" fill="none"/></svg></div>
+                    <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
                     <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
                     {childClaimEedges.length > 0 &&
                         <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
@@ -124,8 +140,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         <span className={`score`}>
                             {scoreText}
                         </span>
-                        <span>
-                            {claim.content}
+                        <span dangerouslySetInnerHTML={createMarkup()}>
                         </span>
                     </div>
                 </div>

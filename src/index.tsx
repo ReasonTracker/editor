@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Repository, CalculationInitator, Change, Claim, ID, Messenger } from "@reasonscore/core";
+import { Repository, CalculationInitator, Change, Claim, ID, Messenger, RsData } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -24,7 +24,6 @@ calculationInitator.notify([
 
 window.db.doc("rsData").get().then(function (doc: any) {
   if (doc.exists) {
-    console.log("Document data:", doc.data());
     repo.rsData = doc.data();
     //Connect to the HTML
     const claims = document.getElementsByTagName('rs-claim');
@@ -42,8 +41,31 @@ window.db.doc("rsData").get().then(function (doc: any) {
       />, claim);
     }
   } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
+    // Create a new RsData object with empty claims
+    repo.rsData = new RsData();
+    //Connect to the HTML
+    const claims = document.getElementsByTagName('rs-claim');
+    for (const claim of claims) {
+      const possibleClaimId = claim.getAttribute('claimId');
+      let claimId = ID("");
+      if (possibleClaimId) {
+        claimId = ID(possibleClaimId);
+      }
+
+      //Create the new claim
+      calculationInitator.notify([
+        new Change(
+          new Claim("New Claim", claimId)
+          ),
+      ]);
+
+      ReactDOM.render(<App
+        claimId={claimId}
+        repository={repo}
+        calculationInitator={calculationInitator}
+        messenger={messenger}
+      />, claim);
+    }
   }
 }).catch(function (error: any) {
   console.log("Error getting document:", error);

@@ -33,14 +33,8 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // var db = firebase.firestore();
-    // db.collection("transit").get().then((querySnapshot) => {
-    //   querySnapshot.forEach((doc) => {
-    //     console.log(`${doc.id} => ${doc.data()}`);
-    //   });
-    // });
 
-    window.db = firebase.firestore().collection("transit")
+    window.db = firebase.firestore().collection("flyway")
 
     //Detect Logged in
     firebase.auth().onAuthStateChanged(function (user) {

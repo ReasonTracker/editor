@@ -61,7 +61,6 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     handleDelete = () => {
         //To Do : move to repository
-        debugger
         const rsData = this.props.repository.rsData as RsData
         if (this.claimEdge) {
             const edges = rsData.claimEdgesByParentId[this.claimEdge.parentId.toString()]

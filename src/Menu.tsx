@@ -23,7 +23,6 @@ class Menu extends React.Component<MyProps, MyState> {
     // }
 
     handleSave = () => {
-        debugger
         window.db.doc("rsData").set(JSON.parse(JSON.stringify(this.props.repository.rsData)))
         .then(function() {
             console.log("Document successfully written!");
