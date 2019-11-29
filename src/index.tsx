@@ -22,7 +22,7 @@ calculationInitator.notify([
   new Change(topClaim),
 ]);
 
-window.db.doc("rsData").get().then(function (doc: any) {
+window.db.doc("rsData").get().then( (doc: any) => {
   if (doc.exists) {
     repo.rsData = doc.data();
     //Connect to the HTML

@@ -20,7 +20,7 @@ type MyState = {
 
 class EditorElement extends React.Component<MyProps, MyState> {
 
-    claim = this.props.repository.getItem(this.props.claimId) as Claim || new Claim();
+    claim = new Claim();
     claimEdge = this.props.claimEdge
 
     constructor(props: MyProps) {
@@ -28,12 +28,30 @@ class EditorElement extends React.Component<MyProps, MyState> {
         if (this.props.new) {
             this.claim = new Claim();
             this.claimEdge = new ClaimEdge(this.props.claimId, this.claim.id)
+        } else {
+            const awaitClaim = this.props.repository.getItem(this.props.claimId)
+            Promise.all([awaitClaim]).then((values) => {
+                if (values[0]) {
+                    this.claim = values[0] as Claim;
+                }
+
+                let newState: any = {
+                    content: this.claim.content,
+                    pro: this.claimEdge ? this.claimEdge.pro : undefined,
+                    affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
+                }
+
+                this.setState(newState);
+            });
+
         }
+
         this.state = {
-            content: this.claim.content,
-            pro: this.claimEdge ? this.claimEdge.pro : undefined,
-            affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
+            content: "",
+            pro: true,
+            affects: undefined,
         };
+
     }
 
     handleSubmit = () => {
@@ -59,7 +77,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         this.setState({ affects: e.currentTarget.value });
     }
 
-    handleDelete = () => {
+    handleDelete = async () => {
         //To Do : move to repository
         const rsData = this.props.repository.rsData as RsData
         if (this.claimEdge) {
@@ -68,7 +86,13 @@ class EditorElement extends React.Component<MyProps, MyState> {
             if (index > -1) {
                 edges.splice(index, 1);
             }
-            const parentClaim = JSON.parse(JSON.stringify(rsData.items[this.claimEdge.parentId.toString()][0])) as Claim
+            const parentClaim = JSON.parse(
+                JSON.stringify(
+                    await this.props.repository.getItem(
+                        this.claimEdge.parentId
+                    )
+                )
+            ) as Claim;
             this.props.calculationInitator.notify([new Change(parentClaim)])
             this.props.handleEditClose();
         }

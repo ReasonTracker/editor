@@ -1,17 +1,8 @@
 import React from 'react';
-//import Editor from './Editor';
-//import ClaimInner from './ClaimInner';
-//import { CSSTransitionGroup } from 'react-transition-group';
 import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score, Messenger, Change, Type } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 
-// declare global {
-//     interface Window {
-//       commonmark: any;
-//     }
-//   }
-
-  const commonmark: any = require('commonmark');
+const commonmark: any = require('commonmark');
 
 type MyProps = {
     claimId: Id,
@@ -40,11 +31,25 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             childrenVisible: this.props.claimEdge ? false : true,
             editorVisible: false,
             addMode: false,
-            score: this.props.repository.getScoreBySourceClaimId(this.props.claimId),
-            claim: this.props.repository.getItem(this.props.claimId) as Claim || new Claim(),
-            childClaimEedges: this.props.repository.getClaimEdgesByParentId(this.props.claimId),
+            score: new Score(),
+            claim: new Claim(),
+            childClaimEedges: [],
             claimEdge: this.props.claimEdge,
         };
+
+        const awaitScore = this.props.repository.getScoreBySourceClaimId(this.props.claimId)
+        const awaitClaim = this.props.repository.getItem(this.props.claimId)
+        const awaitChildClaimEedges = this.props.repository.getClaimEdgesByParentId(this.props.claimId)
+        Promise.all([awaitScore, awaitClaim, awaitChildClaimEedges]).then((values) => {
+            let newState: any = {}
+            newState.score = values[0];
+            if (values[1]) {
+                newState.claim = values[1]
+            }
+            newState.childClaimEedges = values[2];
+            this.setState(newState);
+        });
+
         this.props.messenger.subscribe(this.handleDataDispatch)
     }
 
@@ -52,7 +57,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         this.props.messenger.unsubscribe(this.handleDataDispatch)
     }
 
-    handleDataDispatch = (changes: Change[]) => {
+    handleDataDispatch = async (changes: Change[]) => {
         for (const change of changes) {
             const { newItem } = change;
             let newState: any = {}
@@ -67,6 +72,14 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
                 const claimEdge = newItem as ClaimEdge;
                 newState.claimEdge = claimEdge;
+            }
+            //Check for changes to child edges
+            if (newItem.type === Type.claimEdge) {
+                const claimEdge = newItem as ClaimEdge;
+                if (claimEdge.parentId === this.props.claimId){
+                    const ChildClaimEedges = await this.props.repository.getClaimEdgesByParentId(this.props.claimId)
+                    newState.childClaimEedges = ChildClaimEedges;
+                }
             }
             this.setState(newState);
         }
@@ -102,7 +115,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         const props = this.props;
         const score = this.state.score;
         const claim = this.state.claim;
-        const childClaimEedges = this.props.repository.getClaimEdgesByParentId(this.props.claimId);
+        const childClaimEedges = this.state.childClaimEedges;
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(this.state.score.confidence * 100)}%`
         if (this.state.claimEdge) {
@@ -121,10 +134,10 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         //Commonmark
         function createMarkup() {
             var reader = new commonmark.Parser({});
-            var writer = new commonmark.HtmlRenderer({safe: true});
+            var writer = new commonmark.HtmlRenderer({ safe: true });
             var parsed = reader.parse(claim.content);
-            return {__html: writer.render(parsed)};
-          }
+            return { __html: writer.render(parsed) };
+        }
 
         return (
             <div className={'claim-outer'}>
