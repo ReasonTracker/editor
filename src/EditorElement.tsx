@@ -15,6 +15,7 @@ type MyProps = {
 type MyState = {
     content: string,
     pro?: boolean,
+    proMain?: boolean,
     affects?: string,
 };
 
@@ -35,9 +36,12 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     this.claim = values[0] as Claim;
                 }
 
+                const pro = this.claimEdge ? this.claimEdge.pro : true;
+
                 let newState: any = {
                     content: this.claim.content,
-                    pro: this.claimEdge ? this.claimEdge.pro : undefined,
+                    pro: pro,
+                    proMain: this.props.proMainContext ? pro : !pro,
                     affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
                 }
 
@@ -49,6 +53,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         this.state = {
             content: "",
             pro: true,
+            proMain: this.props.proMainContext,
             affects: undefined,
         };
 
@@ -70,7 +75,19 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handlePro = (e: React.FormEvent<HTMLInputElement>) => {
-        this.setState({ pro: e.currentTarget.checked });
+        let proMain = this.props.proMainContext ? e.currentTarget.checked : !e.currentTarget.checked;
+        this.setState({
+            pro: e.currentTarget.checked,
+            proMain: proMain
+        });
+    }
+
+    handleProMain = (e: React.FormEvent<HTMLInputElement>) => {
+        let pro = this.props.proMainContext ? e.currentTarget.checked : !e.currentTarget.checked;
+        this.setState({
+            pro: pro,
+            proMain: e.currentTarget.checked
+        });
     }
 
     handleAffects = (e: React.FormEvent<HTMLSelectElement>) => {
@@ -113,9 +130,14 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 </div>
                 {this.claimEdge &&
                     < >
+                    {this.props.proMainContext?"True":"false"}
                         <div className="form-group form-check">
                             <input type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
                             <label> Pro Parent</label>
+                        </div>
+                        <div className="form-group form-check">
+                            <input type="checkbox" id="proMain" checked={this.state.proMain} onChange={this.handleProMain} />
+                            <label> Pro Main</label>
                         </div>
                         <div className="form-group">
                             <label>

@@ -163,7 +163,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         repository={props.repository}
                         calculationInitator={props.calculationInitator}
                         claimEdge={this.state.claimEdge}
-                        proMainContext={proMain}
+                        proMainContext={this.state.addMode? proMain: props.proMainContext}
                         handleEditClose={this.handleEditClose}
                         messenger={props.messenger}
                         new={this.state.addMode}
