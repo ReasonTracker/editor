@@ -115,14 +115,15 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         const props = this.props;
         const score = this.state.score;
         const claim = this.state.claim;
+        const claimEdge = this.state.claimEdge;
         const childClaimEedges = this.state.childClaimEedges;
         let proMain = props.proMainContext;
-        let scoreText = `${Math.round(this.state.score.confidence * 100)}%`
-        if (this.state.claimEdge) {
-            if (!this.state.claimEdge.pro) {
+        let scoreText = `${Math.round(score.confidence * 100)}%`
+        if (claimEdge) {
+            if (!claimEdge.pro) {
                 proMain = !proMain;
             }
-            if (this.state.claimEdge.affects === Affects.Relevance) {
+            if (claimEdge.affects === Affects.Relevance) {
                 scoreText = `×${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`

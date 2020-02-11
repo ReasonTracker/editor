@@ -16,13 +16,8 @@ declare global {
 const repo = new Repository();
 const messenger = new Messenger();
 const calculationInitator = new CalculationInitator(repo, messenger.notify);
-const topClaim = new Claim("Not From Database", ID("Yk3JDShDv0lm"));
-topClaim.reversible = true;
-calculationInitator.notify([
-  new Change(topClaim),
-]);
 
-window.db.doc("rsData").get().then( (doc: any) => {
+window.db.doc("rsData").get().then((doc: any) => {
   if (doc.exists) {
     repo.rsData = doc.data();
     //Connect to the HTML
@@ -56,15 +51,16 @@ window.db.doc("rsData").get().then( (doc: any) => {
       calculationInitator.notify([
         new Change(
           new Claim("New Claim", claimId)
-          ),
-      ]);
+        ),
+      ]).then((doc: any) => {
 
-      ReactDOM.render(<App
-        claimId={claimId}
-        repository={repo}
-        calculationInitator={calculationInitator}
-        messenger={messenger}
-      />, claim);
+        ReactDOM.render(<App
+          claimId={claimId}
+          repository={repo}
+          calculationInitator={calculationInitator}
+          messenger={messenger}
+        />, claim);
+      });
     }
   }
 }).catch(function (error: any) {
