@@ -179,16 +179,16 @@ class EditorElement extends React.Component<MyProps, MyState> {
                             <label htmlFor="claimEdge.priority">Priority</label>
                             <input type="text" className="form-control" id="claimEdge.priority" value={this.state.priority} onChange={this.handlePriority}></input>
                         </div>
-
-                        <div className="btn-group mr-2" role="group" aria-label="Third group">
-                            <button type="button" value="Delete" className="btn btn-secondary" onClick={this.handleDelete}>Delete</button>
-                        </div>
                         <div className="form-group">
                             <label htmlFor="pasteClaim">Paste Claim</label>
                             <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
                         </div>
+                        <div className="btn-group mr-2" role="group" aria-label="Third group">
+                            <button type="button" value="Delete" className="btn btn-secondary" onClick={this.handleDelete}>Delete</button>
+                        </div>
                     </>
                 }
+                <hr></hr>
                 <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                     <div className="btn-group mr-2" role="group" aria-label="First group">
                         <button type="button" value="Submit" className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
