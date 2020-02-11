@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change, Messenger, RsData } from "@reasonscore/core";
+import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Change, Messenger, RsData, ID } from "@reasonscore/core";
 
 type MyProps = {
     claimId: Id,
@@ -18,6 +18,7 @@ type MyState = {
     proMain?: boolean,
     affects?: string,
     priority: string,
+    pasteClaim: string,
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
@@ -45,9 +46,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     proMain: this.props.proMainContext ? pro : !pro,
                     affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
                     priority: this.claimEdge ? this.claimEdge.priority : "",
+                    pasteClaim: "",
                 }
 
-                if (newState.priority === undefined){newState.priority = ""} //ToDo: Temp for items with blank priority. mutates state?
+                if (newState.priority === undefined) { newState.priority = "" } //ToDo: Temp for items with blank priority. mutates state?
 
                 this.setState(newState);
             });
@@ -60,19 +62,26 @@ class EditorElement extends React.Component<MyProps, MyState> {
             proMain: this.props.proMainContext,
             affects: undefined,
             priority: "",
+            pasteClaim: "",
         };
 
     }
 
     handleSubmit = () => {
-        const changes = [
-            new Change(new Claim(this.state.content, this.claim.id)),
-        ]
-        if (this.claimEdge) {
+        const changes: Change[] = [];
+        if (this.state.pasteClaim && this.claimEdge) {
             changes.push(new Change(
-                new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority)
+                new ClaimEdge(this.claimEdge.parentId, ID(this.state.pasteClaim), undefined, this.state.pro, this.claimEdge.id, this.state.priority)
             ))
+        } else {
+            changes.push(new Change(new Claim(this.state.content, this.claim.id)))
+            if (this.claimEdge) {
+                changes.push(new Change(
+                    new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority)
+                ))
+            }
         }
+
         this.props.calculationInitator.notify(changes).then(() => {
             this.props.handleEditClose();
         });
@@ -84,6 +93,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     handlePriority = (e: React.FormEvent<HTMLInputElement>) => {
         this.setState({ priority: e.currentTarget.value });
+    }
+
+    handlePasteClaim = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({ pasteClaim: e.currentTarget.value });
     }
 
     handlePro = (e: React.FormEvent<HTMLInputElement>) => {
@@ -170,6 +183,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
                         <div className="btn-group mr-2" role="group" aria-label="Third group">
                             <button type="button" value="Delete" className="btn btn-secondary" onClick={this.handleDelete}>Delete</button>
                         </div>
+                        <div className="form-group">
+                            <label htmlFor="pasteClaim">Paste Claim</label>
+                            <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
+                        </div>
                     </>
                 }
                 <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -180,6 +197,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                         <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
                     </div>
                 </div>
+                <span>ID: {this.claim.id}</span>
             </form>
         );
     }

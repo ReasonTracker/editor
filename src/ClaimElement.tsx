@@ -134,6 +134,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         }
 
         //Prioritize the children for the display order
+        //ToDO: move this to the repository to reduce duplicate processing
         let childClaimEedgesSorted = childClaimEedges;
         if (childClaimEedges.length > 1) {
             childClaimEedgesSorted = childClaimEedges.sort((a, b) => {
