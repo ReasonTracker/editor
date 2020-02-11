@@ -17,6 +17,7 @@ type MyState = {
     pro?: boolean,
     proMain?: boolean,
     affects?: string,
+    priority: string,
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
@@ -38,11 +39,12 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
                 const pro = this.claimEdge ? this.claimEdge.pro : true;
 
-                let newState: any = {
+                let newState: MyState = {
                     content: this.claim.content,
                     pro: pro,
                     proMain: this.props.proMainContext ? pro : !pro,
                     affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
+                    priority: this.claimEdge ? this.claimEdge.priority : "",
                 }
 
                 this.setState(newState);
@@ -55,6 +57,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             pro: true,
             proMain: this.props.proMainContext,
             affects: undefined,
+            priority: "",
         };
 
     }
@@ -64,7 +67,9 @@ class EditorElement extends React.Component<MyProps, MyState> {
             new Change(new Claim(this.state.content, this.claim.id)),
         ]
         if (this.claimEdge) {
-            changes.push(new Change(new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id)))
+            changes.push(new Change(
+                new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority)
+            ))
         }
         this.props.calculationInitator.notify(changes).then(() => {
             this.props.handleEditClose();
@@ -73,6 +78,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
         this.setState({ content: e.currentTarget.value });
+    }
+
+    handlePriority = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({ priority: e.currentTarget.value });
     }
 
     handlePro = (e: React.FormEvent<HTMLInputElement>) => {
@@ -125,7 +134,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         return (
             <form>
                 <div className="form-group">
-                    <label htmlFor="content">Content</label>
+                    <label htmlFor="claim.content">Content</label>
                     <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
                     <small className="form-text text-muted">For hyperlinks us <a href="https://spec.commonmark.org/0.29/#links">commonMark</a> syntax:
                     This is [an example](http://example.com/) inline link.</small>
@@ -149,6 +158,11 @@ class EditorElement extends React.Component<MyProps, MyState> {
                                     <option value={Affects.Relevance}>Relevance</option>
                                 </select>
                             </label>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="claimEdge.priority">Priority</label>
+                            <input type="text" className="form-control" id="claimEdge.priority" value={this.state.priority} onChange={this.handlePriority}></input>
                         </div>
 
                         <div className="btn-group mr-2" role="group" aria-label="Third group">

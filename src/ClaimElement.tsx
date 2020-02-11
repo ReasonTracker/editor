@@ -133,6 +133,25 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             }
         }
 
+        //Prioritize the children for the display order
+        let childClaimEedgesSorted = childClaimEedges;
+        if (childClaimEedges.length > 1) {
+            childClaimEedgesSorted = childClaimEedges.sort((a, b) => {
+                if (a.priority > b.priority) {
+                    return 1;
+                }
+
+                if (a.priority < b.priority) {
+                    return -1;
+                }
+
+                return 0;
+            });
+
+            debugger;
+        }
+
+
         const proMainText = proMain ? "pro" : "con";
 
         //Commonmark
@@ -175,7 +194,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
 
                 {this.state.childrenVisible &&
                     <ul className="children">
-                        {childClaimEedges.length > 0 && childClaimEedges.map((child) => (
+                        {childClaimEedges.length > 0 && childClaimEedgesSorted.map((child) => (
                             <li key={child.childId.toString()}>
                                 <ClaimElement
                                     claimId={child.childId}
