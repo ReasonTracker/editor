@@ -66,8 +66,9 @@ class EditorElement extends React.Component<MyProps, MyState> {
         if (this.claimEdge) {
             changes.push(new Change(new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id)))
         }
-        this.props.calculationInitator.notify(changes);
-        this.props.handleEditClose();
+        this.props.calculationInitator.notify(changes).then(() => {
+            this.props.handleEditClose();
+        });
     }
 
     handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -110,8 +111,9 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     )
                 )
             ) as Claim;
-            this.props.calculationInitator.notify([new Change(parentClaim)])
-            this.props.handleEditClose();
+            this.props.calculationInitator.notify([new Change(parentClaim)]).then(() => {
+                this.props.handleEditClose();
+            });
         }
     }
 
@@ -130,7 +132,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 </div>
                 {this.claimEdge &&
                     < >
-                    {this.props.proMainContext?"True":"false"}
+                        {this.props.proMainContext ? "True" : "false"}
                         <div className="form-group form-check">
                             <input type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
                             <label> Pro Parent</label>

@@ -65,9 +65,11 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                 const claim = newItem as Claim;
                 newState.claim = claim;
             }
-            if (newItem.id === this.state.score.id && newItem.type === Type.score) {
+            if (newItem.type === Type.score) {
                 const score = newItem as Score;
-                newState.score = score;
+                if (score.sourceClaimId === this.props.claimId) {
+                    newState.score = score;
+                }
             }
             if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
                 const claimEdge = newItem as ClaimEdge;
@@ -76,7 +78,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             //Check for changes to child edges
             if (newItem.type === Type.claimEdge) {
                 const claimEdge = newItem as ClaimEdge;
-                if (claimEdge.parentId === this.props.claimId){
+                if (claimEdge.parentId === this.props.claimId) {
                     const ChildClaimEedges = await this.props.repository.getClaimEdgesByParentId(this.props.claimId)
                     newState.childClaimEedges = ChildClaimEedges;
                 }
@@ -113,7 +115,8 @@ class ClaimElement extends React.Component<MyProps, MyState> {
 
     render() {
         const props = this.props;
-        const score = this.state.score;
+        let score = this.state.score;
+        if (!score) { score = new Score() } //ToDo: Review this line
         const claim = this.state.claim;
         const claimEdge = this.state.claimEdge;
         const childClaimEedges = this.state.childClaimEedges;
@@ -164,7 +167,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         repository={props.repository}
                         calculationInitator={props.calculationInitator}
                         claimEdge={this.state.claimEdge}
-                        proMainContext={this.state.addMode? proMain: props.proMainContext}
+                        proMainContext={this.state.addMode ? proMain : props.proMainContext}
                         handleEditClose={this.handleEditClose}
                         messenger={props.messenger}
                         new={this.state.addMode}
