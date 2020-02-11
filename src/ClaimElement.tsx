@@ -137,18 +137,24 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         let childClaimEedgesSorted = childClaimEedges;
         if (childClaimEedges.length > 1) {
             childClaimEedgesSorted = childClaimEedges.sort((a, b) => {
+                if ((a.priority === undefined || a.priority === "") && (b.priority === undefined || b.priority === "")) {
+                    return 0;
+                }
+                if ((a.priority === undefined || a.priority === "")) {
+                    return 1;
+                }
+                if ((b.priority === undefined || b.priority === "")) {
+                    return -1;
+                }
                 if (a.priority > b.priority) {
                     return 1;
                 }
-
                 if (a.priority < b.priority) {
                     return -1;
                 }
-
                 return 0;
             });
 
-            debugger;
         }
 
 

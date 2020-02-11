@@ -47,6 +47,8 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     priority: this.claimEdge ? this.claimEdge.priority : "",
                 }
 
+                if (newState.priority === undefined){newState.priority = ""} //ToDo: Temp for items with blank priority. mutates state?
+
                 this.setState(newState);
             });
 
