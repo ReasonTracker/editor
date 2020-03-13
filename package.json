@@ -6,7 +6,7 @@
     "@reasonscore/core": "^0.1.35",
     "@types/jest": "24.9.1",
     "@types/node": "12.12.28",
-    "@types/react": "16.9.20",
+    "@types/react": "16.9.21",
     "@types/react-dom": "16.9.5",
     "commonmark": "^0.29.1",
     "react": "^16.12.0",
