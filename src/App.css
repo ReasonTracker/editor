@@ -11,6 +11,22 @@ rs-claim li {
   list-style-type: none;
 }
 
+input[type=checkbox] {
+  transform: scale(2);
+}
+
+.form-check {
+  padding-left: 1.75rem;
+}
+
+label {
+  margin-bottom: 0;
+}
+
+.container {
+  margin-left: 0;
+}
+
 .claim {
   line-height: 1.25;
   max-width: 600px;

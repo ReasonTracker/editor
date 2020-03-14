@@ -147,7 +147,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     render() {
         return (
-            <form>
+            <form className="container">
                 <div className="form-group">
                     <label htmlFor="claim.content">Content</label>
                     <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
@@ -156,46 +156,51 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 </div>
                 {this.claimEdge &&
                     < >
-                        {this.props.proMainContext ? "True" : "false"}
-                        <div className="form-group form-check">
-                            <input type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
-                            <label> Pro Parent</label>
+                        <div className="form-row">
+                            <div className="form-group col-xs-4 mr-4">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
+                                    <label className="form-check-label" htmlFor="claimEdge.pro">Pro Parent</label>
+                                </div>
+                            </div>
+                            <div className="form-group col-xs-4">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" id="proMain" checked={this.state.proMain} onChange={this.handleProMain} />
+                                    <label className="form-check-label" htmlFor="proMain">Pro Main</label>
+                                </div>
+                            </div>
                         </div>
-                        <div className="form-group form-check">
-                            <input type="checkbox" id="proMain" checked={this.state.proMain} onChange={this.handleProMain} />
-                            <label> Pro Main</label>
-                        </div>
-                        <div className="form-group">
-                            <label>
-                                Affects:
-                            <select id="claimEdge.affects" value={this.state.affects} onChange={this.handleAffects}>
+                        <div className="form-row">
+                            <div className="form-group col-xs-4">
+                                <label htmlFor="claimEdge.affects">Affects</label>
+                                <select className="form-control" id="claimEdge.affects" value={this.state.affects} onChange={this.handleAffects}>
                                     <option value={Affects.Confidence}>Confidence</option>
                                     <option value={Affects.Relevance}>Relevance</option>
                                 </select>
-                            </label>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="claimEdge.priority">Priority</label>
-                            <input type="text" className="form-control" id="claimEdge.priority" value={this.state.priority} onChange={this.handlePriority}></input>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="pasteClaim">Paste Claim</label>
-                            <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
-                        </div>
-                        <div className="btn-group mr-2" role="group" aria-label="Third group">
-                            <button type="button" value="Delete" className="btn btn-secondary" onClick={this.handleDelete}>Delete</button>
+                            </div>
+                            <div className="form-group col-xs-4">
+                                <label htmlFor="claimEdge.priority">Priority</label>
+                                <input type="text" className="form-control" id="claimEdge.priority" value={this.state.priority} onChange={this.handlePriority}></input>
+                            </div>
+                            <div className="form-group col-xs-4">
+                                <label htmlFor="pasteClaim">Paste Claim</label>
+                                <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
+                            </div>
                         </div>
                     </>
                 }
-                <hr></hr>
                 <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                    <div className="btn-group mr-2" role="group" aria-label="First group">
+                    <div className="btn-group mr-3" role="group" aria-label="Submit">
                         <button type="button" value="Submit" className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
                     </div>
-                    <div className="btn-group mr-2" role="group" aria-label="Second group">
+                    <div className="btn-group mr-3" role="group" aria-label="Cancel">
                         <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
                     </div>
+                    {this.claimEdge &&
+                        <div className="btn-group ml-5" role="group" aria-label="Delete">
+                            <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button>
+                        </div>
+                    }
                 </div>
                 <span>ID: {this.claim.id}</span>
             </form>
