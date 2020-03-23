@@ -1,13 +1,12 @@
 import React from 'react';
-import { Repository, CalculationInitator, Claim, ClaimEdge, Id, Affects, Score, Messenger, Change, Type } from "@reasonscore/core";
-import EditorElement from './EditorElement';
+import { RepositoryLocalPure, Claim, ClaimEdge, Score, Messenger, iScore } from "@reasonscore/core";
+//import EditorElement from './EditorElement.tsx.temp';
 
 const commonmark: any = require('commonmark');
 
 type MyProps = {
-    claimId: Id,
-    repository: Repository,
-    calculationInitator: CalculationInitator,
+    scoreId: string,
+    repository: RepositoryLocalPure,
     proMainContext: boolean,
     claimEdge?: ClaimEdge,
     messenger: Messenger,
@@ -17,13 +16,13 @@ type MyState = {
     childrenVisible: boolean,
     editorVisible: boolean,
     addMode: boolean,
-    score: Score,
+    score: iScore,
     claim: Claim,
-    childClaimEedges: ClaimEdge[],
+    childScores: Score[],
     claimEdge?: ClaimEdge,
 };
 
-class ClaimElement extends React.Component<MyProps, MyState> {
+class ScoreElement extends React.Component<MyProps, MyState> {
 
     constructor(props: MyProps) {
         super(props);
@@ -33,59 +32,66 @@ class ClaimElement extends React.Component<MyProps, MyState> {
             addMode: false,
             score: new Score(),
             claim: new Claim(),
-            childClaimEedges: [],
+            childScores: [],
             claimEdge: this.props.claimEdge,
         };
 
-        const awaitScore = this.props.repository.getScoreBySourceClaimId(this.props.claimId)
-        const awaitClaim = this.props.repository.getItem(this.props.claimId)
-        const awaitChildClaimEedges = this.props.repository.getClaimEdgesByParentId(this.props.claimId)
-        Promise.all([awaitScore, awaitClaim, awaitChildClaimEedges]).then((values) => {
-            let newState: any = {}
-            newState.score = values[0];
-            if (values[1]) {
-                newState.claim = values[1]
-            }
-            newState.childClaimEedges = values[2];
-            this.setState(newState);
-        });
 
-        this.props.messenger.subscribe(this.handleDataDispatch)
+    }
+
+    async componentDidMount() {
+        //TODO: Mov to componentDidMount
+        const score = await this.props.repository.getScore(this.props.scoreId);
+        let claim = new Claim();
+        if (score) {
+            const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
+            if (claimResult) {
+                claim = claimResult as Claim;
+            }
+            this.setState({
+                score: score,
+                claim: claim
+            });
+        }
+        //const awaitChildClaimEedges = this.props.repository.getClaimEdgesByParentId(this.props.scoreId)
+        //Promise.all([awaitClaim, awaitChildClaimEedges]).then((values) => {
+
+        //this.props.messenger.subscribe(this.handleDataDispatch)
     }
 
     componentWillUnmount() {
-        this.props.messenger.unsubscribe(this.handleDataDispatch)
+        //this.props.messenger.unsubscribe(this.handleDataDispatch)
     }
 
-    handleDataDispatch = async (changes: Change[]) => {
-        for (const change of changes) {
-            const { newItem } = change;
-            let newState: any = {}
-            if (newItem.id === this.props.claimId && newItem.type === Type.claim) {
-                const claim = newItem as Claim;
-                newState.claim = claim;
-            }
-            if (newItem.type === Type.score) {
-                const score = newItem as Score;
-                if (score.sourceClaimId === this.props.claimId) {
-                    newState.score = score;
-                }
-            }
-            if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
-                const claimEdge = newItem as ClaimEdge;
-                newState.claimEdge = claimEdge;
-            }
-            //Check for changes to child edges
-            if (newItem.type === Type.claimEdge) {
-                const claimEdge = newItem as ClaimEdge;
-                if (claimEdge.parentId === this.props.claimId) {
-                    const ChildClaimEedges = await this.props.repository.getClaimEdgesByParentId(this.props.claimId)
-                    newState.childClaimEedges = ChildClaimEedges;
-                }
-            }
-            this.setState(newState);
-        }
-    }
+    // handleDataDispatch = async (actions: Action[]) => {
+    //     for (const change of actions) {
+    //         const { newItem } = change;
+    //         let newState: any = {}
+    //         if (newItem.id === this.props.claimId && newItem.type === Type.claim) {
+    //             const claim = newItem as Claim;
+    //             newState.claim = claim;
+    //         }
+    //         if (newItem.type === Type.score) {
+    //             const score = newItem as Score;
+    //             if (score.sourceClaimId === this.props.claimId) {
+    //                 newState.score = score;
+    //             }
+    //         }
+    //         if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
+    //             const claimEdge = newItem as ClaimEdge;
+    //             newState.claimEdge = claimEdge;
+    //         }
+    //         //Check for changes to child edges
+    //         if (newItem.type === Type.claimEdge) {
+    //             const claimEdge = newItem as ClaimEdge;
+    //             if (claimEdge.parentId === this.props.claimId) {
+    //                 const ChildClaimEedges = await this.props.repository.getClaimEdgesByParentId(this.props.claimId)
+    //                 newState.childClaimEedges = ChildClaimEedges;
+    //             }
+    //         }
+    //         this.setState(newState);
+    //     }
+    // }
 
     handleExpanderClick = () => {
         this.setState({
@@ -119,44 +125,44 @@ class ClaimElement extends React.Component<MyProps, MyState> {
         if (!score) { score = new Score() } //ToDo: Review this line
         const claim = this.state.claim;
         const claimEdge = this.state.claimEdge;
-        const childClaimEedges = this.state.childClaimEedges;
+        const childClaimEedges = this.state.childScores;
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(score.confidence * 100)}%`
         if (claimEdge) {
             if (!claimEdge.pro) {
                 proMain = !proMain;
             }
-            if (claimEdge.affects === Affects.Relevance) {
+            if (claimEdge.affects === "relevance") {
                 scoreText = `×${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
             }
         }
 
-        //Prioritize the children for the display order
-        //ToDO: move this to the repository to reduce duplicate processing
-        let childClaimEedgesSorted = childClaimEedges;
-        if (childClaimEedges.length > 1) {
-            childClaimEedgesSorted = childClaimEedges.sort((a, b) => {
-                if ((a.priority === undefined || a.priority === "") && (b.priority === undefined || b.priority === "")) {
-                    return 0;
-                }
-                if ((a.priority === undefined || a.priority === "")) {
-                    return 1;
-                }
-                if ((b.priority === undefined || b.priority === "")) {
-                    return -1;
-                }
-                if (a.priority > b.priority) {
-                    return 1;
-                }
-                if (a.priority < b.priority) {
-                    return -1;
-                }
-                return 0;
-            });
+        // //Prioritize the children for the display order
+        // //TODO: move this to the repository to reduce duplicate processing
+        // let childClaimEedgesSorted = childClaimEedges;
+        // if (childClaimEedges.length > 1) {
+        //     childClaimEedgesSorted = childClaimEedges.sort((a, b) => {
+        //         if ((a.priority === undefined || a.priority === "") && (b.priority === undefined || b.priority === "")) {
+        //             return 0;
+        //         }
+        //         if ((a.priority === undefined || a.priority === "")) {
+        //             return 1;
+        //         }
+        //         if ((b.priority === undefined || b.priority === "")) {
+        //             return -1;
+        //         }
+        //         if (a.priority > b.priority) {
+        //             return 1;
+        //         }
+        //         if (a.priority < b.priority) {
+        //             return -1;
+        //         }
+        //         return 0;
+        //     });
 
-        }
+        // }
 
 
         const proMainText = proMain ? "pro" : "con";
@@ -187,7 +193,7 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         </span>
                     </div>
                 </div>
-                {this.state.editorVisible &&
+                {/* {this.state.editorVisible &&
                     <EditorElement
                         claimId={claim.id}
                         repository={props.repository}
@@ -197,16 +203,15 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                         handleEditClose={this.handleEditClose}
                         messenger={props.messenger}
                         new={this.state.addMode}
-                    />}
+                    />} */}
 
-                {this.state.childrenVisible &&
+                {/* {this.state.childrenVisible &&
                     <ul className="children">
                         {childClaimEedges.length > 0 && childClaimEedgesSorted.map((child) => (
                             <li key={child.childId.toString()}>
-                                <ClaimElement
-                                    claimId={child.childId}
+                                <ScoreElement
+                                    scoreId={child.childId}
                                     repository={props.repository}
-                                    calculationInitator={props.calculationInitator}
                                     claimEdge={child}
                                     proMainContext={proMain}
                                     messenger={props.messenger}
@@ -214,10 +219,10 @@ class ClaimElement extends React.Component<MyProps, MyState> {
                             </li>
                         ))}
                     </ul>
-                }
+                } */}
             </div>
         );
     }
 }
 
-export default ClaimElement;
+export default ScoreElement;

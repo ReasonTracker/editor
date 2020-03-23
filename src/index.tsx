@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Repository, CalculationInitator, Change, Claim, ID, Messenger, RsData } from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Action, Claim, Messenger, RsData, Score } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -11,55 +11,53 @@ declare global {
   }
 }
 
-//ReactDOM.render(<App />, document.getElementById('root'));
-// Generate Data (Might need to move to)
-const repo = new Repository();
+const repository = new RepositoryLocalPure();
 const messenger = new Messenger();
-const calculationInitator = new CalculationInitator(repo, messenger.notify);
 
 window.db.doc("rsData").get().then((doc: any) => {
   if (doc.exists) {
-    repo.rsData = doc.data();
+    repository.rsData = doc.data();
     //Connect to the HTML
-    const claims = document.getElementsByTagName('rs-claim');
-    for (const claim of claims) {
-      const possibleClaimId = claim.getAttribute('claimId');
-      let claimId = ID("");
-      if (possibleClaimId) {
-        claimId = ID(possibleClaimId);
+    const scoreElements = document.getElementsByTagName('rs-score');
+    for (const scoreElement of scoreElements) {
+      const possibleScoreId = scoreElement.getAttribute('score-Id');
+      let scoreId = "";
+      if (possibleScoreId) {
+        scoreId = possibleScoreId;
       }
       ReactDOM.render(<App
-        claimId={claimId}
-        repository={repo}
-        calculationInitator={calculationInitator}
+        scoreId={scoreId}
+        repository={repository}
         messenger={messenger}
-      />, claim);
+      />, scoreElement);
     }
   } else {
-    // Create a new RsData object with empty claims
-    repo.rsData = new RsData();
+    // Create a new RsData object with an empty claim
+    repository.rsData = new RsData();
     //Connect to the HTML
-    const claims = document.getElementsByTagName('rs-claim');
-    for (const claim of claims) {
-      const possibleClaimId = claim.getAttribute('claimId');
-      let claimId = ID("");
-      if (possibleClaimId) {
-        claimId = ID(possibleClaimId);
+    const scoreElements = document.getElementsByTagName('rs-score');
+    for (const scoreElement of scoreElements) {
+      const possibleScoreId = scoreElement.getAttribute('score-Id');
+      let scoreId = "";
+      if (possibleScoreId) {
+        scoreId = possibleScoreId;
       }
 
       //Create the new claim
-      calculationInitator.notify([
-        new Change(
-          new Claim("New Claim", claimId)
-        ),
-      ]).then((doc: any) => {
-
+      const newClaim = new Claim("New Claim")
+      calculateScoreActions({
+        actions: [
+          new Action(newClaim, undefined, "add_claim", newClaim.id),
+          new Action(
+            new Score(newClaim.id,undefined,undefined, undefined, undefined,undefined,undefined,scoreId),
+             undefined, "add_score", scoreId)
+        ], repository
+      }).then((doc: any) => {
         ReactDOM.render(<App
-          claimId={claimId}
-          repository={repo}
-          calculationInitator={calculationInitator}
+          scoreId={scoreId}
+          repository={repository}
           messenger={messenger}
-        />, claim);
+        />, scoreElement);
       });
     }
   }

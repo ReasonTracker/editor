@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository} from "@reasonscore/core";
+import { RepositoryLocalPure} from "@reasonscore/core";
 
 declare global {
     interface Window {
@@ -8,7 +8,7 @@ declare global {
   }
 
 type MyProps = {
-    repository: Repository,
+    repository: RepositoryLocalPure,
 };
 
 type MyState = {

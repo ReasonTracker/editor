@@ -1,27 +1,24 @@
 import React from 'react';
 import './App.css';
-import ClaimElement from './ClaimElement';
-import { Repository, CalculationInitator, Id, Messenger } from "@reasonscore/core";
+import ScoreElement from './ScoreElement';
+import { Messenger,RepositoryLocalPure  } from "@reasonscore/core";
 import Menu from './Menu';
 
 
 const App: React.FC<{
-  claimId: Id,
-  repository: Repository,
-  calculationInitator: CalculationInitator,
+  scoreId: string,
+  repository: RepositoryLocalPure,
   messenger: Messenger
 }> = ({
-  claimId,
+  scoreId,
   repository,
-  calculationInitator,
   messenger
 }) => (
       <>
       <Menu repository={repository}></Menu>
-        <ClaimElement
-          claimId={claimId}
+        <ScoreElement
+          scoreId={scoreId}
           repository={repository}
-          calculationInitator={calculationInitator}
           proMainContext={true}
           messenger = {messenger}
         />
