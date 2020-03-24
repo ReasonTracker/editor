@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger, RsData } from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger} from "@reasonscore/core";
 
 type MyProps = {
     claimId: string,
@@ -31,7 +31,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             this.claim = new Claim();
             this.claimEdge = new ClaimEdge(this.props.claimId, this.claim.id)
         } else {
-            const awaitClaim = this.props.repository.getItem(this.props.claimId)
+            const awaitClaim = this.props.repository.getClaim(this.props.claimId)
             Promise.all([awaitClaim]).then((values) => {
                 if (values[0]) {
                     this.claim = values[0] as Claim;
@@ -69,19 +69,33 @@ class EditorElement extends React.Component<MyProps, MyState> {
     handleSubmit = () => {
         const actions: Action[] = [];
         if (this.state.pasteClaim && this.claimEdge) {
-            actions.push(new Action(
-                new ClaimEdge(this.claimEdge.parentId, ID(this.state.pasteClaim), undefined, this.state.pro, this.claimEdge.id, this.state.priority)
-            ))
+            actions.push(
+                new Action(
+                    new ClaimEdge(this.claimEdge.parentId, this.state.pasteClaim, undefined, this.state.pro, this.claimEdge.id, this.state.priority),
+                    undefined, "add_claimEdge", this.claimEdge.id
+                )
+            )
         } else {
-            actions.push(new Action(new Claim(this.state.content, this.claim.id)))
+            actions.push(
+                new Action(
+                    new Claim(this.state.content, this.claim.id),
+                    undefined, "add_claim", this.claim.id
+                )
+            )
             if (this.claimEdge) {
                 actions.push(new Action(
-                    new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority)
+                    new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority),
+                    undefined, "add_claimEdge", this.claimEdge.id
                 ))
             }
         }
 
-        this.props.calculationInitator.notify(actions).then(() => {
+        calculateScoreActions({
+            actions: actions,
+            repository: this.props.repository
+        }).then((scoreActions) => {
+            //TODO: How do I set the glocal state the the new RSData?
+            this.props.messenger.notify(scoreActions)
             this.props.handleEditClose();
         });
     }
@@ -118,27 +132,28 @@ class EditorElement extends React.Component<MyProps, MyState> {
         this.setState({ affects: e.currentTarget.value });
     }
 
-    handleDelete = async () => {
-        //To Do : move to repository
-        const rsData = this.props.repository.rsData as RsData
-        if (this.claimEdge) {
-            const edges = rsData.claimEdgesByParentId[this.claimEdge.parentId.toString()]
-            const index = edges.indexOf(this.claimEdge.id.toString(), 0);
-            if (index > -1) {
-                edges.splice(index, 1);
-            }
-            const parentClaim = JSON.parse(
-                JSON.stringify(
-                    await this.props.repository.getItem(
-                        this.claimEdge.parentId
-                    )
-                )
-            ) as Claim;
-            this.props.calculationInitator.notify([new Action(parentClaim)]).then(() => {
-                this.props.handleEditClose();
-            });
-        }
-    }
+    //TODO Add back in Delete
+    // handleDelete = async () => {
+    //     //TODO : move to repository
+    //     const rsData = this.props.repository.rsData as RsData
+    //     if (this.claimEdge) {
+    //         const edges = rsData.claimEdgesByParentId[this.claimEdge.parentId.toString()]
+    //         const index = edges.indexOf(this.claimEdge.id.toString(), 0);
+    //         if (index > -1) {
+    //             edges.splice(index, 1);
+    //         }
+    //         const parentClaim = JSON.parse(
+    //             JSON.stringify(
+    //                 await this.props.repository.getItem(
+    //                     this.claimEdge.parentId
+    //                 )
+    //             )
+    //         ) as Claim;
+    //         this.props.calculationInitator.notify([new Action(parentClaim)]).then(() => {
+    //             this.props.handleEditClose();
+    //         });
+    //     }
+    // }
 
     handleCancel = () => {
         this.props.handleEditClose();
@@ -173,8 +188,8 @@ class EditorElement extends React.Component<MyProps, MyState> {
                             <div className="form-group col-xs-4">
                                 <label htmlFor="claimEdge.affects">Affects</label>
                                 <select className="form-control" id="claimEdge.affects" value={this.state.affects} onChange={this.handleAffects}>
-                                    <option value={Affects.Confidence}>Confidence</option>
-                                    <option value={Affects.Relevance}>Relevance</option>
+                                    <option value={"confidence"}>Confidence</option>
+                                    <option value={"relevance"}>Relevance</option>
                                 </select>
                             </div>
                             <div className="form-group col-xs-4">
@@ -197,7 +212,8 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     </div>
                     {this.claimEdge &&
                         <div className="btn-group ml-5" role="group" aria-label="Delete">
-                            <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button>
+                            <button type="button" value="Delete" className="btn btn btn-outline-danger" >Delete</button>
+                            {/* <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button> */}
                         </div>
                     }
                 </div>

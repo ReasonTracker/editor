@@ -1,6 +1,6 @@
 import React from 'react';
-import { RepositoryLocalPure, Claim, ClaimEdge, Score, Messenger, iScore } from "@reasonscore/core";
-//import EditorElement from './EditorElement.tsx.temp';
+import { RepositoryLocalPure, Claim, ClaimEdge, Score, Messenger, iScore, Action } from "@reasonscore/core";
+import EditorElement from './EditorElement';
 
 const commonmark: any = require('commonmark');
 
@@ -55,45 +55,37 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 childScores: childScores
             });
         }
-//TODO:
-        //this.props.messenger.subscribe(this.handleDataDispatch)
+        //TODO:
+        this.props.messenger.subscribe(this.handleDataDispatch)
     }
 
     componentWillUnmount() {
         //TODO:
-        //this.props.messenger.unsubscribe(this.handleDataDispatch)
+        this.props.messenger.unsubscribe(this.handleDataDispatch)
     }
 
     //TODO:
-    // handleDataDispatch = async (actions: Action[]) => {
-    //     for (const change of actions) {
-    //         const { newItem } = change;
-    //         let newState: any = {}
-    //         if (newItem.id === this.props.claimId && newItem.type === Type.claim) {
-    //             const claim = newItem as Claim;
-    //             newState.claim = claim;
-    //         }
-    //         if (newItem.type === Type.score) {
-    //             const score = newItem as Score;
-    //             if (score.sourceClaimId === this.props.claimId) {
-    //                 newState.score = score;
-    //             }
-    //         }
-    //         if (this.state.claimEdge && newItem.id === this.state.claimEdge.id && newItem.type === Type.claimEdge) {
-    //             const claimEdge = newItem as ClaimEdge;
-    //             newState.claimEdge = claimEdge;
-    //         }
-    //         //Check for changes to child edges
-    //         if (newItem.type === Type.claimEdge) {
-    //             const claimEdge = newItem as ClaimEdge;
-    //             if (claimEdge.parentId === this.props.claimId) {
-    //                 const ChildClaimEedges = await this.props.repository.getClaimEdgesByParentId(this.props.claimId)
-    //                 newState.childClaimEedges = ChildClaimEedges;
-    //             }
-    //         }
-    //         this.setState(newState);
-    //     }
-    // }
+    handleDataDispatch = async (actions: Action[]) => {
+        for (const change of actions) {
+            const { newData, type, dataId } = change;
+            let newState: any = {}
+            if (type === "modify_claim" && dataId === this.state.claim.id
+            ) {
+                newState.claim = newData;
+            }
+            if (type === "modify_score" && dataId === this.state.score.id
+            ) {
+                newState.score = newData;
+            }
+            if (type === "add_score" && newData.parentScoreId === this.state.score.id
+            ) {
+                //TODO: newState.score = newData;
+                const childScores = await this.props.repository.getChildrenByScoreId(this.state.score.id);
+                newState.childScores = childScores;
+            }
+            this.setState(newState);
+        }
+    }
 
     handleExpanderClick = () => {
         this.setState({
@@ -128,6 +120,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const claim = this.state.claim;
         //const claimEdge = this.state.claimEdge;
         const childScores = this.state.childScores;
+        debugger
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(score.confidence * 100)}%`
         if (score) {
@@ -195,17 +188,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         </span>
                     </div>
                 </div>
-                {/* {this.state.editorVisible &&
+                {this.state.editorVisible &&
                     <EditorElement
                         claimId={claim.id}
                         repository={props.repository}
-                        calculationInitator={props.calculationInitator}
                         claimEdge={this.state.claimEdge}
                         proMainContext={this.state.addMode ? proMain : props.proMainContext}
                         handleEditClose={this.handleEditClose}
                         messenger={props.messenger}
                         new={this.state.addMode}
-                    />} */}
+                    />}
 
                 {this.state.childrenVisible &&
                     <ul className="children">
