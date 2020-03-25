@@ -95,7 +95,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             repository: this.props.repository
         }).then((scoreActions) => {
             //TODO: How do I set the glocal state the the new RSData?
-            this.props.messenger.notify(scoreActions)
+            this.props.messenger.notify(actions.concat(scoreActions))
             this.props.handleEditClose();
         });
     }

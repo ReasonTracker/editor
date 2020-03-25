@@ -73,7 +73,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             ) {
                 newState.claim = newData;
             }
-            if (type === "modify_score" && dataId === this.state.score.id
+            if ((type === "modify_score" || type === "add_score") && dataId === this.state.score.id
             ) {
                 newState.score = newData;
             }
@@ -120,7 +120,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const claim = this.state.claim;
         //const claimEdge = this.state.claimEdge;
         const childScores = this.state.childScores;
-        debugger
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(score.confidence * 100)}%`
         if (score) {
