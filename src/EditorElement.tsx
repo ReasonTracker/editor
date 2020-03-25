@@ -79,13 +79,13 @@ class EditorElement extends React.Component<MyProps, MyState> {
             actions.push(
                 new Action(
                     new Claim(this.state.content, this.claim.id),
-                    undefined, "add_claim", this.claim.id
+                    undefined, this.props.new? "add_claim" : "modify_claim", this.claim.id
                 )
             )
             if (this.claimEdge) {
                 actions.push(new Action(
                     new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority),
-                    undefined, "add_claimEdge", this.claimEdge.id
+                    undefined, this.props.new? "add_claimEdge" : "modify_claimEdge", this.claimEdge.id
                 ))
             }
         }

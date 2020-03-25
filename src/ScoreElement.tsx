@@ -73,7 +73,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             ) {
                 newState.claim = newData;
             }
-            if ((type === "modify_score" || type === "add_score") && dataId === this.state.score.id
+            if (type === "modify_score" && dataId === this.state.score.id
             ) {
                 newState.score = newData;
             }
