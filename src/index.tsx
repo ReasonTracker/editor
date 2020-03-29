@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { RepositoryLocalPure, Claim, Messenger, RsData, Score } from "@reasonscore/core";
+import { RepositoryLocalPure, Claim, Messenger, RsData, Score, calculateScoreActions, Action, ClaimEdge } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -33,80 +33,7 @@ window.db.doc("rsData").get().then((doc: any) => {
     }
   } else {
     // Create a new RsData object with an empty claim
-    //repository.rsData = new RsData();
-
-    repository.rsData = {
-      "actionsLog": [],
-      "claims": {
-        "testClaim": {
-          "content": "Test Claim",
-          "id": "testClaim",
-          "reversible": false,
-          "type": "claim"
-        },
-        "ChildClaim1": {
-          "content": "Child Claim",
-          "id": "ChildClaim1",
-          "reversible": false,
-          "type": "claim"
-        }
-      },
-      "claimEdges": {
-        "ChildClaim1Edge": {
-          "parentId": "testClaim",
-          "childId": "ChildClaim1",
-          "affects": "confidence",
-          "pro": false,
-          "id": "ChildClaim1Edge",
-          "priority": "",
-          "type": "claimEdge"
-        }
-      },
-      "claimEdgeIdsByParentId": {
-        "testClaim": [
-          "ChildClaim1Edge"
-        ]
-      },
-      "claimEdgeIdsByChildId": {
-        "ChildClaim1": [
-          "ChildClaim1Edge"
-        ]
-      },
-      "scores": {
-        "Yk3JDShDv0lm": {
-          "sourceClaimId": "testClaim",
-          "reversible": true,
-          "pro": true,
-          "affects": "confidence",
-          "confidence": -.5,
-          "relevance": 1,
-          "id": "Yk3JDShDv0lm"
-        },
-        "Y7D1nhOyKfgd": {
-          "sourceClaimId": "ChildClaim1",
-          "parentScoreId": "Yk3JDShDv0lm",
-          "reversible": false,
-          "pro": false,
-          "affects": "confidence",
-          "confidence": 1,
-          "relevance": 1,
-          "id": "Y7D1nhOyKfgd"
-        }
-      },
-      "scoreIdsByClaimId": {
-        "testClaim": [
-          "Yk3JDShDv0lm"
-        ],
-        "ChildClaim1": [
-          "Y7D1nhOyKfgd"
-        ]
-      },
-      "childIdsByScoreId": {
-        "Yk3JDShDv0lm": [
-          "Y7D1nhOyKfgd"
-        ]
-      }
-    }
+    repository.rsData = new RsData();
 
     //Connect to the HTML
     const scoreElements = document.getElementsByTagName('rs-score');
@@ -117,22 +44,27 @@ window.db.doc("rsData").get().then((doc: any) => {
         scoreId = possibleScoreId;
       }
 
-      // //Create the new claim
-      // const newClaim = new Claim("New Claim")
-      // calculateScoreActions({
-      //   actions: [
-      //     new Action(newClaim, undefined, "add_claim", newClaim.id),
-      //     new Action(
-      //       new Score(newClaim.id,undefined,undefined, undefined, undefined,undefined,undefined,scoreId),
-      //        undefined, "add_score", scoreId)
-      //   ], repository
-      // }).then((doc: any) => {
+      //Create the new claim
+      const u = undefined;
+      calculateScoreActions({
+        actions: [
+          new Action(new Claim("Top Claim", "topClaim"), u, "add_claim"),
+          new Action(new Claim("Child Claim 1", "ChildClaim1"), u, "add_claim"),
+          new Action(new Claim("Child Claim 2", "ChildClaim2"), u, "add_claim"),
+          new Action(new Claim("GrandChild Claim1", "grandChild1"), u, "add_claim"),
+          new Action(new ClaimEdge("topClaim", "ChildClaim1", u, false, "ChildClaim1Edge"), u, "add_claimEdge"),
+          new Action(new ClaimEdge("topClaim", "ChildClaim2", u, true, "ChildClaim2Edge"), u, "add_claimEdge"),
+          new Action(new ClaimEdge("ChildClaim1", "grandChild1", u, false, "GrandChildClaim1Edge"), u, "add_claimEdge"),
+          new Action(new Score("topClaim", "topClaim", u, u, u, u, u, 0, u, "newScore"), u, "add_score"),
+        ], repository
+      }).then(async (updatedScores: any) => {
+        await repository.notify(updatedScores);
         ReactDOM.render(<App
           scoreId={scoreId}
           repository={repository}
           messenger={messenger}
         />, scoreElement);
-      // });
+      });
     }
   }
 }).catch(function (error: any) {

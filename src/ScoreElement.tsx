@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Claim, ClaimEdge, Score, Messenger, iScore, Action } from "@reasonscore/core";
+import { RepositoryLocalPure, Claim, Score, Messenger, iScore, Action, iClaimEdge } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 
 const commonmark: any = require('commonmark');
@@ -8,7 +8,6 @@ type MyProps = {
     scoreId: string,
     repository: RepositoryLocalPure,
     proMainContext: boolean,
-    claimEdge?: ClaimEdge,
     messenger: Messenger,
 };
 
@@ -19,7 +18,7 @@ type MyState = {
     score: iScore,
     claim: Claim,
     childScores: iScore[],
-    claimEdge?: ClaimEdge,
+    claimEdge?: iClaimEdge,
 };
 
 class ScoreElement extends React.Component<MyProps, MyState> {
@@ -27,35 +26,44 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     constructor(props: MyProps) {
         super(props);
         this.state = {
-            childrenVisible: this.props.claimEdge ? false : true,
+            childrenVisible: false,
             editorVisible: false,
             addMode: false,
-            score: new Score(),
+            score: new Score("", ""),
             claim: new Claim(),
             childScores: [],
-            claimEdge: this.props.claimEdge,
+            claimEdge: undefined,
         };
 
 
     }
 
     async componentDidMount() {
-        //TODO: Mov to componentDidMount
         const score = await this.props.repository.getScore(this.props.scoreId);
         let claim = new Claim();
+        let childrenVisible = this.state.childrenVisible;
         if (score) {
+            let claimEdge: iClaimEdge | undefined;
+            if (score.sourceEdgeId) {
+                claimEdge = await this.props.repository.getClaimEdge(score.sourceEdgeId)
+            }
             const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
             const childScores = await this.props.repository.getChildrenByScoreId(score.id);
+            if (childScores.length > 0) {
+                childrenVisible = true;
+            }
             if (claimResult) {
                 claim = claimResult as Claim;
             }
             this.setState({
                 score: score,
                 claim: claim,
-                childScores: childScores
+                childScores: childScores,
+                childrenVisible: childrenVisible,
+                claimEdge: claimEdge
             });
         }
-        //TODO:
+
         this.props.messenger.subscribe(this.handleDataDispatch)
     }
 
@@ -71,11 +79,15 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             let newState: any = {}
             if (type === "modify_claim" && dataId === this.state.claim.id
             ) {
-                newState.claim = newData;
+                newState.claim = {...this.state.claim, ...newData};
+            }
+            if (type === "modify_claimEdge" && this.state.claimEdge && dataId === this.state.claimEdge.id
+            ) {
+                newState.claimEdge = {...this.state.claimEdge, ...newData};
             }
             if (type === "modify_score" && dataId === this.state.score.id
             ) {
-                newState.score = newData;
+                newState.score = {...this.state.score, ...newData};
             }
             if (type === "add_score" && newData.parentScoreId === this.state.score.id
             ) {
@@ -116,7 +128,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     render() {
         const props = this.props;
         let score = this.state.score;
-        if (!score) { score = new Score() } //ToDo: Review this line
+        if (!score) { score = new Score("","") } //TODO: Review this line
         const claim = this.state.claim;
         //const claimEdge = this.state.claimEdge;
         const childScores = this.state.childScores;

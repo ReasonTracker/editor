@@ -1,14 +1,14 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger} from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger, iClaimEdge } from "@reasonscore/core";
 
 type MyProps = {
     claimId: string,
     repository: RepositoryLocalPure,
     proMainContext: boolean,
-    claimEdge?: ClaimEdge,
     handleEditClose: () => void,
     messenger: Messenger,
     new?: boolean,
+    claimEdge?: iClaimEdge
 };
 
 type MyState = {
@@ -18,43 +18,16 @@ type MyState = {
     affects?: string,
     priority: string,
     pasteClaim: string,
+    originalClaimEdge?: iClaimEdge
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
 
     claim = new Claim();
-    claimEdge = this.props.claimEdge
+    claimEdge: ClaimEdge | undefined;
 
     constructor(props: MyProps) {
         super(props);
-        if (this.props.new) {
-            this.claim = new Claim();
-            this.claimEdge = new ClaimEdge(this.props.claimId, this.claim.id)
-        } else {
-            const awaitClaim = this.props.repository.getClaim(this.props.claimId)
-            Promise.all([awaitClaim]).then((values) => {
-                if (values[0]) {
-                    this.claim = values[0] as Claim;
-                }
-
-                const pro = this.claimEdge ? this.claimEdge.pro : true;
-
-                let newState: MyState = {
-                    content: this.claim.content,
-                    pro: pro,
-                    proMain: this.props.proMainContext ? pro : !pro,
-                    affects: this.claimEdge ? this.claimEdge.affects.toString() : undefined,
-                    priority: this.claimEdge ? this.claimEdge.priority : "",
-                    pasteClaim: "",
-                }
-
-                if (newState.priority === undefined) { newState.priority = "" } //ToDo: Temp for items with blank priority. mutates state?
-
-                this.setState(newState);
-            });
-
-        }
-
         this.state = {
             content: "",
             pro: true,
@@ -62,30 +35,60 @@ class EditorElement extends React.Component<MyProps, MyState> {
             affects: undefined,
             priority: "",
             pasteClaim: "",
+            originalClaimEdge: undefined,
         };
+    }
+
+    async componentDidMount() {
+        let originalClaimEdge: iClaimEdge | undefined;
+        if (this.props.new) {
+            this.claim = new Claim();
+            originalClaimEdge = new ClaimEdge(this.props.claimId, this.claim.id);
+        } else {
+            const claim = await this.props.repository.getClaim(this.props.claimId);
+            originalClaimEdge = this.props.claimEdge;
+            if (claim) {
+                this.claim = claim as Claim;
+            }
+        }
+        const pro = originalClaimEdge ? originalClaimEdge.pro : true;
+        let newState: MyState = {
+            content: this.claim.content,
+            pro: pro,
+            proMain: this.props.proMainContext ? pro : !pro,
+            affects: originalClaimEdge ? originalClaimEdge.affects.toString() : undefined,
+            priority: originalClaimEdge ? originalClaimEdge.priority : "",
+            pasteClaim: "",
+            originalClaimEdge: originalClaimEdge,
+        }
+
+        if (newState.priority === undefined) { newState.priority = "" } //ToDo: Temp for items with blank priority. mutates state?
+
+        this.setState(newState);
+
 
     }
 
     handleSubmit = () => {
         const actions: Action[] = [];
-        if (this.state.pasteClaim && this.claimEdge) {
+        if (this.state.pasteClaim && this.state.originalClaimEdge) {
             actions.push(
                 new Action(
-                    new ClaimEdge(this.claimEdge.parentId, this.state.pasteClaim, undefined, this.state.pro, this.claimEdge.id, this.state.priority),
-                    undefined, "add_claimEdge", this.claimEdge.id
+                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.pasteClaim, undefined, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
+                    undefined, "add_claimEdge", this.state.originalClaimEdge.id
                 )
             )
         } else {
             actions.push(
                 new Action(
                     new Claim(this.state.content, this.claim.id),
-                    undefined, this.props.new? "add_claim" : "modify_claim", this.claim.id
+                    undefined, this.props.new ? "add_claim" : "modify_claim", this.claim.id
                 )
             )
-            if (this.claimEdge) {
+            if (this.state.originalClaimEdge) {
                 actions.push(new Action(
-                    new ClaimEdge(this.claimEdge.parentId, this.claimEdge.childId, undefined, this.state.pro, this.claimEdge.id, this.state.priority),
-                    undefined, this.props.new? "add_claimEdge" : "modify_claimEdge", this.claimEdge.id
+                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.originalClaimEdge.childId, undefined, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
+                    undefined, this.props.new ? "add_claimEdge" : "modify_claimEdge" , this.state.originalClaimEdge.id
                 ))
             }
         }
@@ -95,7 +98,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             repository: this.props.repository
         }).then((scoreActions) => {
             //TODO: How do I set the glocal state the the new RSData?
-            this.props.messenger.notify(actions.concat(scoreActions))
+            this.props.messenger.notify(actions.concat(scoreActions));
             this.props.handleEditClose();
         });
     }
@@ -136,16 +139,16 @@ class EditorElement extends React.Component<MyProps, MyState> {
     // handleDelete = async () => {
     //     //TODO : move to repository
     //     const rsData = this.props.repository.rsData as RsData
-    //     if (this.claimEdge) {
-    //         const edges = rsData.claimEdgesByParentId[this.claimEdge.parentId.toString()]
-    //         const index = edges.indexOf(this.claimEdge.id.toString(), 0);
+    //     if (this.state.originalClaimEdge) {
+    //         const edges = rsData.claimEdgesByParentId[this.state.originalClaimEdge.parentId.toString()]
+    //         const index = edges.indexOf(this.state.originalClaimEdge.id.toString(), 0);
     //         if (index > -1) {
     //             edges.splice(index, 1);
     //         }
     //         const parentClaim = JSON.parse(
     //             JSON.stringify(
     //                 await this.props.repository.getItem(
-    //                     this.claimEdge.parentId
+    //                     this.state.originalClaimEdge.parentId
     //                 )
     //             )
     //         ) as Claim;
@@ -168,7 +171,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     <small className="form-text text-muted">For hyperlinks us <a href="https://spec.commonmark.org/0.29/#links">commonMark</a> syntax:
                     This is [an example](http://example.com/) inline link.</small>
                 </div>
-                {this.claimEdge &&
+                {this.state.originalClaimEdge &&
                     < >
                         <div className="form-row">
                             <div className="form-group col-xs-4 mr-4">
@@ -210,7 +213,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     <div className="btn-group mr-3" role="group" aria-label="Cancel">
                         <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
                     </div>
-                    {this.claimEdge &&
+                    {this.state.originalClaimEdge &&
                         <div className="btn-group ml-5" role="group" aria-label="Delete">
                             <button type="button" value="Delete" className="btn btn btn-outline-danger" >Delete</button>
                             {/* <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button> */}
