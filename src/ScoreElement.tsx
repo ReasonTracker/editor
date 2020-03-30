@@ -49,7 +49,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
             const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
             const childScores = await this.props.repository.getChildrenByScoreId(score.id);
-            if (childScores.length > 0) {
+            if (!score.parentScoreId) {
                 childrenVisible = true;
             }
             if (claimResult) {
