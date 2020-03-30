@@ -34,7 +34,7 @@ class Menu extends React.Component<MyProps, MyState> {
 
     render() {
         return (
-            <button style={{display:"none"}} type="button" value="Save" className="btn btn-secondary" onClick={this.handleSave}>Save</button>
+            <button type="button" value="Save" className="btn btn-secondary" onClick={this.handleSave}>Save</button>
         );
     }
 }

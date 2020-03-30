@@ -34,12 +34,12 @@
     firebase.initializeApp(firebaseConfig);
 
     //window.db = firebase.firestore().collection("test")
-    window.db = firebase.firestore().collection("flyway2")
+    window.db = firebase.firestore().collection("flyway3")
 
     //Detect Logged in
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        document.getElementById('firebaseui-auth-container').innerText = user.displayName;
+        document.getElementById('UserName').innerText = user.displayName;
       } else {
         //Show LogIn Screen
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
