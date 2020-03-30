@@ -96,9 +96,9 @@ class EditorElement extends React.Component<MyProps, MyState> {
         calculateScoreActions({
             actions: actions,
             repository: this.props.repository
-        }).then((scoreActions) => {
+        }).then(async (scoreActions) => {
             //TODO: How do I set the glocal state the the new RSData?
-            this.props.messenger.notify(actions.concat(scoreActions));
+            await this.props.messenger.notify(actions.concat(scoreActions));
             this.props.handleEditClose();
         });
     }
@@ -135,28 +135,28 @@ class EditorElement extends React.Component<MyProps, MyState> {
         this.setState({ affects: e.currentTarget.value });
     }
 
-    //TODO Add back in Delete
-    // handleDelete = async () => {
-    //     //TODO : move to repository
-    //     const rsData = this.props.repository.rsData as RsData
-    //     if (this.state.originalClaimEdge) {
-    //         const edges = rsData.claimEdgesByParentId[this.state.originalClaimEdge.parentId.toString()]
-    //         const index = edges.indexOf(this.state.originalClaimEdge.id.toString(), 0);
-    //         if (index > -1) {
-    //             edges.splice(index, 1);
-    //         }
-    //         const parentClaim = JSON.parse(
-    //             JSON.stringify(
-    //                 await this.props.repository.getItem(
-    //                     this.state.originalClaimEdge.parentId
-    //                 )
-    //             )
-    //         ) as Claim;
-    //         this.props.calculationInitator.notify([new Action(parentClaim)]).then(() => {
-    //             this.props.handleEditClose();
-    //         });
-    //     }
-    // }
+    handleDelete = async () => {
+        //TODO : move to repository
+        if (this.state.originalClaimEdge) {
+            const actions: Action[] = [];
+                actions.push(
+                    new Action(
+                        undefined,
+                        this.state.originalClaimEdge, "delete_claimEdge", this.state.originalClaimEdge.id
+                    )
+                )
+    
+            calculateScoreActions({
+                actions: actions,
+                repository: this.props.repository
+            }).then(async (scoreActions) => {
+                //TODO: How do I set the glocal state the the new RSData?
+                await this.props.messenger.notify(actions.concat(scoreActions));
+                this.props.handleEditClose();
+            });
+    
+        }
+    }
 
     handleCancel = () => {
         this.props.handleEditClose();
@@ -215,8 +215,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     </div>
                     {this.state.originalClaimEdge &&
                         <div className="btn-group ml-5" role="group" aria-label="Delete">
-                            <button type="button" value="Delete" className="btn btn btn-outline-danger" >Delete</button>
-                            {/* <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button> */}
+                            <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button>
                         </div>
                     }
                 </div>

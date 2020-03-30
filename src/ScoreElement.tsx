@@ -75,26 +75,29 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     //TODO:
     handleDataDispatch = async (actions: Action[]) => {
         for (const change of actions) {
-            const { newData, type, dataId } = change;
+            const { newData, type, dataId, oldData } = change;
             let newState: any = {}
-            if (type === "modify_claim" && dataId === this.state.claim.id
-            ) {
+            if (type === "modify_claim" && dataId === this.state.claim.id) {
                 newState.claim = {...this.state.claim, ...newData};
             }
-            if (type === "modify_claimEdge" && this.state.claimEdge && dataId === this.state.claimEdge.id
-            ) {
+
+            if (type === "modify_claimEdge" && this.state.claimEdge && dataId === this.state.claimEdge.id) {
                 newState.claimEdge = {...this.state.claimEdge, ...newData};
             }
-            if (type === "modify_score" && dataId === this.state.score.id
-            ) {
+
+            if (type === "delete_claimEdge" && oldData.parentId === this.state.claim.id) {
+                newState.childScores = await this.props.repository.getChildrenByScoreId(this.state.score.id);
+            }
+
+            if (type === "modify_score" && dataId === this.state.score.id) {
                 newState.score = {...this.state.score, ...newData};
             }
-            if (type === "add_score" && newData.parentScoreId === this.state.score.id
-            ) {
-                //TODO: newState.score = newData;
+
+            if (type === "add_score" && newData.parentScoreId === this.state.score.id) {
                 const childScores = await this.props.repository.getChildrenByScoreId(this.state.score.id);
                 newState.childScores = childScores;
             }
+
             this.setState(newState);
         }
     }
