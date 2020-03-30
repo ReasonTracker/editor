@@ -16,8 +16,28 @@ const messenger = new Messenger();
 
 window.db.doc("rsData").get().then((doc: any) => {
   if (doc.exists) {
-    repository.rsData = doc.data();
-    //Connect to the HTML
+    //repository.rsData = doc.data();
+    repository.rsData = new RsData();
+
+    //TODO: remove this data conversion
+
+    const originalData = doc.data();
+    for (const ver in originalData.versions) {
+      const item = originalData.versions[ver]
+      if (item.end === "3000-01-01T00:00:00.000Z") {
+        if (item.type === "claim" && item.id !== "Y9TIxXxIpytT") {
+          repository.notify([new Action(
+            new Claim(item.content, item.id, item.reversible), undefined, "add_claim"
+          )])
+        }
+        if (item.type === "claimEdge" && item.childId !== "Y9TIxXxIpytT") {
+          repository.notify([new Action(
+            new ClaimEdge(item.parentId, item.childId, item.affects, item.pro, item.id, item.priority), undefined, "add_claimEdge"
+          )])
+        }
+      }
+    }
+
     const scoreElements = document.getElementsByTagName('rs-score');
     for (const scoreElement of scoreElements) {
       const possibleScoreId = scoreElement.getAttribute('score-Id');
@@ -25,11 +45,35 @@ window.db.doc("rsData").get().then((doc: any) => {
       if (possibleScoreId) {
         scoreId = possibleScoreId;
       }
-      ReactDOM.render(<App
-        scoreId={scoreId}
-        repository={repository}
-        messenger={messenger}
-      />, scoreElement);
+
+      const u = undefined;
+      calculateScoreActions({
+        actions: [
+          new Action(new Score("Yk3JDShDv0lm", "Yk3JDShDv0lm", u, u, u, u, u, 0, u, "topScore"), u, "add_score"),
+        ], repository
+      }).then(async (updatedScores: any) => {
+        await repository.notify(updatedScores);
+        ReactDOM.render(<App
+          scoreId={scoreId}
+          repository={repository}
+          messenger={messenger}
+        />, scoreElement);
+      });
+
+
+      // //Connect to the HTML
+      // const scoreElements = document.getElementsByTagName('rs-score');
+      // for (const scoreElement of scoreElements) {
+      //   const possibleScoreId = scoreElement.getAttribute('score-Id');
+      //   let scoreId = "";
+      //   if (possibleScoreId) {
+      //     scoreId = possibleScoreId;
+      //   }
+      //   ReactDOM.render(<App
+      //     scoreId={scoreId}
+      //     repository={repository}
+      //     messenger={messenger}
+      //   />, scoreElement);
     }
   } else {
     // Create a new RsData object with an empty claim
@@ -48,14 +92,14 @@ window.db.doc("rsData").get().then((doc: any) => {
       const u = undefined;
       calculateScoreActions({
         actions: [
-          new Action(new Claim("Top Claim", "topClaim"), u, "add_claim"),
-          new Action(new Claim("Child Claim 1", "ChildClaim1"), u, "add_claim"),
-          new Action(new Claim("Child Claim 2", "ChildClaim2"), u, "add_claim"),
-          new Action(new Claim("GrandChild Claim1", "grandChild1"), u, "add_claim"),
-          new Action(new ClaimEdge("topClaim", "ChildClaim1", u, false, "ChildClaim1Edge"), u, "add_claimEdge"),
-          new Action(new ClaimEdge("topClaim", "ChildClaim2", u, true, "ChildClaim2Edge"), u, "add_claimEdge"),
-          new Action(new ClaimEdge("ChildClaim1", "grandChild1", u, false, "GrandChildClaim1Edge"), u, "add_claimEdge"),
-          new Action(new Score("topClaim", "topClaim", u, u, u, u, u, 0, u, "newScore"), u, "add_score"),
+          // new Action(new Claim("Top Claim", "topClaim"), u, "add_claim"),
+          // new Action(new Claim("Child Claim 1", "ChildClaim1"), u, "add_claim"),
+          // new Action(new Claim("Child Claim 2", "ChildClaim2"), u, "add_claim"),
+          // new Action(new Claim("GrandChild Claim1", "grandChild1"), u, "add_claim"),
+          // new Action(new ClaimEdge("topClaim", "ChildClaim1", u, false, "ChildClaim1Edge"), u, "add_claimEdge"),
+          // new Action(new ClaimEdge("topClaim", "ChildClaim2", u, true, "ChildClaim2Edge"), u, "add_claimEdge"),
+          // new Action(new ClaimEdge("ChildClaim1", "grandChild1", u, false, "GrandChildClaim1Edge"), u, "add_claimEdge"),
+          new Action(new Score("Yk3JDShDv0lm", "Yk3JDShDv0lm", u, u, u, u, u, 0, u, "topScore"), u, "add_score"),
         ], repository
       }).then(async (updatedScores: any) => {
         await repository.notify(updatedScores);

@@ -33,13 +33,13 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-
-    window.db = firebase.firestore().collection("test")
+    //window.db = firebase.firestore().collection("test")
+    window.db = firebase.firestore().collection("flyway2")
 
     //Detect Logged in
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        document.getElementById('UserName').innerText = user.displayName;
+        document.getElementById('firebaseui-auth-container').innerText = user.displayName;
       } else {
         //Show LogIn Screen
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -73,7 +73,11 @@
 <body>
   <div id="UserName" style="text-align: right;min-height: 24px;"></div>
   <div id="firebaseui-auth-container"></div>
-  <rs-score score-id="newScore"></rs-claim>
+  
+  <!-- <rs-score score-id="Yk3JDShDv0lm"></rs-claim> -->
+   <!-- <rs-score score-id="newScore"></rs-claim> -->
+  <rs-score score-id="topScore"></rs-claim>
+
 </body>
 
 </html>
