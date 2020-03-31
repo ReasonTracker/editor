@@ -78,11 +78,11 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             const { newData, type, dataId, oldData } = change;
             let newState: any = {}
             if (type === "modify_claim" && dataId === this.state.claim.id) {
-                newState.claim = {...this.state.claim, ...newData};
+                newState.claim = { ...this.state.claim, ...newData };
             }
 
             if (type === "modify_claimEdge" && this.state.claimEdge && dataId === this.state.claimEdge.id) {
-                newState.claimEdge = {...this.state.claimEdge, ...newData};
+                newState.claimEdge = { ...this.state.claimEdge, ...newData };
             }
 
             if (type === "delete_claimEdge" && oldData.parentId === this.state.claim.id) {
@@ -90,7 +90,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
 
             if (type === "modify_score" && dataId === this.state.score.id) {
-                newState.score = {...this.state.score, ...newData};
+                newState.score = { ...this.state.score, ...newData };
             }
 
             if (type === "add_score" && newData.parentScoreId === this.state.score.id) {
@@ -131,7 +131,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     render() {
         const props = this.props;
         let score = this.state.score;
-        if (!score) { score = new Score("","") } //TODO: Review this line
+        if (!score) { score = new Score("", "") } //TODO: Review this line
         const claim = this.state.claim;
         //const claimEdge = this.state.claimEdge;
         const childScores = this.state.childScores;
@@ -192,9 +192,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     {childScores.length > 0 &&
                         <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
                             &#9701;
-                    </div>
+                        </div>
                     }
                     <div className={'claim-inner'}>
+                        <div className="lines">
+                            <div className="lines-circle-container" >
+                                <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
+                            </div>
+                            <div className="lines-inner"></div>
+
+                        </div>
                         <span className={`score`}>
                             {scoreText}
                         </span>

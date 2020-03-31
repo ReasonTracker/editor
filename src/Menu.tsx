@@ -28,8 +28,8 @@ class Menu extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             settings: {
-                numbers: true,
-                // lines: false
+                numbers: false,
+                lines: true
             },
             settingsOpen: false
         };

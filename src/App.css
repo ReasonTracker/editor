@@ -76,6 +76,11 @@ label {
   padding-right: 0;
 }
 
+.s-numbers .score {
+  max-width: 10em;
+  padding-right: .2em;
+}
+
 .claim-inner {
   min-height: 2.5em;
   padding: 0px 0px 0px 10px;
@@ -148,13 +153,44 @@ form {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
-/* Settings */
+/* Visulaizations */
 
-.s-numbers .score{
-  max-width: 10em;
-  padding-right: .2em;
+.lines {
+  transition: .5s;
+  height: 0;
+  border: solid 2px rgba(255, 255, 255, 0.5);
+  border-top: none;
+  border-bottom: none;
+  margin-right: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
-.show-settings{
+.lines .lines-inner {
+  border-bottom: solid 2px rgba(255, 255, 255, 0.5);
+  height: 50%;
+}
+.lines .lines-circle-container{
+  position: absolute;
+  left: -9px;
+  width: 100%;
+  top: 1px;
+}
+.lines .lines-circle {
+  height: 17px;
+  width: 17px;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: 2s;
+  position: relative;
+}
+
+.s-lines .lines {
+  height: 20px;
+}
+
+/* Settings */
+
+.show-settings {
   display: grid;
 }
