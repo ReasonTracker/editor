@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import ScoreElement from './ScoreElement';
-import { Messenger,RepositoryLocalPure  } from "@reasonscore/core";
+import { Messenger, RepositoryLocalPure } from "@reasonscore/core";
 import Menu from './Menu';
 
 
@@ -15,13 +15,10 @@ const App: React.FC<{
   messenger
 }) => (
       <>
-      <Menu repository={repository}></Menu>
-        <ScoreElement
-          scoreId={scoreId}
-          repository={repository}
-          proMainContext={true}
-          messenger = {messenger}
-        />
+        <Menu repository={repository}
+        scoreId={scoreId}
+        proMainContext={true}
+        messenger={messenger}></Menu>
       </>
     );
 
