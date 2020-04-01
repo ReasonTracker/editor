@@ -15,6 +15,7 @@ rs-claim {
     transform: scale(2);
     transform-origin: left;
     margin-right: 20px;
+    top: 1px;
     position: relative;
   }
   
@@ -147,12 +148,26 @@ rs-claim {
     padding: 10px 10px 10px 20px;
   }
   
+    /* Settings */
   .settings-grid {
-    display: none;
+    display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    padding-bottom: .5rem;
+    border: 1px solid grey;
+    border-radius: 1em;
+    padding: 1em;
   }
+
+  .settings-container{
+    max-height: 0;
+    overflow: hidden;
+    transition: 1s;
+  }
+  
+  .show-settings {
+    max-height: 1000px;
+    margin-bottom: .5rem;
+    }
   
   /* Visulaizations */
   
@@ -190,11 +205,5 @@ rs-claim {
     height: 20px;
   }
   
-  /* Settings */
-  
-  .show-settings {
-    display: grid;
-  }
-
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';
