@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './custom.scss';
 import { Messenger, RepositoryLocalPure } from "@reasonscore/core";
 import Menu from './Menu';
 
@@ -17,9 +17,9 @@ const App: React.FC<{
 }) => (
       <>
         <Menu repository={repository}
-        scoreId={scoreId}
-        messenger={messenger}
-        settings={settings}></Menu>
+          scoreId={scoreId}
+          messenger={messenger}
+          settings={settings}></Menu>
       </>
     );
 

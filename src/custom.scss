@@ -1,0 +1,200 @@
+rs-claim {
+    display: block;
+  }
+  
+  rs-claim ul {
+    padding: 0, 0, 0, 15px;
+    margin: 0;
+  }
+  
+  rs-claim li {
+    list-style-type: none;
+  }
+  
+  input[type=checkbox] {
+    transform: scale(2);
+    transform-origin: left;
+    margin-right: 20px;
+    position: relative;
+  }
+  
+  .form-check {
+    padding-left: 1.75rem;
+  }
+  
+  label {
+    margin-bottom: 0;
+  }
+  
+  .container {
+    margin-left: 0;
+  }
+  
+  .claim {
+    line-height: 1.25;
+    max-width: 600px;
+    position: relative;
+    color: #555;
+    border: 1px lightgrey solid;
+    display: block;
+    overflow: visible;
+    box-sizing: border-box;
+    border-radius: 1em;
+    background: #ECECEC;
+    padding: .25em;
+    padding-bottom: 2px;
+    font-size: 100%;
+    z-index: 1;
+    margin: 0 10px 10px 10px;
+  }
+  
+  .claim.pro {
+    background-color: #c880ff;
+    color: white;
+    border-color: #c880ff;
+  }
+  
+  .claim.con {
+    background-color: #ffa71a;
+    color: white;
+    border-color: #ffa71a;
+  }
+  
+  .claim .score {
+    display: block;
+    float: left;
+    font-size: 2.3em;
+    transition: .5s;
+    overflow: hidden;
+    padding-left: 5px;
+    opacity: .75;
+    line-height: 1;
+    top: -2px;
+    position: relative;
+    /* Closed */
+    max-width: 0px;
+    padding-right: 0;
+  }
+  
+  .s-numbers .score {
+    max-width: 10em;
+    padding-right: .2em;
+  }
+  
+  .claim-inner {
+    min-height: 2.5em;
+    padding: 0px 0px 0px 10px;
+  }
+  
+  .claim-inner a {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+  
+  .claim-outer {
+    position: relative;
+  }
+  
+  .claim-outer>ul {
+    margin: 0 0 0 20px;
+    width: 100%;
+    padding: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 10px;
+    transition: max-height 500ms ease-in;
+    overflow: hidden;
+  }
+  
+  .expander {
+    cursor: pointer;
+    color: white;
+    position: absolute;
+    bottom: 2px;
+    left: 4px;
+    z-index: 2;
+    transition: transform .3s;
+    opacity: .5;
+  }
+  
+  .collapsed {
+    transform: rotate(45deg);
+  }
+  
+  .expanded {
+    transform: rotate(135deg);
+  }
+  
+  .editor-button {
+    cursor: pointer;
+    position: absolute;
+    opacity: .5;
+    right: 5px;
+    fill: white;
+    top: 0;
+  }
+  
+  .add-button {
+    cursor: pointer;
+    position: absolute;
+    opacity: .5;
+    top: 20px;
+    right: 5px;
+  }
+  
+  form {
+    padding: 10px 10px 10px 20px;
+  }
+  
+  .settings-grid {
+    display: none;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    padding-bottom: .5rem;
+  }
+  
+  /* Visulaizations */
+  
+  .lines {
+    transition: .5s;
+    height: 0;
+    border: solid 2px rgba(255, 255, 255, 0.5);
+    border-top: none;
+    border-bottom: none;
+    margin-right: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .lines .lines-inner {
+    border-bottom: solid 2px rgba(255, 255, 255, 0.5);
+    height: 50%;
+  }
+  .lines .lines-circle-container{
+    position: absolute;
+    left: -9px;
+    width: 100%;
+    top: 1px;
+  }
+  .lines .lines-circle {
+    height: 17px;
+    width: 17px;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    transition: 2s;
+    position: relative;
+  }
+  
+  .s-lines .lines {
+    height: 20px;
+  }
+  
+  /* Settings */
+  
+  .show-settings {
+    display: grid;
+  }
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
