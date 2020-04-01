@@ -4,15 +4,15 @@ import ScoreElement from './ScoreElement';
 
 declare global {
     interface Window {
-        db: any;
+        RsDatabase: any;
     }
 }
 
 type MyProps = {
     scoreId: string,
     repository: RepositoryLocalPure,
-    proMainContext: boolean,
     messenger: Messenger,
+    settings: any,
 };
 
 type MyState = {
@@ -26,11 +26,12 @@ class Menu extends React.Component<MyProps, MyState> {
 
     constructor(props: MyProps) {
         super(props);
+
         this.state = {
-            settings: {
+            settings: {...{
                 numbers: false,
                 lines: true
-            },
+            }, ...this.props.settings},
             settingsOpen: false
         };
     }
@@ -49,7 +50,7 @@ class Menu extends React.Component<MyProps, MyState> {
         rsDataCopy.childIdsByScoreId = {};
 
         //Save the scores to Firebase
-        window.db.doc("rsData").set(rsDataCopy)
+        window.RsDatabase.doc("rsData").set(rsDataCopy)
             .then(function () {
                 console.log("Document successfully written!");
             })
@@ -86,11 +87,11 @@ class Menu extends React.Component<MyProps, MyState> {
 
     render() {
         return (<>
-            <div style={{ paddingBottom: ".5rem" }} className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div style={{ paddingBottom: ".5rem" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                 <div className="btn-group mr-3" role="group" aria-label="Save" onClick={this.handleSave}>
                     <button type="button" value="Submit" className="btn btn-secondary">Save</button>
                 </div>
-                <div className="btn-group mr-3" role="group" aria-label="Settings">
+                <div className="btn-group mr-3 float-right" role="group" aria-label="Settings">
                     <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.toggleSettings}>
                         <svg style={{ height: "1em", fill: "white", stroke: "none" }} viewBox="0 0 1280.000000 1280.000000">
                             <metadata>Created by potrace 1.15, written by Peter Selinger 2001-2017</metadata>
