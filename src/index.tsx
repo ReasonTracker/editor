@@ -56,6 +56,7 @@ if (window.RsDatabase) {
 function noDbSetup() {
   // Create a new RsData object with an empty claim
   repository.rsData = new RsData();
+  window.RsSettings.DbNotAvailable = true;
 
   //Connect to the HTML
   const scoreElements = document.getElementsByTagName('rs-score');

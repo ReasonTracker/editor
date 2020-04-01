@@ -88,9 +88,11 @@ class Menu extends React.Component<MyProps, MyState> {
     render() {
         return (<>
             <div style={{ paddingBottom: ".5rem" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+                {!this.state.settings.DbNotAvailable &&
                 <div className="btn-group mr-3" role="group" aria-label="Save" onClick={this.handleSave}>
                     <button type="button" value="Submit" className="btn btn-secondary">Save</button>
                 </div>
+    }
                 <div className="btn-group mr-3 float-right" role="group" aria-label="Settings">
                     <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.toggleSettings}>
                         <svg style={{ height: "1em", fill: "white", stroke: "none" }} viewBox="0 0 1280.000000 1280.000000">
