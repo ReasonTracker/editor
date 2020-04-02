@@ -120,6 +120,7 @@ class Menu extends React.Component<MyProps, MyState> {
                     repository={this.props.repository}
                     proMainContext={true}
                     messenger={this.props.messenger}
+                    settings={this.state.settings}
                 />
             </div>
         </>);

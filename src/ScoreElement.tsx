@@ -9,6 +9,7 @@ type MyProps = {
     repository: RepositoryLocalPure,
     proMainContext: boolean,
     messenger: Messenger,
+    settings: any,
 };
 
 type MyState = {
@@ -49,7 +50,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
             const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
             const childScores = await this.props.repository.getChildrenByScoreId(score.id);
-            if (!score.parentScoreId) {
+            if (!score.parentScoreId && !this.props.settings.startClosed) {
                 childrenVisible = true;
             }
             if (claimResult) {
@@ -186,27 +187,29 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         return (
             <div className={'claim-outer'}>
-                <div className={'claim ' + proMainText} >
-                    <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
-                    <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
-                    {childScores.length > 0 &&
-                        <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
-                            &#9701;
+                <div className={'claim-hider'}>
+                    <div className={'claim ' + proMainText} >
+                        <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
+                        <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
+                        {childScores.length > 0 &&
+                            <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
+                                &#9701;
                         </div>
-                    }
-                    <div className={'claim-inner'}>
-                        <div className="lines">
-                            <div className="lines-circle-container" >
-                                <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
-                            </div>
-                            <div className="lines-inner"></div>
+                        }
+                        <div className={'claim-inner'}>
+                            <div className="lines">
+                                <div className="lines-circle-container" >
+                                    <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
+                                </div>
+                                <div className="lines-inner"></div>
 
+                            </div>
+                            <span className={`score`}>
+                                {scoreText}
+                            </span>
+                            <span dangerouslySetInnerHTML={createMarkup()}>
+                            </span>
                         </div>
-                        <span className={`score`}>
-                            {scoreText}
-                        </span>
-                        <span dangerouslySetInnerHTML={createMarkup()}>
-                        </span>
                     </div>
                 </div>
                 {this.state.editorVisible &&
@@ -220,20 +223,19 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         new={this.state.addMode}
                     />}
 
-                {this.state.childrenVisible &&
-                    <ul className="children">
-                        {childScores.length > 0 && childScoresSorted.map((child) => (
-                            <li key={child.id.toString()}>
-                                <ScoreElement
-                                    scoreId={child.id}
-                                    repository={props.repository}
-                                    proMainContext={proMain}
-                                    messenger={props.messenger}
-                                />
-                            </li>
-                        ))}
-                    </ul>
-                }
+                <ul className={'children ' + (!this.state.childrenVisible && 'hide')}>
+                    {childScores.length > 0 && childScoresSorted.map((child) => (
+                        <li key={child.id.toString()}>
+                            <ScoreElement
+                                scoreId={child.id}
+                                repository={props.repository}
+                                proMainContext={proMain}
+                                messenger={props.messenger}
+                                settings={props.settings}
+                            />
+                        </li>
+                    ))}
+                </ul>
             </div>
         );
     }

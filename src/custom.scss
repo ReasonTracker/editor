@@ -1,36 +1,36 @@
-rs-claim {
-    display: block;
-  }
-  
-  rs-claim ul {
+rs-score {
+  display: block;
+
+  ul {
     padding: 0, 0, 0, 15px;
     margin: 0;
   }
-  
-  rs-claim li {
+
+  li {
     list-style-type: none;
   }
-  
-  input[type=checkbox] {
+
+  .container {
+    margin-left: 20px;
+    max-width: 600px;
+  }
+
+  input[type="checkbox"] {
     transform: scale(2);
     transform-origin: left;
     margin-right: 20px;
     top: 1px;
     position: relative;
   }
-  
+
   .form-check {
     padding-left: 1.75rem;
   }
-  
+
   label {
     margin-bottom: 0;
   }
-  
-  .container {
-    margin-left: 0;
-  }
-  
+
   .claim {
     line-height: 1.25;
     max-width: 600px;
@@ -41,34 +41,44 @@ rs-claim {
     overflow: visible;
     box-sizing: border-box;
     border-radius: 1em;
-    background: #ECECEC;
-    padding: .25em;
+    background: #ececec;
+    padding: 0.25em;
     padding-bottom: 2px;
     font-size: 100%;
     z-index: 1;
     margin: 0 10px 10px 10px;
   }
-  
+
   .claim.pro {
     background-color: #c880ff;
     color: white;
     border-color: #c880ff;
   }
-  
+
   .claim.con {
     background-color: #ffa71a;
     color: white;
     border-color: #ffa71a;
   }
-  
+
+  .claim-hider {
+    max-height: 100px;
+    overflow: hidden;
+    transition: 0.75s;
+  }
+
+  .children.hide li > div > .claim-hider {
+    max-height: 0px;
+  }
+
   .claim .score {
     display: block;
     float: left;
     font-size: 2.3em;
-    transition: .5s;
+    transition: 0.5s;
     overflow: hidden;
     padding-left: 5px;
-    opacity: .75;
+    opacity: 0.75;
     line-height: 1;
     top: -2px;
     position: relative;
@@ -76,27 +86,27 @@ rs-claim {
     max-width: 0px;
     padding-right: 0;
   }
-  
+
   .s-numbers .score {
     max-width: 10em;
-    padding-right: .2em;
+    padding-right: 0.2em;
   }
-  
+
   .claim-inner {
     min-height: 2.5em;
     padding: 0px 0px 0px 10px;
   }
-  
+
   .claim-inner a {
     color: #ffffff;
     text-decoration: underline;
   }
-  
+
   .claim-outer {
     position: relative;
   }
-  
-  .claim-outer>ul {
+
+  .claim-outer > ul {
     margin: 0 0 0 20px;
     width: 100%;
     padding: 0;
@@ -107,7 +117,7 @@ rs-claim {
     transition: max-height 500ms ease-in;
     overflow: hidden;
   }
-  
+
   .expander {
     cursor: pointer;
     color: white;
@@ -115,40 +125,55 @@ rs-claim {
     bottom: 2px;
     left: 4px;
     z-index: 2;
-    transition: transform .3s;
-    opacity: .5;
+    transition: transform 0.3s;
+    opacity: 0.5;
   }
-  
+
   .collapsed {
     transform: rotate(45deg);
   }
-  
+
   .expanded {
     transform: rotate(135deg);
   }
-  
+
   .editor-button {
     cursor: pointer;
     position: absolute;
-    opacity: .5;
+    opacity: 0.5;
     right: 5px;
     fill: white;
     top: 0;
+    transition: 1s;
+    overflow: hidden;
+    width: 0;
   }
-  
+
   .add-button {
     cursor: pointer;
     position: absolute;
-    opacity: .5;
+    opacity: 0.5;
     top: 20px;
     right: 5px;
+    transition: 1s;
+    overflow: hidden;
+    width: 0;
   }
-  
+
+  .s-editable {
+    .editor-button {
+      width: 15px;
+    }
+    .add-button {
+      width: 15px;
+    }
+  }
+
   form {
     padding: 10px 10px 10px 20px;
   }
-  
-    /* Settings */
+
+  /* Settings */
   .settings-grid {
     display: grid;
     gap: 1.5rem;
@@ -158,21 +183,21 @@ rs-claim {
     padding: 1em;
   }
 
-  .settings-container{
+  .settings-container {
     max-height: 0;
     overflow: hidden;
     transition: 1s;
   }
-  
+
   .show-settings {
     max-height: 1000px;
-    margin-bottom: .5rem;
-    }
-  
+    margin-bottom: 0.5rem;
+  }
+
   /* Visulaizations */
-  
+
   .lines {
-    transition: .5s;
+    transition: 0.5s;
     height: 0;
     border: solid 2px rgba(255, 255, 255, 0.5);
     border-top: none;
@@ -181,12 +206,12 @@ rs-claim {
     position: relative;
     overflow: hidden;
   }
-  
+
   .lines .lines-inner {
     border-bottom: solid 2px rgba(255, 255, 255, 0.5);
     height: 50%;
   }
-  .lines .lines-circle-container{
+  .lines .lines-circle-container {
     position: absolute;
     left: -9px;
     width: 100%;
@@ -200,10 +225,12 @@ rs-claim {
     transition: 2s;
     position: relative;
   }
-  
+
   .s-lines .lines {
     height: 20px;
   }
-  
+
+}
+
 // Import Bootstrap and its default variables
-@import '~bootstrap/scss/bootstrap.scss';
+@import "~bootstrap/scss/bootstrap.scss";
