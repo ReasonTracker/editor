@@ -71,6 +71,25 @@ rs-score {
     max-height: 0px;
   }
 
+  .score-enter > div > .claim-hider{
+    max-height: 0;
+  }
+  .score-enter-active  > div > .claim-hider{
+    max-height: 100px;
+    transition: max-height 500ms ease-in;
+  }
+  .score-enter-done  > div > .claim-hider{
+    //max-height: unset;
+  }
+  .score-exit  > div > .claim-hider{
+    max-height: 100px;
+  }
+  .score-exit-active  > div > .claim-hider{
+    max-height: 0;
+    transition: max-height 500ms ease-in;
+    border: 2px solid rgba(0, 0, 0, 0.2)
+  }
+  
   .claim .score {
     display: block;
     float: left;
@@ -135,6 +154,25 @@ rs-score {
 
   .expanded {
     transform: rotate(135deg);
+  }
+
+  .editor-enter {
+    height: 0;
+  }
+  .editor-enter-active {
+    height: 300px;
+    transition: height 500ms;
+  }
+  .editor-enter-done {
+    height: unset;
+    transition: height 500ms;
+  }
+  .editor-exit {
+    height: 300px;
+  }
+  .editor-exit-active {
+    height: 0px;
+    transition: height 500ms;
   }
 
   .editor-button {

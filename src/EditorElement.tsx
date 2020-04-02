@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger, iClaimEdge } from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger, iClaimEdge, Affects } from "@reasonscore/core";
 
 type MyProps = {
     claimId: string,
@@ -15,7 +15,7 @@ type MyState = {
     content: string,
     pro?: boolean,
     proMain?: boolean,
-    affects?: string,
+    affects?: Affects,
     priority: string,
     pasteClaim: string,
     originalClaimEdge?: iClaimEdge
@@ -56,7 +56,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             content: this.claim.content,
             pro: pro,
             proMain: this.props.proMainContext ? pro : !pro,
-            affects: originalClaimEdge ? originalClaimEdge.affects.toString() : undefined,
+            affects: originalClaimEdge ? originalClaimEdge.affects : undefined,
             priority: originalClaimEdge ? originalClaimEdge.priority : "",
             pasteClaim: "",
             originalClaimEdge: originalClaimEdge,
@@ -74,7 +74,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         if (this.state.pasteClaim && this.state.originalClaimEdge) {
             actions.push(
                 new Action(
-                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.pasteClaim, undefined, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
+                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.pasteClaim, this.state.affects, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
                     undefined, "add_claimEdge", this.state.originalClaimEdge.id
                 )
             )
@@ -87,7 +87,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             )
             if (this.state.originalClaimEdge) {
                 actions.push(new Action(
-                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.originalClaimEdge.childId, undefined, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
+                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.originalClaimEdge.childId, this.state.affects, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
                     undefined, this.props.new ? "add_claimEdge" : "modify_claimEdge" , this.state.originalClaimEdge.id
                 ))
             }
@@ -132,7 +132,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handleAffects = (e: React.FormEvent<HTMLSelectElement>) => {
-        this.setState({ affects: e.currentTarget.value });
+        this.setState({ affects: e.currentTarget.value as Affects });
     }
 
     handleDelete = async () => {

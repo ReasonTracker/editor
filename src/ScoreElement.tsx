@@ -1,6 +1,7 @@
 import React from 'react';
 import { RepositoryLocalPure, Claim, Score, Messenger, iScore, Action, iClaimEdge } from "@reasonscore/core";
 import EditorElement from './EditorElement';
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 const commonmark: any = require('commonmark');
 
@@ -95,6 +96,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
 
             if (type === "add_score" && newData.parentScoreId === this.state.score.id) {
+                if (this.state.childrenVisible === false){
+                    newState.childrenVisible = true;
+                }
                 const childScores = await this.props.repository.getChildrenByScoreId(this.state.score.id);
                 newState.childScores = childScores;
             }
@@ -212,6 +216,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         </div>
                     </div>
                 </div>
+                <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor"><div>
                 {this.state.editorVisible &&
                     <EditorElement
                         claimId={claim.id}
@@ -222,19 +227,30 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         messenger={props.messenger}
                         new={this.state.addMode}
                     />}
+                    </div>
+                    </CSSTransition>
 
-                <ul className={'children ' + (!this.state.childrenVisible && 'hide')}>
-                    {childScores.length > 0 && childScoresSorted.map((child) => (
-                        <li key={child.id.toString()}>
-                            <ScoreElement
-                                scoreId={child.id}
-                                repository={props.repository}
-                                proMainContext={proMain}
-                                messenger={props.messenger}
-                                settings={props.settings}
-                            />
-                        </li>
-                    ))}
+                <ul className={'children ' + (this.state.childrenVisible?'':'hide')}>
+                    <TransitionGroup component={null}>
+                        {childScores.length > 0 && childScoresSorted.map((child) => (
+                            <CSSTransition
+                                key={child.id}
+                                timeout={5000}
+                                classNames='score'
+                            >
+                                <li key={child.id}>
+                                    <ScoreElement
+                                        scoreId={child.id}
+                                        repository={props.repository}
+                                        proMainContext={proMain}
+                                        messenger={props.messenger}
+                                        settings={props.settings}
+                                    />
+                                </li>
+                            </CSSTransition>
+
+                        ))}
+                    </TransitionGroup>
                 </ul>
             </div>
         );
