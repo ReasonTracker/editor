@@ -208,7 +208,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 <div className="lines-inner"></div>
 
                             </div>
-                            <span className={`score`}>
+                            <span className={`numbers`}>
                                 {scoreText}
                             </span>
                             <span dangerouslySetInnerHTML={createMarkup()}>
