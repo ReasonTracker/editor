@@ -88,8 +88,8 @@ class Menu extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        return (<>
-            <div style={{ paddingBottom: ".5rem" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+        return (<><div className="Content">
+            <div style={{ paddingBottom: ".5rem", maxWidth: "600px", margin:"10px" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                 <div className="btn-group mr-3" role="group" aria-label="Save" onClick={this.handleSave}>
                     {!this.state.settings.DbNotAvailable &&
                         <button type="button" value="Submit" className="btn btn-secondary">Save</button>
@@ -105,15 +105,16 @@ class Menu extends React.Component<MyProps, MyState> {
                 </div>
             </div>
             <div className={"settings-container " + (this.state.settingsOpen && "show-settings")}>
-            <div className={"settings-grid "}>
-                {Object.keys(this.state.settings).map((setting) => (
-                    <div key={setting}>
-                        <input type="checkbox" id={'s-' + setting} checked={this.state.settings[setting]} onChange={this.handleSetting.bind(this, setting)} />
-                        <label htmlFor={'s-' + setting}>{setting}</label>
-                    </div>
-                ))}
+                <div className={"settings-grid "}>
+                    {Object.keys(this.state.settings).map((setting) => (
+                        <div key={setting}>
+                            <input type="checkbox" id={'s-' + setting} checked={this.state.settings[setting]} onChange={this.handleSetting.bind(this, setting)} />
+                            <label htmlFor={'s-' + setting}>{setting}</label>
+                        </div>
+                    ))}
+                </div>
             </div>
-            </div>
+        </div>
             <div className={this.classNames()}>
                 <ScoreElement
                     scoreId={this.props.scoreId}

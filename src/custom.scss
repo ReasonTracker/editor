@@ -87,7 +87,6 @@ rs-score {
   .score-exit-active  > div > .claim-hider{
     max-height: 0;
     transition: max-height 500ms ease-in;
-    border: 2px solid rgba(0, 0, 0, 0.2)
   }
   
   .claim .score {
@@ -160,7 +159,7 @@ rs-score {
     height: 0;
   }
   .editor-enter-active {
-    height: 300px;
+    height: 200px;
     transition: height 500ms;
   }
   .editor-enter-done {
@@ -168,11 +167,13 @@ rs-score {
     transition: height 500ms;
   }
   .editor-exit {
-    height: 300px;
+    height: 200px;
   }
   .editor-exit-active {
     height: 0px;
     transition: height 500ms;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    max-width: 600px;
   }
 
   .editor-button {
