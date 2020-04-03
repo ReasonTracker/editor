@@ -96,7 +96,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
 
             if (type === "add_score" && newData.parentScoreId === this.state.score.id) {
-                if (this.state.childrenVisible === false){
+                if (this.state.childrenVisible === false) {
                     newState.childrenVisible = true;
                 }
                 const childScores = await this.props.repository.getChildrenByScoreId(this.state.score.id);
@@ -196,9 +196,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
                         <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
                         {childScores.length > 0 &&
-                            <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick} >
-                                &#9701;
-                        </div>
+                            <div className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} onClick={this.handleExpanderClick}>&#9701;</div>
                         }
                         <div className={'claim-inner'}>
                             <div className="lines">
@@ -214,30 +212,38 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <span dangerouslySetInnerHTML={createMarkup()}>
                             </span>
                         </div>
+                        <div className="callout">
+                            <svg viewBox="0 0 5.2917 5.2917">
+                                <g transform="translate(0 -291.71)">
+                                    <path d="m5.2596 296.97c-3.5372 0.01-3.8232-1.627-3.7822-2.3863 2.1037 0.0877 1.0388-2.9299 1.8472-2.8364 0 0-0.51702 4.0991 1.935 5.2227z"></path>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-                <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor"><div>
-                {this.state.editorVisible &&
-                    <EditorElement
-                        claimId={claim.id}
-                        repository={props.repository}
-                        claimEdge={this.state.claimEdge}
-                        proMainContext={this.state.addMode ? proMain : props.proMainContext}
-                        handleEditClose={this.handleEditClose}
-                        messenger={props.messenger}
-                        new={this.state.addMode}
-                    />}
+                <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
+                    <div>
+                        {this.state.editorVisible &&
+                            <EditorElement
+                                claimId={claim.id}
+                                repository={props.repository}
+                                claimEdge={this.state.claimEdge}
+                                proMainContext={this.state.addMode ? proMain : props.proMainContext}
+                                handleEditClose={this.handleEditClose}
+                                messenger={props.messenger}
+                                new={this.state.addMode}
+                            />
+                        }
                     </div>
-                    </CSSTransition>
+                </CSSTransition>
 
-                <ul className={'children ' + (this.state.childrenVisible?'':'hide')}>
+                <ul className={'children ' + (this.state.childrenVisible ? '' : 'hide')}>
                     <TransitionGroup component={null}>
                         {childScores.length > 0 && childScoresSorted.map((child) => (
                             <CSSTransition
                                 key={child.id}
                                 timeout={5000}
-                                classNames='score'
-                            >
+                                classNames='score'>
                                 <li key={child.id}>
                                     <ScoreElement
                                         scoreId={child.id}

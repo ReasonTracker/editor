@@ -53,12 +53,29 @@ rs-score {
     background-color: #c880ff;
     color: white;
     border-color: #c880ff;
+    .callout {
+      left: -12px;
+      fill: #c880ff;
+      transform: scaleX(-1);
+    }
   }
 
   .con {
     background-color: #ffa71a;
     color: white;
     border-color: #ffa71a;
+    .callout {
+      right: -12px;
+      fill: #ffa71a;
+    }
+  }
+
+  .callout {
+    position: absolute;
+    bottom: -1px;
+    width: 30px;
+    height: 30px;
+    z-index: -1;
   }
 
   .claim-hider {
@@ -71,24 +88,24 @@ rs-score {
     max-height: 0px;
   }
 
-  .score-enter > div > .claim-hider{
+  .score-enter > div > .claim-hider {
     max-height: 0;
   }
-  .score-enter-active  > div > .claim-hider{
+  .score-enter-active > div > .claim-hider {
     max-height: 100px;
     transition: max-height 500ms ease-in;
   }
-  .score-enter-done  > div > .claim-hider{
-    //max-height: unset;
-  }
-  .score-exit  > div > .claim-hider{
+  // .score-enter-done > div > .claim-hider {
+  //   max-height: unset;
+  // }
+  .score-exit > div > .claim-hider {
     max-height: 100px;
   }
-  .score-exit-active  > div > .claim-hider{
+  .score-exit-active > div > .claim-hider {
     max-height: 0;
     transition: max-height 500ms ease-in;
   }
-  
+
   .claim-inner {
     min-height: 2.5em;
     padding: 0px 0px 0px 10px;
@@ -268,7 +285,6 @@ rs-score {
   .s-lines .lines {
     height: 20px;
   }
-
 }
 
 // Import Bootstrap and its default variables
