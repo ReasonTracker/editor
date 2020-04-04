@@ -207,8 +207,8 @@ class EditorElement extends React.Component<MyProps, MyState> {
                     </>
                 }
                 <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                    <div className="btn-group mr-3" role="group" aria-label="Submit">
-                        <button type="button" value="Submit" className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
+                    <div className="btn-group mr-3" role="group" aria-label="Save Locally">
+                        <button type="button" value="Save Locally" className="btn btn-primary" onClick={this.handleSubmit}>Save Locally</button>
                     </div>
                     <div className="btn-group mr-3" role="group" aria-label="Cancel">
                         <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
