@@ -4,7 +4,7 @@
 <head>
   <script> //Settings for this page
     window.RsSettings = {
-      disableFirebase: true,
+      disableExternalDb: true,
       numbers: true,
       lines: false,
       editable: true,
@@ -193,7 +193,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css"/>
     <script>
       // Firestore Setup
-      if (!window.RsSettings || !window.RsSettings.disableFirebase) {
+      if (!window.RsSettings || !window.RsSettings.disableExternalDb) {
         firebase.initializeApp({
           apiKey: "AIzaSyBmu9Lhj9Stp8dhamvCA4oi16o_jU4qnQM",
           authDomain: "reason-score.firebaseapp.com",

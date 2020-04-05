@@ -97,7 +97,6 @@ class EditorElement extends React.Component<MyProps, MyState> {
             actions: actions,
             repository: this.props.repository
         }).then(async (scoreActions) => {
-            //TODO: How do I set the glocal state the the new RSData?
             await this.props.messenger.notify(actions.concat(scoreActions));
             this.props.handleEditClose();
         });
@@ -136,7 +135,6 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handleDelete = async () => {
-        //TODO : move to repository
         if (this.state.originalClaimEdge) {
             const actions: Action[] = [];
                 actions.push(
@@ -150,7 +148,6 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 actions: actions,
                 repository: this.props.repository
             }).then(async (scoreActions) => {
-                //TODO: How do I set the glocal state the the new RSData?
                 await this.props.messenger.notify(actions.concat(scoreActions));
                 this.props.handleEditClose();
             });

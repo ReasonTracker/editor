@@ -70,11 +70,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     componentWillUnmount() {
-        //TODO:
         this.props.messenger.unsubscribe(this.handleDataDispatch)
     }
 
-    //TODO:
     handleDataDispatch = async (actions: Action[]) => {
         for (const change of actions) {
             const { newData, type, dataId, oldData } = change;
@@ -136,9 +134,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     render() {
         const props = this.props;
         let score = this.state.score;
-        if (!score) { score = new Score("", "") } //TODO: Review this line
         const claim = this.state.claim;
-        //const claimEdge = this.state.claimEdge;
         const childScores = this.state.childScores;
         let proMain = props.proMainContext;
         let scoreText = `${Math.round(score.confidence * 100)}%`
@@ -154,7 +150,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         }
 
         //Prioritize the children for the display order
-        //TODO: move this to the repository to reduce duplicate processing
+        //TODO: move score sorting to the repository to reduce duplicate processing
         let childScoresSorted = childScores;
         if (childScores.length > 1) {
             childScoresSorted = childScores.sort((a, b) => {
