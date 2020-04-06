@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Messenger, iRsData } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, Score } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 
 declare global {
@@ -19,7 +19,8 @@ type MyState = {
     settings: {
         [others: string]: boolean;
     }
-    settingsOpen: boolean
+    settingsOpen: boolean,
+    hideScores: boolean,
 };
 
 class Menu extends React.Component<MyProps, MyState> {
@@ -34,7 +35,8 @@ class Menu extends React.Component<MyProps, MyState> {
                     lines: true
                 }, ...this.props.settings
             },
-            settingsOpen: false
+            settingsOpen: false,
+            hideScores: false,
         };
     }
 
@@ -51,7 +53,45 @@ class Menu extends React.Component<MyProps, MyState> {
             });
     }
 
-    handleDownload = () => {
+    handleImport = () => {
+        //TODO: HACKs: File Import needs to be completely re-done
+        const element = document.createElement('div');
+        element.innerHTML = '<input type="file">';
+        const fileInput = element.firstChild as HTMLInputElement;
+        const that = this;
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files) {
+                    var file = fileInput.files[0];
+                    if (file.name.match(/\.(txt|json)$/)) {
+                        var reader = new FileReader();
+
+                        reader.onload = function () {
+                            that.props.repository.rsData = JSON.parse(reader.result as string);
+                            that.setState({ hideScores: true })
+                            const u = undefined
+                            calculateScoreActions({
+                                actions: [
+                                    //TODO: The below items are hard coded 
+                                    new Action(new Score("topClaim", "topClaim", u, u, u, u, u, 0, u, "topScore"), u, "add_score"),
+                                ], repository: that.props.repository
+                            }).then( (updatedScores: any) => {
+                                setTimeout(function () {
+                                    that.setState({ hideScores: false })
+                                }, 100);
+                            });
+                        }
+                        reader.readAsText(file);
+                    } else {
+                        alert("File not supported, .txt or .json files only");
+                    }
+                }
+            });
+            fileInput.click();
+        }
+    }
+
+    handleExport = () => {
         const rsDataCopy = this.getData();
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(rsDataCopy));
@@ -110,9 +150,10 @@ class Menu extends React.Component<MyProps, MyState> {
                     {!settings.DbNotAvailable &&
                         <button onClick={this.handleSave} type="button" value="Submit" className="btn btn-secondary">Save to cloud</button>
                     }
-                    {settings.downloadData &&
-                        <button onClick={this.handleDownload} type="button" value="download" className="btn btn-secondary">Download data</button>
-                    }
+                    {settings.portData && <>
+                        <button onClick={this.handleExport} type="button" value="download" className="btn btn-secondary">Download/Export</button>
+                        <button onClick={this.handleImport} type="button" value="download" className="btn btn-secondary">Upload/Import</button>
+                    </>}
 
                 </div>
                 <div className="btn-group mr-3 float-right" role="group" aria-label="Settings">
@@ -136,13 +177,15 @@ class Menu extends React.Component<MyProps, MyState> {
             </div>
         </div>
             <div className={this.classNames()}>
-                <ScoreElement
-                    scoreId={this.props.scoreId}
-                    repository={this.props.repository}
-                    proMainContext={true}
-                    messenger={this.props.messenger}
-                    settings={this.state.settings}
-                />
+                {!this.state.hideScores &&
+                    <ScoreElement
+                        scoreId={this.props.scoreId}
+                        repository={this.props.repository}
+                        proMainContext={true}
+                        messenger={this.props.messenger}
+                        settings={this.state.settings}
+                    />
+                }
             </div>
         </>);
     }
