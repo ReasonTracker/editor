@@ -5,19 +5,19 @@ import Menu from './Menu';
 
 
 const App: React.FC<{
-  scoreId: string,
+  scoreTreeId: string,
   repository: RepositoryLocalPure,
   messenger: Messenger,
   settings: any
 }> = ({
-  scoreId,
+  scoreTreeId,
   repository,
   messenger,
   settings
 }) => (
       <>
         <Menu repository={repository}
-          scoreId={scoreId}
+          scoreTreeId={scoreTreeId}
           messenger={messenger}
           settings={settings}></Menu>
       </>

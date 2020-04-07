@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, Score } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, Score, ScoreTree } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
 }
 
 type MyProps = {
-    scoreId: string,
+    scoreTreeId: string,
     repository: RepositoryLocalPure,
     messenger: Messenger,
     settings: any,
@@ -20,7 +20,7 @@ type MyState = {
         [others: string]: boolean;
     }
     settingsOpen: boolean,
-    hideScores: boolean,
+    scoreTree?: ScoreTree,
 };
 
 class Menu extends React.Component<MyProps, MyState> {
@@ -36,8 +36,14 @@ class Menu extends React.Component<MyProps, MyState> {
                 }, ...this.props.settings
             },
             settingsOpen: false,
-            hideScores: false,
+            scoreTree: undefined,
         };
+    }
+
+    async componentDidMount() {
+        this.setState({
+            scoreTree: await this.props.repository.getScoreTree(this.props.scoreTreeId),
+        })
     }
 
     handleSave = () => {
@@ -68,16 +74,17 @@ class Menu extends React.Component<MyProps, MyState> {
 
                         reader.onload = function () {
                             that.props.repository.rsData = JSON.parse(reader.result as string);
-                            that.setState({ hideScores: true })
+                            const scoreTree = that.state.scoreTree;
+                            that.setState({ scoreTree: undefined })
                             const u = undefined
                             calculateScoreActions({
                                 actions: [
                                     //TODO: The below items are hard coded 
                                     new Action(new Score("topClaim", "topClaim", u, u, u, u, u, 0, u, "topScore"), u, "add_score"),
                                 ], repository: that.props.repository
-                            }).then( (updatedScores: any) => {
+                            }).then((updatedScores: any) => {
                                 setTimeout(function () {
-                                    that.setState({ hideScores: false })
+                                    that.setState({ scoreTree: scoreTree })
                                 }, 100);
                             });
                         }
@@ -143,7 +150,6 @@ class Menu extends React.Component<MyProps, MyState> {
 
     render() {
         const settings = this.state.settings;
-
         return (<><div className="Content">
             <div style={{ paddingBottom: ".5rem", maxWidth: "600px", margin: "10px" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                 <div className="btn-group mr-3" role="group" aria-label="Save">
@@ -177,9 +183,9 @@ class Menu extends React.Component<MyProps, MyState> {
             </div>
         </div>
             <div className={this.classNames()}>
-                {!this.state.hideScores &&
+                {this.state.scoreTree &&
                     <ScoreElement
-                        scoreId={this.props.scoreId}
+                        scoreId={this.state.scoreTree.topScoreId}
                         repository={this.props.repository}
                         proMainContext={true}
                         messenger={this.props.messenger}

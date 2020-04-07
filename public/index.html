@@ -164,19 +164,14 @@
       {
         "newData": {
           "sourceClaimId": "topClaim",
-          "topScoreId": "topClaim",
-          "reversible": false,
-          "pro": true,
-          "affects": "confidence",
-          "confidence": 0,
-          "relevance": 1,
-          "id": "topScore",
-          "priority": "",
-          "type": "score"
+          "topScoreId": "topScore",
+          "confidence": 1,
+          "id": "ScoreTree",
+          "type": "scoreTree"
         },
-        "type": "add_score",
-        "dataId": "topScore"
-      }
+        "type": "add_scoreTree",
+        "dataId": "ScoreTree"
+      },
     ]
   </script>
   <meta charset="utf-8" />
@@ -250,7 +245,7 @@
 <body>
   <!-- <div id="UserName" style="text-align: right;min-height: 24px;"></div>
   <div id="firebaseui-auth-container"></div> -->
-  <rs-score score-id="topScore">
+  <rs-score score-tree-id="ScoreTree">
   </rs-score>
 </body>
 
