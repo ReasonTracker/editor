@@ -54,7 +54,7 @@ rs-score {
     color: white;
     border-color: #c880ff;
     .callout {
-      left: -12px;
+      left: -21px;
       fill: #c880ff;
       transform: scaleX(-1);
     }
@@ -65,16 +65,14 @@ rs-score {
     color: white;
     border-color: #ffa71a;
     .callout {
-      right: -12px;
+      right: -21px;
       fill: #ffa71a;
     }
   }
 
   .callout {
     position: absolute;
-    bottom: -1px;
-    width: 30px;
-    height: 30px;
+    bottom: -3px;
     z-index: -1;
   }
 
@@ -152,7 +150,7 @@ rs-score {
 
   .expander {
     cursor: pointer;
-    color: white;
+    fill: white;
     position: absolute;
     bottom: 2px;
     left: 4px;
@@ -161,12 +159,8 @@ rs-score {
     opacity: 0.5;
   }
 
-  .collapsed {
-    transform: rotate(45deg);
-  }
-
   .expanded {
-    transform: rotate(135deg);
+    transform: rotate(90deg);
   }
 
   .editor-enter {
@@ -303,7 +297,9 @@ rs-score {
   .s-lines .lines {
     height: 20px;
   }
-}
 
-// Import Bootstrap and its default variables
-@import "~bootstrap/scss/bootstrap.scss";
+  // Import Bootstrap and its default variables
+  //TODO: Shrink down bootstrap to just the necessary items
+  //TODO: Separate the editor CSS from the viewer so the viewer css is smaller
+  @import "~bootstrap/scss/bootstrap.scss";
+}

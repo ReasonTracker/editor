@@ -43,6 +43,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     async componentDidMount() {
         const score = await this.props.repository.getScore(this.props.scoreId);
         let claim = new Claim();
+        //TODO: Figure out how to remove Children Visible completely
         let childrenVisible = this.state.childrenVisible;
         if (score) {
             let claimEdge: iClaimEdge | undefined;
@@ -154,7 +155,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 proMain = !proMain;
             }
             if (score.affects === "relevance") {
-                scoreText = `×${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
+                scoreText = `X${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
             }
@@ -203,7 +204,11 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
                         <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
                         {childScores.length > 0 &&
-                            <div id={"expander-" + (this.state.score.id)} className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} >&#9701;</div>
+                            <div id={"expander-" + (this.state.score.id)} className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} >
+                                <svg width="20px" height="20px">
+                                    <use href="#expander" />
+                                </svg>
+                            </div>
                         }
                         <div className={'claim-inner'}>
                             <div className="lines">
@@ -219,13 +224,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <span dangerouslySetInnerHTML={createMarkup()}>
                             </span>
                         </div>
-                        <div className="callout">
-                            <svg viewBox="0 0 5.2917 5.2917">
-                                <g transform="translate(0 -291.71)">
-                                    <path d="m5.2596 296.97c-3.5372 0.01-3.8232-1.627-3.7822-2.3863 2.1037 0.0877 1.0388-2.9299 1.8472-2.8364 0 0-0.51702 4.0991 1.935 5.2227z"></path>
-                                </g>
-                            </svg>
-                        </div>
+                        <svg className="callout"  width="30px" height="30px">
+                            <use href="#callout" />
+                        </svg>
                     </div>
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">

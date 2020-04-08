@@ -19,8 +19,12 @@
 
       if (childrenElement.classList.contains("hide")) {
         childrenElement.classList.remove("hide");
+        expanderElement.classList.add("expanded");
+        expanderElement.classList.remove("collapsed");
       } else {
         childrenElement.classList.add("hide");
+        expanderElement.classList.remove("expanded");
+        expanderElement.classList.add("collapsed");
       }
     }
 

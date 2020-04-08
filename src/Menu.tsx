@@ -77,9 +77,9 @@ class Menu extends React.Component<MyProps, MyState> {
                             const scoreTree = that.state.scoreTree;
                             that.setState({ scoreTree: undefined })
                             await calculateScoreActions({
-                                actions: [new Action(scoreTree,undefined,"add_scoreTree")],
+                                actions: [new Action(scoreTree, undefined, "add_scoreTree")],
                                 repository: that.props.repository,
-                              }).then((updatedScores: any) => {
+                            }).then((updatedScores: any) => {
                                 setTimeout(function () {
                                     that.setState({ scoreTree: scoreTree })
                                 }, 100);
@@ -190,6 +190,20 @@ class Menu extends React.Component<MyProps, MyState> {
                     />
                 }
             </div>
+            <svg style={{ display: "none" }}>
+                <symbol id="callout" viewBox="0 0 30 30">
+                    <g>
+                        <path d="M 18,28 C 10,28 4,28 2,20 L 10,2 c 0,10 0,23 8,26 z"></path>
+                    </g>
+                </symbol>
+            </svg>
+            <svg height="20px" width="20px" style={{ display: "none" }}>
+                <symbol id="expander" viewBox="0 0 10 10" >
+                    <g>
+                        <path d="m1 1 7 4-7 4z" />
+                    </g>
+                </symbol>
+            </svg>
         </>);
     }
 }
