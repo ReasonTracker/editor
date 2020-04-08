@@ -12,6 +12,19 @@
       portData: true,
     }
 
+    //Enable expanding children
+    window.RsExpandChildren = function (elementId) {
+      const expanderElement = window.document.getElementById("expander-" + elementId);
+      const childrenElement = window.document.getElementById("children-" + elementId);
+
+      if (childrenElement.classList.contains("hide")) {
+        childrenElement.classList.remove("hide");
+      } else {
+        childrenElement.classList.add("hide");
+      }
+    }
+
+
     window.RsActions = [
       {
         "newData": {

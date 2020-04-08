@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { RepositoryLocalPure, Messenger, RsData, calculateScoreActions, Action, Score, Claim, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action} from "@reasonscore/core";
 
 declare global {
   interface Window {

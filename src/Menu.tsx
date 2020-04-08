@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, Score, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, ScoreTree } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 
 declare global {
@@ -72,17 +72,14 @@ class Menu extends React.Component<MyProps, MyState> {
                     if (file.name.match(/\.(txt|json)$/)) {
                         var reader = new FileReader();
 
-                        reader.onload = function () {
+                        reader.onload = async function () {
                             that.props.repository.rsData = JSON.parse(reader.result as string);
                             const scoreTree = that.state.scoreTree;
                             that.setState({ scoreTree: undefined })
-                            const u = undefined
-                            calculateScoreActions({
-                                actions: [
-                                    //TODO: The below items are hard coded 
-                                    new Action(new Score("topClaim", "topClaim", u, u, u, u, u, 0, u, "topScore"), u, "add_score"),
-                                ], repository: that.props.repository
-                            }).then((updatedScores: any) => {
+                            await calculateScoreActions({
+                                actions: [new Action(scoreTree,undefined,"add_scoreTree")],
+                                repository: that.props.repository,
+                              }).then((updatedScores: any) => {
                                 setTimeout(function () {
                                     that.setState({ scoreTree: scoreTree })
                                 }, 100);
