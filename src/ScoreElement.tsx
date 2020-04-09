@@ -155,7 +155,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 proMain = !proMain;
             }
             if (score.affects === "relevance") {
-                scoreText = `X${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
+                scoreText = score.pro?"X":"÷";
+                scoreText += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
                 scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
             }
