@@ -1,4 +1,9 @@
 rs-score {
+  // Import Bootstrap and its default variables
+  //TODO: Shrink down bootstrap to just the necessary items
+  //TODO: Separate the editor CSS from the viewer so the viewer css is smaller
+  @import "~bootstrap/scss/bootstrap.scss";
+
   display: block;
 
   ul {
@@ -298,8 +303,4 @@ rs-score {
     height: 20px;
   }
 
-  // Import Bootstrap and its default variables
-  //TODO: Shrink down bootstrap to just the necessary items
-  //TODO: Separate the editor CSS from the viewer so the viewer css is smaller
-  @import "~bootstrap/scss/bootstrap.scss";
 }
