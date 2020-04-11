@@ -312,8 +312,15 @@ rs-score {
       position: absolute;
       top: 8px;
     }
+    span.min {
+      left: 5px;
+    }
+    span.mid {
+      left: 50%;
+      transform: translate(-50%);
+    }
     span.max {
-      right: 0;
+      right: 5px;
     }
   }
 

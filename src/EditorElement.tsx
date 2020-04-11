@@ -182,11 +182,15 @@ class EditorElement extends React.Component<MyProps, MyState> {
                                 This is [an example](http://example.com/) inline link.</small>
                         </div>
                         <div className="form-row  edit-lines">
-                            <div className="form-group col-xs-6">
+                            <div className="form-group col-4">
                                 <label htmlFor="claim.labelMin">Minimum Value Label</label>
                                 <input type="text" className="form-control" id="claim.labelMin" value={this.state.claim.labelMin} onChange={this.handleText}></input>
                             </div>
-                            <div className="form-group col-xs-6">
+                            <div className="form-group col-4">
+                                <label htmlFor="claim.labelMid">Middle Value Label</label>
+                                <input type="text" className="form-control" id="claim.labelMid" value={this.state.claim.labelMid} onChange={this.handleText}></input>
+                            </div>
+                            <div className="form-group col-4">
                                 <label htmlFor="claim.labelMax">Maximum Value Label</label>
                                 <input type="text" className="form-control" id="claim.labelMax" value={this.state.claim.labelMax} onChange={this.handleText}></input>
                             </div>

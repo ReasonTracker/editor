@@ -218,7 +218,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
                                 </div>
                                 <div className="lines-inner"></div>
-                    <span>{claim.labelMin}</span>
+                                <span className="min">{claim.labelMin}</span>
+                                <span className="mid">{claim.labelMid}</span>
                                 <span className="max">{claim.labelMax}</span>
                             </div>
                             <span className={'numbers'}>
