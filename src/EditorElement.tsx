@@ -50,6 +50,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         //TODO: Temp for items with blank properties. This correctes error: A component is changing an uncontrolled input of type text to be controlled
         if (newState.claim) {
             if (newState.claim.labelMin === undefined) { newState.claim.labelMin = "" }
+            if (newState.claim.labelMid === undefined) { newState.claim.labelMid = "" }
             if (newState.claim.labelMax === undefined) { newState.claim.labelMax = "" }
             if (newState.claimEdge) {
                 if (newState.claimEdge.priority === undefined) { newState.claim.priority = "" }
