@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Claim, ClaimEdge, Action, Messenger, iClaimEdge, Affects } from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Claim, Action, Messenger, iClaimEdge, iClaim, ClaimEdge } from "@reasonscore/core";
 
 type MyProps = {
     claimId: string,
@@ -12,83 +12,72 @@ type MyProps = {
 };
 
 type MyState = {
-    content: string,
-    pro?: boolean,
-    proMain?: boolean,
-    affects?: Affects,
-    priority: string,
     pasteClaim: string,
-    originalClaimEdge?: iClaimEdge
+    proMain: boolean,
+    claim?: iClaim,
+    claimEdge?: iClaimEdge,
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
 
-    claim = new Claim();
-    claimEdge: ClaimEdge | undefined;
-
     constructor(props: MyProps) {
         super(props);
         this.state = {
-            content: "",
-            pro: true,
-            proMain: this.props.proMainContext,
-            affects: undefined,
-            priority: "",
+            proMain: true,
             pasteClaim: "",
-            originalClaimEdge: undefined,
         };
     }
 
     async componentDidMount() {
-        let originalClaimEdge: iClaimEdge | undefined;
+        const newState = {} as MyState;
         if (this.props.new) {
-            this.claim = new Claim();
-            originalClaimEdge = new ClaimEdge(this.props.claimId, this.claim.id);
+            newState.claim = new Claim();
+            newState.claimEdge = new ClaimEdge(this.props.claimId, newState.claim.id);
         } else {
             const claim = await this.props.repository.getClaim(this.props.claimId);
-            originalClaimEdge = this.props.claimEdge;
             if (claim) {
-                this.claim = claim as Claim;
+                newState.claim = claim;
+            }
+            if (this.props.claimEdge) {
+                newState.claimEdge = JSON.parse(JSON.stringify(this.props.claimEdge)) //TODO: Replace with deep clone function
             }
         }
-        const pro = originalClaimEdge ? originalClaimEdge.pro : true;
-        let newState: MyState = {
-            content: this.claim.content,
-            pro: pro,
-            proMain: this.props.proMainContext ? pro : !pro,
-            affects: originalClaimEdge ? originalClaimEdge.affects : undefined,
-            priority: originalClaimEdge ? originalClaimEdge.priority : "",
-            pasteClaim: "",
-            originalClaimEdge: originalClaimEdge,
+
+        if (newState.claimEdge) {
+            newState.proMain = this.props.proMainContext ? newState.claimEdge.pro : !newState.claimEdge.checked;
         }
 
-        if (newState.priority === undefined) { newState.priority = "" } //ToDo: Temp for items with blank priority. mutates state?
+        //TODO: Temp for items with blank properties. This correctes error: A component is changing an uncontrolled input of type text to be controlled
+        if (newState.claim) {
+            if (newState.claim.labelMin === undefined) { newState.claim.labelMin = "" }
+            if (newState.claim.labelMax === undefined) { newState.claim.labelMax = "" }
+            if (newState.claimEdge) {
+                if (newState.claimEdge.priority === undefined) { newState.claim.priority = "" }
+            }
+        }
 
         this.setState(newState);
-
-
     }
 
     handleSubmit = () => {
         const actions: Action[] = [];
-        if (this.state.pasteClaim && this.state.originalClaimEdge) {
+        if (this.state.pasteClaim && this.state.claimEdge) {
             actions.push(
                 new Action(
-                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.pasteClaim, this.state.affects, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
-                    undefined, "add_claimEdge", this.state.originalClaimEdge.id
+                    this.state.claimEdge, undefined, "add_claimEdge"
                 )
             )
         } else {
             actions.push(
                 new Action(
-                    new Claim(this.state.content, this.claim.id),
-                    undefined, this.props.new ? "add_claim" : "modify_claim", this.claim.id
+                    this.state.claim,
+                    undefined, this.props.new ? "add_claim" : "modify_claim"
                 )
             )
-            if (this.state.originalClaimEdge) {
+            if (this.state.claimEdge) {
                 actions.push(new Action(
-                    new ClaimEdge(this.state.originalClaimEdge.parentId, this.state.originalClaimEdge.childId, this.state.affects, this.state.pro, this.state.originalClaimEdge.id, this.state.priority),
-                    undefined, this.props.new ? "add_claimEdge" : "modify_claimEdge" , this.state.originalClaimEdge.id
+                    this.state.claimEdge, undefined,
+                    this.props.new ? "add_claimEdge" : "modify_claimEdge"
                 ))
             }
         }
@@ -102,12 +91,30 @@ class EditorElement extends React.Component<MyProps, MyState> {
         });
     }
 
-    handleContent = (e: React.FormEvent<HTMLTextAreaElement>) => {
-        this.setState({ content: e.currentTarget.value });
+    handleText = (e: React.FormEvent<HTMLInputElement> |
+        React.FormEvent<HTMLTextAreaElement> |
+        React.FormEvent<HTMLSelectElement>) => {
+        const pathParts = e.currentTarget.id.split(".");
+        const state = this.state as any;
+        if (pathParts.length === 2) {
+            this.setState({
+                [pathParts[0]]: {
+                    ...state[pathParts[0]],
+                    [pathParts[1]]: e.currentTarget.value
+                }
+            } as any);
+        } else if (pathParts.length === 1) {
+            this.setState({
+                [pathParts[0]]: e.currentTarget.value
+            } as any);
+        } else {
+            throw new Error("id expectes 1 or 2 items in path. " + pathParts.length + " were received.");
+        }
+
     }
 
     handlePriority = (e: React.FormEvent<HTMLInputElement>) => {
-        this.setState({ priority: e.currentTarget.value });
+        this.setState({ claimEdge: { priority: e.currentTarget.value } as any });
     }
 
     handlePasteClaim = (e: React.FormEvent<HTMLInputElement>) => {
@@ -117,7 +124,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
     handlePro = (e: React.FormEvent<HTMLInputElement>) => {
         let proMain = this.props.proMainContext ? e.currentTarget.checked : !e.currentTarget.checked;
         this.setState({
-            pro: e.currentTarget.checked,
+            claimEdge: {
+                ...this.state.claimEdge,
+                pro: e.currentTarget.checked,
+            } as any,
             proMain: proMain
         });
     }
@@ -125,25 +135,24 @@ class EditorElement extends React.Component<MyProps, MyState> {
     handleProMain = (e: React.FormEvent<HTMLInputElement>) => {
         let pro = this.props.proMainContext ? e.currentTarget.checked : !e.currentTarget.checked;
         this.setState({
-            pro: pro,
+            claimEdge: {
+                ...this.state.claimEdge,
+                pro: pro,
+            } as any,
             proMain: e.currentTarget.checked
         });
     }
 
-    handleAffects = (e: React.FormEvent<HTMLSelectElement>) => {
-        this.setState({ affects: e.currentTarget.value as Affects });
-    }
-
     handleDelete = async () => {
-        if (this.state.originalClaimEdge) {
+        if (this.state.claimEdge) {
             const actions: Action[] = [];
-                actions.push(
-                    new Action(
-                        undefined,
-                        this.state.originalClaimEdge, "delete_claimEdge", this.state.originalClaimEdge.id
-                    )
+            actions.push(
+                new Action(
+                    undefined,
+                    this.state.claimEdge, "delete_claimEdge", this.state.claimEdge.id
                 )
-    
+            )
+
             calculateScoreActions({
                 actions: actions,
                 repository: this.props.repository
@@ -151,7 +160,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                 await this.props.messenger.notify(actions.concat(scoreActions));
                 this.props.handleEditClose();
             });
-    
+
         }
     }
 
@@ -161,63 +170,79 @@ class EditorElement extends React.Component<MyProps, MyState> {
 
     render() {
         return (
-            <form className="container">
-                <div className="form-group">
-                    <label htmlFor="claim.content">Content</label>
-                    <textarea className="form-control" id="claim.content" value={this.state.content} onChange={this.handleContent} rows={2}></textarea>
-                    <small className="form-text text-muted">For hyperlinks us <a href="https://spec.commonmark.org/0.29/#links">commonMark</a> syntax:
-                    This is [an example](http://example.com/) inline link.</small>
-                </div>
-                {this.state.originalClaimEdge &&
-                    < >
-                        <div className="form-row">
-                            <div className="form-group col-xs-4 mr-4">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="claimEdge.pro" checked={this.state.pro} onChange={this.handlePro} />
-                                    <label className="form-check-label" htmlFor="claimEdge.pro">Pro Parent</label>
+            <>
+                {
+                    this.state.claim &&
+                    <form className="container">
+                        <div className="form-group">
+                            <label htmlFor="claim.content">Content</label>
+                            <textarea className="form-control" id="claim.content" value={this.state.claim.content} onChange={this.handleText} rows={2}></textarea>
+                            <small className="form-text text-muted">
+                                For hyperlinks us <a href="https://spec.commonmark.org/0.29/#links">commonMark</a> syntax:
+                                This is [an example](http://example.com/) inline link.</small>
+                        </div>
+                        <div className="form-row  edit-lines">
+                            <div className="form-group col-xs-6">
+                                <label htmlFor="claim.labelMin">Minimum Value Label</label>
+                                <input type="text" className="form-control" id="claim.labelMin" value={this.state.claim.labelMin} onChange={this.handleText}></input>
+                            </div>
+                            <div className="form-group col-xs-6">
+                                <label htmlFor="claim.labelMax">Maximum Value Label</label>
+                                <input type="text" className="form-control" id="claim.labelMax" value={this.state.claim.labelMax} onChange={this.handleText}></input>
+                            </div>
+                        </div>
+
+                        {this.state.claimEdge &&
+                            < >
+                                <div className="form-row">
+                                    <div className="form-group col-xs-4 mr-4">
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="checkbox" id="claimEdge.pro" checked={this.state.claimEdge.pro} onChange={this.handlePro} />
+                                            <label className="form-check-label" htmlFor="claimEdge.pro">Pro Parent</label>
+                                        </div>
+                                    </div>
+                                    <div className="form-group col-xs-4">
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="checkbox" id="proMain" checked={this.state.proMain} onChange={this.handleProMain} />
+                                            <label className="form-check-label" htmlFor="proMain">Pro Main</label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group col-xs-4">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="proMain" checked={this.state.proMain} onChange={this.handleProMain} />
-                                    <label className="form-check-label" htmlFor="proMain">Pro Main</label>
+                                <div className="form-row">
+                                    <div className="form-group col-xs-4">
+                                        <label htmlFor="claimEdge.affects">Affects</label>
+                                        <select className="form-control" id="claimEdge.affects" value={this.state.claimEdge.affects} onChange={this.handleText}>
+                                            <option value={"confidence"}>Confidence</option>
+                                            <option value={"relevance"}>Relevance</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group col-xs-4">
+                                        <label htmlFor="claimEdge.priority">Priority</label>
+                                        <input type="text" className="form-control" id="claimEdge.priority" value={this.state.claimEdge.priority} onChange={this.handlePriority}></input>
+                                    </div>
+                                    <div className="form-group col-xs-4">
+                                        <label htmlFor="pasteClaim">Paste Claim</label>
+                                        <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
+                                    </div>
                                 </div>
+                            </>
+                        }
+                        <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                            <div className="btn-group mr-3" role="group" aria-label="Save Locally">
+                                <button type="button" value="Save Locally" className="btn btn-primary" onClick={this.handleSubmit}>Save Locally</button>
                             </div>
+                            <div className="btn-group mr-3" role="group" aria-label="Cancel">
+                                <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
+                            </div>
+                            {this.props.claimEdge &&
+                                <div className="btn-group ml-5" role="group" aria-label="Delete">
+                                    <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button>
+                                </div>
+                            }
                         </div>
-                        <div className="form-row">
-                            <div className="form-group col-xs-4">
-                                <label htmlFor="claimEdge.affects">Affects</label>
-                                <select className="form-control" id="claimEdge.affects" value={this.state.affects} onChange={this.handleAffects}>
-                                    <option value={"confidence"}>Confidence</option>
-                                    <option value={"relevance"}>Relevance</option>
-                                </select>
-                            </div>
-                            <div className="form-group col-xs-4">
-                                <label htmlFor="claimEdge.priority">Priority</label>
-                                <input type="text" className="form-control" id="claimEdge.priority" value={this.state.priority} onChange={this.handlePriority}></input>
-                            </div>
-                            <div className="form-group col-xs-4">
-                                <label htmlFor="pasteClaim">Paste Claim</label>
-                                <input type="text" className="form-control" id="pasteClaim" value={this.state.pasteClaim} onChange={this.handlePasteClaim}></input>
-                            </div>
-                        </div>
-                    </>
-                }
-                <div className="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                    <div className="btn-group mr-3" role="group" aria-label="Save Locally">
-                        <button type="button" value="Save Locally" className="btn btn-primary" onClick={this.handleSubmit}>Save Locally</button>
-                    </div>
-                    <div className="btn-group mr-3" role="group" aria-label="Cancel">
-                        <button type="button" value="Cancel" className="btn btn-secondary" onClick={this.handleCancel}>Cancel</button>
-                    </div>
-                    {this.state.originalClaimEdge &&
-                        <div className="btn-group ml-5" role="group" aria-label="Delete">
-                            <button type="button" value="Delete" className="btn btn btn-outline-danger" onClick={this.handleDelete}>Delete</button>
-                        </div>
-                    }
-                </div>
-                <span>ID: {this.claim.id}</span>
-            </form>
+                        <span>ID: {this.state.claim.id}</span>
+                    </form>
+                }</>
         );
     }
 }

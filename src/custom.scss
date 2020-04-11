@@ -153,6 +153,28 @@ rs-score {
     overflow: hidden;
   }
 
+  .content p:first-of-type {
+    display: inline;
+  }
+
+  .content p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .score-description {
+    max-width: 0px;
+    display: inline-block;
+    overflow: hidden;
+    transition: 0.5s;
+    transition: 0.5s;
+    max-width: 0;
+  }
+  .s-scoreDescription {
+    .score-description {
+      max-width: 100%;
+    }
+  }
+
   .expander {
     cursor: pointer;
     fill: white;
@@ -170,23 +192,28 @@ rs-score {
 
   .editor-enter {
     height: 0;
+    overflow: hidden;
   }
   .editor-enter-active {
     height: 200px;
     transition: height 500ms;
+    overflow: hidden;
   }
   .editor-enter-done {
     height: unset;
     transition: height 500ms;
+    overflow: hidden;
   }
   .editor-exit {
     height: 200px;
+    overflow: hidden;
   }
   .editor-exit-active {
     height: 0px;
     transition: height 500ms;
     border-bottom: 2px solid rgba(0, 0, 0, 0.2);
     max-width: 600px;
+    overflow: hidden;
   }
 
   .editor-button {
@@ -230,6 +257,7 @@ rs-score {
     max-height: 0;
     overflow: hidden;
     transition: 1s;
+    max-width: 610px;
   }
 
   .show-settings {
@@ -278,6 +306,15 @@ rs-score {
     margin-right: 20px;
     position: relative;
     overflow: hidden;
+    font-size: small;
+    span {
+      opacity: 0.8;
+      position: absolute;
+      top: 8px;
+    }
+    span.max {
+      right: 0;
+    }
   }
 
   .lines-inner {
@@ -295,12 +332,23 @@ rs-score {
     width: 17px;
     border: 4px solid rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    transition: 2s;
+    transition: 1s;
     position: relative;
   }
 
-  .s-lines .lines {
-    height: 20px;
+  .edit-lines {
+    max-height: 0;
+    transition: 1s;
+    overflow: hidden;
   }
 
+  .s-lines {
+    .lines {
+      height: 20px;
+      overflow: unset;
+    }
+    .edit-lines {
+      max-height: 150px;
+    }
+  }
 }

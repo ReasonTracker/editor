@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Claim, Score, Messenger, iScore, Action, iClaimEdge } from "@reasonscore/core";
+import { RepositoryLocalPure, Claim, Score, Messenger, iScore, Action, iClaimEdge, iClaim } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
@@ -18,7 +18,7 @@ type MyState = {
     editorVisible: boolean,
     addMode: boolean,
     score: iScore,
-    claim: Claim,
+    claim: iClaim,
     childScores: iScore[],
     claimEdge?: iClaimEdge,
 };
@@ -42,7 +42,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
     async componentDidMount() {
         const score = await this.props.repository.getScore(this.props.scoreId);
-        let claim = new Claim();
+        let claim = new Claim() as iClaim;
         //TODO: Figure out how to remove Children Visible completely
         let childrenVisible = this.state.childrenVisible;
         if (score) {
@@ -149,16 +149,17 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const claim = this.state.claim;
         const childScores = this.state.childScores;
         let proMain = props.proMainContext;
-        let scoreText = `${Math.round(score.confidence * 100)}%`
+        let scoreNumbers = `${Math.round(score.confidence * 100)}%`
+        let scoreDescription = `-`
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;
             }
             if (score.affects === "relevance") {
-                scoreText = score.pro?"X":"÷";
-                scoreText += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
+                scoreNumbers = score.pro ? "X" : "÷";
+                scoreNumbers += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
-                scoreText = `${Math.round(score.confidence * score.relevance * 100)}`
+                scoreNumbers = `${Math.round(score.confidence * score.relevance * 100)}`
             }
         }
 
@@ -217,15 +218,19 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
                                 </div>
                                 <div className="lines-inner"></div>
-
+                    <span>{claim.labelMin}</span>
+                                <span className="max">{claim.labelMax}</span>
                             </div>
-                            <span className={`numbers`}>
-                                {scoreText}
+                            <span className={'numbers'}>
+                                {scoreNumbers}
                             </span>
-                            <span dangerouslySetInnerHTML={createMarkup()}>
+                            <span className={'score-description'}>
+                                {scoreDescription}
+                            </span>
+                            <span className={'content'} dangerouslySetInnerHTML={createMarkup()}>
                             </span>
                         </div>
-                        <svg className="callout"  width="30px" height="30px">
+                        <svg className="callout" width="30px" height="30px">
                             <use href="#callout" />
                         </svg>
                     </div>
