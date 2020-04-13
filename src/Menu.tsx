@@ -172,8 +172,13 @@ class Menu extends React.Component<MyProps, MyState> {
                 <div className={"settings-grid "}>
                     {Object.keys(this.state.settings).map((setting) => (
                         <div key={setting}>
-                            <input type="checkbox" id={'s-' + setting} checked={this.state.settings[setting]} onChange={this.handleSetting.bind(this, setting)} />
-                            <label htmlFor={'s-' + setting}>{setting}</label>
+                            {// TODO: make setting componant handle more than booleans
+                            (this.state.settings[setting] === true || this.state.settings[setting] === false) &&
+                                <>
+                                    <input type="checkbox" id={'s-' + setting} checked={this.state.settings[setting]} onChange={this.handleSetting.bind(this, setting)} />
+                                    <label htmlFor={'s-' + setting}>{setting}</label>
+                                </>
+                            }
                         </div>
                     ))}
                 </div>
