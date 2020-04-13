@@ -50,7 +50,7 @@ class Menu extends React.Component<MyProps, MyState> {
         const rsDataCopy = this.getData();
 
         //Save the scores to Firebase
-        window.RsDatabase.doc("rsData").set(rsDataCopy)
+        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCopy)
             .then(function () {
                 console.log("Document successfully written!");
             })

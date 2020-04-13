@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action} from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -15,51 +15,54 @@ declare global {
 async function startApp() {
   const repository = new RepositoryLocalPure();
   const messenger = new Messenger();
+  const settings = window.RsSettings;
+  settings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
+
   let doc
+
+  if (settings.dbCollection === null) {
+    settings.dbCollection = "rsData"
+  }
 
   //Populate the Reporsitory
   if (window.RsDatabase) {
-    doc = await window.RsDatabase.doc("rsData").get()
+    doc = await window.RsDatabase.doc(settings.dbCollection).get()
   }
   if (doc && doc.exists) {
     repository.rsData = doc.data();
   } else if (window.RsActions) {
     repository.notify(window.RsActions)
   } else {
-    window.RsSettings.DbNotAvailable = true;
+    settings.DbNotAvailable = true;
   }
 
   //Look in the HTML to see what we need to prep
   //Loop through the html scores and start an app for each
-  {
-    const scoreElements = document.getElementsByTagName('rs-score');
-    for (const scoreElement of scoreElements) {
-      const possibleScoreId = scoreElement.getAttribute('score-tree-Id');
-      let scoreTreeId = "";
-      if (possibleScoreId) {
-        scoreTreeId = possibleScoreId;
-      }
-
-      //TODO: Check if the scoreTree, Score and Claim exist. If not, create them
-      const scoreTree = await repository.getScoreTree(scoreTreeId)
-      if (scoreTree) {
-        await calculateScoreActions({
-          actions: [new Action(scoreTree,undefined,"add_scoreTree")],
-          repository,
-        })
-      }
-
-      ReactDOM.render(<App
-        scoreTreeId={scoreTreeId}
-        repository={repository}
-        messenger={messenger}
-        settings={window.RsSettings}
-      />, scoreElement);
-
+  const scoreElements = document.getElementsByTagName('rs-score');
+  for (const scoreElement of scoreElements) {
+    const possibleScoreId = scoreElement.getAttribute('score-tree-Id');
+    let scoreTreeId = "";
+    if (possibleScoreId) {
+      scoreTreeId = possibleScoreId;
     }
+
+    //TODO: Check if the scoreTree, Score and Claim exist. If not, create them
+    const scoreTree = await repository.getScoreTree(scoreTreeId)
+    if (scoreTree) {
+      await calculateScoreActions({
+        actions: [new Action(scoreTree, undefined, "add_scoreTree")],
+        repository,
+      })
+    }
+
+    ReactDOM.render(<App
+      scoreTreeId={scoreTreeId}
+      repository={repository}
+      messenger={messenger}
+      settings={window.RsSettings}
+    />, scoreElement);
+
   }
-
-
 }
 startApp();
 

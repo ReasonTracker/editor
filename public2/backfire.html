@@ -11,8 +11,7 @@
       startClosed: false,
       portData: true,
       scoreDescription: false,
-      dbCollection: "",
-  }
+    }
 
     //Enable expanding children
     window.RsExpandChildren = function (elementId) {
@@ -94,7 +93,7 @@
         //Add Sirestore to the global for the page so it can be accessed by other objects on the page
         window.RsDatabase = firebase
           .firestore()
-          .collection("beta01")
+          .collection("backfire")
 
         //Detect Logged in
         firebase
