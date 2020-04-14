@@ -150,7 +150,7 @@ class Menu extends React.Component<MyProps, MyState> {
         return (<><div className="Content">
             <div style={{ paddingBottom: ".5rem", maxWidth: "600px", margin: "10px" }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                 <div className="btn-group mr-3" role="group" aria-label="Save">
-                    {!settings.DbNotAvailable &&
+                    {!settings.DbNotAvailable && settings.editable && settings.saveToCloud &&
                         <button onClick={this.handleSave} type="button" value="Submit" className="btn btn-secondary">Save to cloud</button>
                     }
                     {settings.portData && <>

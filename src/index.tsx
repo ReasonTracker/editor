@@ -16,7 +16,6 @@ async function startApp() {
   const repository = new RepositoryLocalPure();
   const messenger = new Messenger();
   const settings = window.RsSettings;
-  settings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
 
   let doc
 
