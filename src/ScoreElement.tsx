@@ -164,15 +164,19 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         scoreDescription += ": "
 
         //Score Numbers
+        let scoreImpact = score.confidence;
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;
+            }
+            if (!score.reversible && score.confidence < 0 ){
+                scoreImpact = 0;
             }
             if (score.affects === "relevance") {
                 scoreNumbers = score.pro ? "X" : "÷";
                 scoreNumbers += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
-                scoreNumbers = `${Math.round(score.confidence * score.relevance * 100)}`
+                scoreNumbers = `${Math.round(scoreImpact * score.relevance * 100)}`
             }
         }
 

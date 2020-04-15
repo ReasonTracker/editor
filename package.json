@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@reasonscore/core": "^0.2.26",
+    "@reasonscore/core": "^0.2.27",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.35",
     "@types/react": "^16.9.34",
@@ -23,7 +23,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "delete_node_modules": "rmdir /q/s node_modules"
   },
   "eslintConfig": {
     "extends": "react-app"
