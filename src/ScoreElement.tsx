@@ -150,7 +150,20 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const childScores = this.state.childScores;
         let proMain = props.proMainContext;
         let scoreNumbers = `${Math.round(score.confidence * 100)}%`
-        let scoreDescription = `-`
+        const settings = this.props.settings;
+
+        //Score Description
+        let scoreDescription = ""
+        if (settings.scoreDescriptions){
+            for (const descItem of settings.scoreDescriptions.confidence){
+                if (score.confidence > descItem.min){
+                    scoreDescription = descItem.desc;
+                }
+            }
+        }
+        scoreDescription += ": "
+
+        //Score Numbers
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;

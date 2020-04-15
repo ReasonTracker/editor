@@ -22,7 +22,7 @@ async function startApp() {
   if (settings.dbCollection === null) {
     settings.dbCollection = "rsData"
   }
-
+  
   //Populate the Reporsitory
   if (window.RsDatabase) {
     doc = await window.RsDatabase.doc(settings.dbCollection).get()
@@ -30,8 +30,7 @@ async function startApp() {
   if (doc && doc.exists) {
     repository.rsData = doc.data();
   } else if (window.RsActions) {
-    repository.notify(window.RsActions)
-  } else {
+    await repository.notify(window.RsActions)
     settings.DbNotAvailable = true;
   }
 

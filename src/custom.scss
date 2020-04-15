@@ -162,16 +162,19 @@ rs-score {
   }
 
   .score-description {
-    max-width: 0px;
     display: inline-block;
     overflow: hidden;
-    transition: 0.5s;
-    transition: 0.5s;
+    transition: 1s;
+    white-space: nowrap;
+    vertical-align: top;
+
     max-width: 0;
+    margin-right: 0;
   }
   .s-scoreDescription {
     .score-description {
       max-width: 100%;
+      margin-right: .3em;
     }
   }
 

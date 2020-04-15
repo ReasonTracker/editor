@@ -154,8 +154,8 @@ class Menu extends React.Component<MyProps, MyState> {
                         <button onClick={this.handleSave} type="button" value="Submit" className="btn btn-secondary">Save to cloud</button>
                     }
                     {settings.portData && <>
-                        <button onClick={this.handleExport} type="button" value="download" className="btn btn-secondary">Download/Export</button>
-                        <button onClick={this.handleImport} type="button" value="download" className="btn btn-secondary">Upload/Import</button>
+                        <button onClick={this.handleImport} type="button" value="download" className="btn btn-secondary">Import</button>
+                        <button onClick={this.handleExport} type="button" value="download" className="btn btn-secondary">Export</button>
                     </>}
 
                 </div>

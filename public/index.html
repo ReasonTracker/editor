@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- dev.html -->
+
 <head>
   <script> //Settings for this page
     window.RsSettings = {
@@ -11,6 +12,33 @@
       startClosed: false,
       portData: true,
       scoreDescription: true,
+      scoreDescriptions: {
+        confidence: [
+          { min: -10, desc: "Very Un-reasonable" },
+          { min: -.9, desc: "Un-reasonable" },
+          { min: -.5, desc: "Somewhat Un-reasonable" },
+          { min: -.1, desc: "Undecided" },
+          { min: .1, desc: "Somewhat Reasonable" },
+          { min: .5, desc: "Reasonable" },
+          { min: .9, desc: "Very Reasonable" },
+       ]
+      }
+    }
+
+    //Enable expanding children
+    window.RsExpandChildren = function (elementId) {
+      const expanderElement = window.document.getElementById("expander-" + elementId);
+      const childrenElement = window.document.getElementById("children-" + elementId);
+
+      if (childrenElement.classList.contains("hide")) {
+        childrenElement.classList.remove("hide");
+        expanderElement.classList.add("expanded");
+        expanderElement.classList.remove("collapsed");
+      } else {
+        childrenElement.classList.add("hide");
+        expanderElement.classList.remove("expanded");
+        expanderElement.classList.add("collapsed");
+      }
     }
 
     window.RsActions = [
@@ -177,9 +205,21 @@
         },
         "type": "add_score",
         "dataId": "topScore"
+      },
+      {
+        "newData": {
+          "confidence": 1,
+          "id": "ScoreTree",
+          "sourceClaimId": "topClaim",
+          "topScoreId": "topScore",
+          "type": "scoreTree"
+        },
+        "type": "add_scoreTree",
+        "dataId": "ScoreTree"
       }
     ]
   </script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -193,8 +233,7 @@
 </head>
 
 <body>
-  <rs-score score-id="topScore">
-  </rs-score>
+  <rs-score score-tree-id="ScoreTree"></rs-score>
 </body>
 
 </html>
