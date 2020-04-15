@@ -232,7 +232,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <div className={'claim-inner'}>
                             <div className="lines">
                                 <div className="lines-circle-container" >
-                                    <div className="lines-circle" style={{ left: score.confidence * 100 + "%" }}></div>
+                                    <div className="lines-circle" style={{ left: scoreImpact * 100 + "%" }}></div>
                                 </div>
                                 <div className="lines-inner"></div>
                                 <span className="min">{claim.labelMin}</span>
