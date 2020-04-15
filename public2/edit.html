@@ -6,13 +6,25 @@
     window.RsSettings = {
       disableExternalDb: false,
       numbers: true,
+      largeNumbers: false,
       lines: false,
-      editable: true,
+      editable: false,
       startClosed: false,
       portData: true,
       scoreDescription: false,
       saveToCloud: false,
-      //dbCollection: "f-flyway"
+      scoreDescription: true,
+      scoreDescriptions: {
+        confidence: [
+          { min: -10, desc: "Very Un-reasonable" },
+          { min: -.9, desc: "Un-reasonable" },
+          { min: -.5, desc: "Somewhat Un-reasonable" },
+          { min: -.1, desc: "Undecided" },
+          { min: .1, desc: "Somewhat Reasonable" },
+          { min: .5, desc: "Reasonable" },
+          { min: .9, desc: "Very Reasonable" },
+        ]
+      }
     }
 
     window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");

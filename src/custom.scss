@@ -110,7 +110,7 @@ rs-score {
   }
 
   .claim-inner {
-    padding: 0px 0px 0px 10px;
+    padding: 0px 0px 0px 20px;
     min-height: 2.5em;
     max-height: 6em;
     overflow-y: auto;
@@ -174,7 +174,9 @@ rs-score {
   .s-scoreDescription {
     .score-description {
       max-width: 100%;
-      margin-right: .3em;
+      padding-right: 0.3em;
+      border-right: 1px solid #ffffff91;
+      margin-right: 0.3em;
     }
   }
 
@@ -182,8 +184,8 @@ rs-score {
     cursor: pointer;
     fill: white;
     position: absolute;
-    bottom: 2px;
-    left: 4px;
+    bottom: 9px;
+    left: opx;
     z-index: 2;
     transition: transform 0.3s;
     opacity: 0.5;
@@ -282,21 +284,33 @@ rs-score {
   .numbers {
     display: block;
     float: left;
-    font-size: 2.3em;
     transition: 0.5s;
     overflow: hidden;
-    padding-left: 5px;
-    opacity: 0.75;
-    line-height: 1;
-    top: -2px;
     position: relative;
     /* Closed */
     max-width: 0px;
-    padding-right: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
   }
 
   .s-numbers .numbers {
     max-width: 10em;
+    padding-right: 0.3em;
+    border-right: 1px solid #ffffff91;
+    margin-right: 0.3em;
+    min-width: 2em;
+    text-align: right;
+  }
+
+  .s-largeNumbers .numbers {
+    font-size: 2.3em;
+    line-height: 1;
+    top: -2px;
+    opacity: 0.75;
+    border: none;
+    margin: 0;
+    min-width: unset;
     padding-right: 0.2em;
   }
 

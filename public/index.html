@@ -5,12 +5,15 @@
 <head>
   <script> //Settings for this page
     window.RsSettings = {
-      disableExternalDb: true,
+      disableExternalDb: false,
       numbers: true,
+      largeNumbers: false,
       lines: false,
-      editable: true,
+      editable: false,
       startClosed: false,
       portData: true,
+      scoreDescription: false,
+      saveToCloud: false,
       scoreDescription: true,
       scoreDescriptions: {
         confidence: [
@@ -21,7 +24,7 @@
           { min: .1, desc: "Somewhat Reasonable" },
           { min: .5, desc: "Reasonable" },
           { min: .9, desc: "Very Reasonable" },
-       ]
+        ]
       }
     }
 

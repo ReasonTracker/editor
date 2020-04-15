@@ -161,7 +161,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 }
             }
         }
-        scoreDescription += ": "
 
         //Score Numbers
         let scoreImpact = score.confidence;
