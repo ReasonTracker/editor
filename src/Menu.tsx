@@ -32,7 +32,17 @@ class Menu extends React.Component<MyProps, MyState> {
             settings: {
                 ...{
                     numbers: false,
-                    lines: true
+                    lines: true,
+                    scoreDescriptions: {
+                        impact: [
+                          { min: -10, desc: "Myth" },
+                          { min: -.1, desc: "Unsupported" },
+                          { min: .1, desc: "Weak" },
+                          { min: .5, desc: "" },
+                          { min: .9, desc: "Srong" },
+                          { min: 1.1, desc: "Very Srong" },
+                        ]
+                      },
                 }, ...this.props.settings
             },
             settingsOpen: false,

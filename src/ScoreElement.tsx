@@ -152,23 +152,13 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         let scoreNumbers = `${Math.round(score.confidence * 100)}%`
         const settings = this.props.settings;
 
-        //Score Description
-        let scoreDescription = ""
-        if (settings.scoreDescriptions){
-            for (const descItem of settings.scoreDescriptions.confidence){
-                if (score.confidence > descItem.min){
-                    scoreDescription = descItem.desc;
-                }
-            }
-        }
-
         //Score Numbers
         let scoreImpact = score.confidence;
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;
             }
-            if (!score.reversible && score.confidence < 0 ){
+            if (!score.reversible && score.confidence < 0) {
                 scoreImpact = 0;
             }
             if (score.affects === "relevance") {
@@ -178,6 +168,20 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 scoreNumbers = `${Math.round(scoreImpact * score.relevance * 100)}`
             }
         }
+
+        //Score Description
+        let scoreDescription = ""
+        if (settings.scoreDescriptions) {
+            for (const descItem of settings.scoreDescriptions.impact) {
+                if (score.confidence * score.relevance >= descItem.min) {
+                    scoreDescription = descItem.desc;
+                }
+            }
+        }
+        if (!childScores.length){
+            scoreDescription = "Assumed " + scoreDescription
+        }
+        scoreDescription += proMain? " Pro" : " Con";
 
         //Prioritize the children for the display order
         //TODO: move score sorting to the repository to reduce duplicate processing
