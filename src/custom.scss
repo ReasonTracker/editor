@@ -5,6 +5,7 @@ rs-score {
   @import "~bootstrap/scss/bootstrap.scss";
 
   display: block;
+  max-width: 700px;
 
   ul {
     padding: 0, 0, 0, 15px;
@@ -150,7 +151,7 @@ rs-score {
     background-color: white;
     border-radius: 10px;
     transition: max-height 500ms ease-in;
-    display: inline-block;
+    // display: inline-block;
   }
 
   .content p:first-of-type {
@@ -317,10 +318,6 @@ rs-score {
   .lines {
     transition: 0.5s;
     height: 0;
-    border: solid 2px rgba(255, 255, 255, 0.5);
-    border-top: none;
-    border-bottom: none;
-    margin-right: 20px;
     position: relative;
     overflow: hidden;
     font-size: small;
@@ -328,7 +325,7 @@ rs-score {
     span {
       opacity: 0.8;
       position: absolute;
-      top: -8px;
+      top: -3px;
     }
     span.min {
       left: 5px;
@@ -343,14 +340,15 @@ rs-score {
   }
 
   .lines-inner {
-    border-bottom: solid 2px rgba(255, 255, 255, 0.5);
+    border: solid 2px rgba(255, 255, 255, 0.5);
+    border-top: none;
     height: 50%;
   }
   .lines-circle-container {
     position: absolute;
     left: -9px;
     width: 100%;
-    top: 1px;
+    top: 5px;
   }
   .lines-circle {
     height: 17px;
@@ -369,8 +367,7 @@ rs-score {
 
   .s-lines {
     .lines {
-      height: 20px;
-      overflow: unset;
+      height: 30px;
     }
     .edit-lines {
       max-height: 150px;
