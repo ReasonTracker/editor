@@ -170,18 +170,27 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         }
 
         //Score Description
-        let scoreDescription = ""
+        let scoreDescription = "";
         if (settings.scoreDescriptions) {
-            for (const descItem of settings.scoreDescriptions.impact) {
-                if (score.confidence * score.relevance >= descItem.min) {
-                    scoreDescription = descItem.desc;
+            if (score.affects === "relevance") {
+                scoreDescription = "Importance";
+                if (score.pro){
+                    scoreDescription = "Increases " + scoreDescription;
+                } else {
+                    scoreDescription = "Decreases " + scoreDescription;
                 }
+            } else {
+                for (const descItem of settings.scoreDescriptions.impact) {
+                    if (score.confidence * score.relevance >= descItem.min) {
+                        scoreDescription = descItem.desc;
+                    }
+                }
+                scoreDescription += proMain ? " Pro" : " Con";
             }
         }
-        if (!childScores.length){
-            scoreDescription = "Assumed " + scoreDescription
+        if (!childScores.length) {
+            scoreDescription = "Assumed, " + scoreDescription
         }
-        scoreDescription += proMain? " Pro" : " Con";
 
         //Prioritize the children for the display order
         //TODO: move score sorting to the repository to reduce duplicate processing
@@ -207,7 +216,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             });
 
         }
-
 
         const proMainText = proMain ? "pro" : "con";
 
