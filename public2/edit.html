@@ -8,11 +8,11 @@
       numbers: true,
       largeNumbers: false,
       lines: false,
-      editable: false,
+      editable: true,
       startClosed: false,
       portData: true,
       scoreDescription: false,
-      saveToCloud: false,
+      saveToCloud: true,
       scoreDescription: true,
       scoreDescriptions: {
         confidence: [
@@ -84,7 +84,7 @@
 
 <body>
   <div id="UserName" style="text-align: right;min-height: 24px;"></div>
-  <div id="firebaseui-auth-container"></div>
+  <div id="firebaseui-auth-container" style="display: none;"></div>
   <rs-score score-tree-id="ScoreTree"></rs-score>
   
   <!-- Firestore Script, This whole script can be removed if firebase is not in use -->
