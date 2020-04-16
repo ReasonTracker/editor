@@ -13,6 +13,8 @@ rs-score {
 
   li {
     list-style-type: none;
+    width: 100%;
+    margin-left: 30px;
   }
 
   .container {
@@ -87,6 +89,10 @@ rs-score {
     transition: 0.75s;
   }
 
+  .children.hide {
+    display: block;
+  }
+
   .children.hide li > div > .claim-hider {
     max-height: 0px;
   }
@@ -98,9 +104,7 @@ rs-score {
     max-height: 100px;
     transition: max-height 500ms ease-in;
   }
-  // .score-enter-done > div > .claim-hider {
-  //   max-height: unset;
-  // }
+
   .score-exit > div > .claim-hider {
     max-height: 100px;
   }
@@ -127,7 +131,6 @@ rs-score {
   }
 
   .claim-inner::-webkit-scrollbar-track {
-    //box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 5px;
   }
@@ -142,15 +145,12 @@ rs-score {
   }
 
   .claim-outer > ul {
-    margin: 0 0 0 20px;
-    width: 100%;
     padding: 0;
     border-left: 1px solid rgba(0, 0, 0, 0.2);
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
     background-color: white;
     border-radius: 10px;
     transition: max-height 500ms ease-in;
-    overflow: hidden;
+    display: inline-block;
   }
 
   .content p:first-of-type {
