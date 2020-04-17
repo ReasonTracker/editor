@@ -128,7 +128,7 @@ rs-score {
   .claim-inner {
     padding: 0px 0px 0px 20px;
     min-height: 2.5em;
-    max-height: 6em;
+    max-height: 4.5em;
     overflow-y: auto;
     margin-right: 20px;
   }
@@ -378,6 +378,9 @@ rs-score {
     }
     .edit-lines {
       max-height: 150px;
+    }
+    .claim-inner {
+      max-height: 6.4em;
     }
   }
 }
