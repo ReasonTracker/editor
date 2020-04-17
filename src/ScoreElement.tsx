@@ -219,12 +219,14 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         const proMainText = proMain ? "pro" : "con";
 
-        //Commonmark
         function createMarkup() {
             var reader = new commonmark.Parser({});
             var writer = new commonmark.HtmlRenderer({ safe: true });
             var parsed = reader.parse(claim.content);
-            return { __html: writer.render(parsed) };
+            var html: string = writer.render(parsed)
+            //Add target="_blank"
+            html = html.replace(/href="/g,' target="_blank" href="' );
+            return { __html: html };
         }
 
         return (

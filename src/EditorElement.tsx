@@ -63,11 +63,15 @@ class EditorElement extends React.Component<MyProps, MyState> {
     handleSubmit = () => {
         const actions: Action[] = [];
         if (this.state.pasteClaim && this.state.claimEdge) {
-            actions.push(
-                new Action(
-                    this.state.claimEdge, undefined, "add_claimEdge"
+            if (this.state.claimEdge) {
+                const claimEdge = this.state.claimEdge;
+                claimEdge.childId = this.state.pasteClaim;
+                actions.push(
+                    new Action(
+                        this.state.claimEdge, undefined, "add_claimEdge"
+                    )
                 )
-            )
+            }
         } else {
             actions.push(
                 new Action(
