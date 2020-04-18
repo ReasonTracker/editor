@@ -19,13 +19,13 @@ rs-score {
     border-left: 1px solid rgba(0, 0, 0, 0.2);
   }
 
-  li:last-child{
+  li:last-child {
     border-bottom-left-radius: 10px;
     padding-bottom: 10px;
-    transition: .5s;
+    transition: 0.5s;
   }
 
-  .hide li:last-child{
+  .hide li:last-child {
     padding-bottom: 0;
   }
 
@@ -168,6 +168,11 @@ rs-score {
 
   .content p:last-of-type {
     margin-bottom: 0;
+  }
+
+  .content img {
+    max-width: 40%;
+    float: right;
   }
 
   .score-description {
@@ -328,42 +333,42 @@ rs-score {
     position: relative;
     overflow: hidden;
     font-size: small;
-    top: 5px;
     span {
       opacity: 0.8;
       position: absolute;
-      top: -3px;
+      bottom: 0px;
     }
     span.min {
-      left: 5px;
+      left: -30px;
     }
     span.mid {
       left: 50%;
       transform: translate(-50%);
     }
     span.max {
-      right: 5px;
+      right: -30px;
+    }
+    .tic {
+      width: 0;
+      height: 10px;
+      position: absolute;
+      border: 1px solid #ffffff91;
+      bottom: -5px;
+      transform: translate(-50%);
     }
   }
 
   .lines-inner {
-    border: solid 2px rgba(255, 255, 255, 0.5);
-    border-top: none;
-    height: 50%;
-  }
-  .lines-circle-container {
-    position: absolute;
-    left: -9px;
-    width: 100%;
-    top: 5px;
-  }
-  .lines-circle {
-    height: 17px;
-    width: 17px;
-    border: 4px solid rgba(255, 255, 255, 0.6);
-    border-radius: 10px;
-    transition: 1s;
+    border-bottom: 1px solid #ffffff91;
+    margin: 0 30px;
+    height: 20px;
     position: relative;
+  }
+
+  .lines-pointer {
+    transform: translate(-50%);
+    fill: #ffffff91;
+    position: absolute;
   }
 
   .edit-lines {

@@ -174,7 +174,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         if (settings.scoreDescriptions) {
             if (score.affects === "relevance") {
                 scoreDescription = "Importance";
-                if (score.pro){
+                if (score.pro) {
                     scoreDescription = "Increases " + scoreDescription;
                 } else {
                     scoreDescription = "Decreases " + scoreDescription;
@@ -225,7 +225,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             var parsed = reader.parse(claim.content);
             var html: string = writer.render(parsed)
             //Add target="_blank"
-            html = html.replace(/href="/g,' target="_blank" href="' );
+            html = html.replace(/href="/g, ' target="_blank" href="');
             return { __html: html };
         }
 
@@ -244,13 +244,18 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         }
                         <div className={'claim-inner'}>
                             <div className="lines">
-                                <div className="lines-circle-container" >
-                                    <div className="lines-circle" style={{ left: scoreImpact * 100 + "%" }}></div>
-                                </div>
-                                <div className="lines-inner"></div>
-                                <span className="min">{claim.labelMin}</span>
+                                <div className="lines-inner">
+                                    <svg className="lines-pointer" style={{ left: scoreImpact * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
+                                        <path d="m 0,1.3 a 10,10 0 0 1 10,0 L 5,10 Z" />
+                                    </svg>
+                                    <span className="min">{claim.labelMin}</span>
                                 <span className="mid">{claim.labelMid}</span>
                                 <span className="max">{claim.labelMax}</span>
+                                <div className="tic" style={{left:'0%'}}></div>
+                                <div className="tic" style={{left:'33.3%'}}></div>
+                                <div className="tic" style={{left:'66.6%'}}></div>
+                                <div className="tic" style={{left:'100%'}}></div>
+                                </div>
                             </div>
                             <span className={'numbers'}>
                                 {scoreNumbers}
