@@ -11,6 +11,13 @@
 <body>
 </body>
 <script>
+    // Important Environemtn Variables
+    var thrustForce = .1;
+        stiffness = .05;
+        length = 0;
+        indicatorStiffness = .04;
+        friction = .1;
+
     var Engine = Matter.Engine,
         Render = Matter.Render,
         Runner = Matter.Runner,
@@ -65,37 +72,47 @@
         {
             render:
             {
-                fillStyle: '#ffffff88',
+                fillStyle: '#ffffff',
                 lineWidth: 0,
                 opacity: .5
             }
         }
     );
-    var constraintMainTop = Constraint.create({
-        bodyA: bodyMain,
-        pointA: { x: 0, y: -50 },
-        pointB: { x: 400, y: 250 },
-        stiffness: .02,
-        damping: .1,
-        length: 0,
+
+    // base constraints
+    const baseLinkConstraint = {
+        stiffness: stiffness,
+        length: length,
+        damping: 0,
         render:
         {
             strokeStyle: "#ffffff33"
+        }
+    }
+    var baseMainTopConstraint = {
+        ...baseLinkConstraint, ...{
+            stiffness: indicatorStiffness,
+            length: 0,
+            bodyA: bodyMain,
+        }
+    }
+    var constraintMainTop = Constraint.create({
+        ...baseMainTopConstraint, ...{
+            pointA: { x: 0, y: -50 },
+            pointB: { x: 400, y: 250 },
         }
     });
     var constraintMainBottom = Constraint.create({
-        bodyA: bodyMain,
-        pointA: { x: 0, y: 50 },
-        pointB: { x: 400, y: 350 },
-        stiffness: .02,
-        damping: .1,
-        length: 0,
-        render:
-        {
-            strokeStyle: "#ffffff33"
+        ...baseMainTopConstraint, ...{
+            pointA: { x: 0, y: 50 },
+            pointB: { x: 400, y: 350 },
         }
     });
-    World.add(world, [bodyMain, constraintMainTop, constraintMainBottom]);
+    World.add(world, [
+        bodyMain,
+        constraintMainTop,
+        constraintMainBottom
+    ]);
     const ships = [];
 
     function createShip(fraction, pro, parent) {
@@ -113,19 +130,27 @@
         };
 
         const width = 100 * fraction;
-        result.body = Bodies.rectangle(400, 300, width, 50 * fraction, { render: style });
+        partA = Bodies.polygon(400, 300, 3, 50 * fraction, { render: style });
+        if (pro) {
+            Body.setAngle(partA, 180 * (Math.PI / 180))
+        }
+        partB = Bodies.circle(400, 300, 70 * fraction, { render: { fillStyle: '#ffffff11', } });
+        //partB = Bodies.polygon(400, 300, 5,70 * fraction, { render: { fillStyle: '#ffffff11', } });
+        result.body = Body.create({
+            frictionAir: friction,
+            parts: [partA, partB]
+        });
 
         result.constraint = Constraint.create({
-            bodyA: parent,
-            pointA: { x: 0, y: 0 },
-            bodyB: result.body,
-            pointB: { x: width / 2, y: 0 },
-            stiffness: 0.1,
-            damping: 0.1,
-            length: 100,
-            render:
-            {
-                strokeStyle: "#ffffff33"
+            ...baseLinkConstraint, ...{
+                bodyA: parent,
+                pointA: { x: 0, y: 0 },
+                bodyB: result.body,
+                pointB: {
+                    //x: width / 2 * (pro ? -1 : 1),
+                    x: 30 * fraction * (pro ? -1 : 1),
+                    y: 0
+                },
             }
         });
         result.thrust = function () {
@@ -133,11 +158,11 @@
                 result.body,
                 result.body.position,
                 {
-                    x: result.fraction * .05 * (result.pro ? 1 : -1),
+                    x: result.fraction * thrustForce * (result.pro ? 1 : -1),
                     y: 0
                 })
         }
-        World.add(world, [result.body, result.constraint]);
+        World.add(world, [result.constraint, result.body]);
         ships.push(result)
         return result;
     }
@@ -153,16 +178,11 @@
         result.body = Bodies.circle(400, 300, 10, { render: style });
 
         result.constraint = Constraint.create({
-            bodyA: parent,
-            pointA: { x: 0, y: 0 },
-            bodyB: result.body,
-            pointB: { x: 0, y: 0 },
-            stiffness: 0.1,
-            damping: 0.1,
-            length: 100,
-            render:
-            {
-                strokeStyle: "#ffffff33"
+            ...baseLinkConstraint, ...{
+                bodyA: parent,
+                pointA: { x: 0, y: 0 },
+                bodyB: result.body,
+                pointB: { x: 0, y: 0 },
             }
         });
         World.add(world, [result.body, result.constraint]);
@@ -172,18 +192,30 @@
 
     //Add all the ships and nodules
     const pro = true, con = false
+    //const ship1 = createShip(1, pro, bodyMain)
+
     const nodule1 = createNodule(bodyMain)
-    const ship1 = createShip(.25, pro, nodule1.body)
-    const ship2 = createShip(.25, pro, nodule1.body)
-    const ship4 = createShip(.5, con, bodyMain)
-    // createShip(.1666, pro, bodyMain);
-    // createShip(.1666, pro, bodyMain);
-    // const ship1 = createShip(.5, pro, bodyMain);
-    // createShip(.1666, con, ship1.body);
+    const ship1 = createShip(.2, pro, nodule1.body)
+    const ship2 = createShip(.2, pro, nodule1.body)
+    const ship4 = createShip(.6, pro, bodyMain)
 
     Events.on(engine, 'beforeUpdate', function (event) {
+
+        //Stop the score indicator from rotating
+        Body.setAngle(bodyMain, 0);//90 * (Math.PI/180));
+        Body.setAngularVelocity(bodyMain, 0);//90 * (Math.PI/180));
+
         for (const ship of ships) {
             ship.thrust();
+
+            //Stop the ships from rotating
+            Body.setAngle(ship.body, 0);//90 * (Math.PI/180));
+            Body.setAngularVelocity(ship.body, 0);//90 * (Math.PI/180));
+            const v = ship.body.velocity;
+            // v.x = v.x * .1;
+            // v.y = v.y * .1;
+            // Body.setVelocity(ship.body, v);
+
         }
     });
 
