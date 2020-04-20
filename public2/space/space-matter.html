@@ -86,7 +86,7 @@
         'category': 2,
         'mask': 0,
     }
-    
+
     const rulerOptions = {
         isStatic: true,
         collisionFilter: noCollision,
@@ -174,18 +174,24 @@
         };
 
         const width = 100 * fraction;
-        partA = Bodies.polygon(400, 300, 3, baseSize * fraction, { render: style });
+        tip = Bodies.polygon(400, 300, 3, baseSize * fraction, { render: style });
+        line = Bodies.rectangle(
+            400 + (((baseSize * fraction) / 2) * (pro ? -1 : +1)),// + ((baseSize / 2) * (pro ? +1 : -1))
+                300,
+                (baseSize * fraction),
+                (baseSize * fraction) / 2,
+                { render: style })
         if (pro) {
-            Body.setAngle(partA, 180 * (Math.PI / 180))
+            Body.setAngle(tip, 180 * (Math.PI / 180))
         }
-        partB = Bodies.circle(400, 300,
+        spacer = Bodies.circle(400, 300,
             (baseSize * fraction) + (baseSize / 6),
             { render: { fillStyle: '#ffffff02', } }
         );
         //partB = Bodies.polygon(400, 300, 5,70 * fraction, { render: { fillStyle: '#ffffff11', } });
         result.body = Body.create({
             frictionAir: friction,
-            parts: [partB, partA]
+            parts: [spacer, line, tip]
         });
 
         result.constraint = Constraint.create({
@@ -195,7 +201,7 @@
                 bodyB: result.body,
                 pointB: {
                     //x: width / 2 * (pro ? -1 : 1),
-                    x: 30 * fraction * (pro ? -1 : 1),
+                    x: 100 * fraction * (pro ? -1 : 1),
                     y: 0
                 },
             }
