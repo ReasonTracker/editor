@@ -13,11 +13,11 @@
 <script>
     // Important Environemtn Variables
     var thrustForce = .1;
-    stiffness = .1;
-    length = 10;
+    stiffness = .05;
+    length = 30;
     indicatorStiffness = .04;
     friction = .1;
-    baseSize = 50;
+    baseSize = 100;
     {  //System Variables
         var Engine = Matter.Engine,
             Render = Matter.Render,
@@ -81,20 +81,39 @@
     }
 
     // add ruler
+    const noCollision = {
+        'group': -1,
+        'category': 2,
+        'mask': 0,
+    }
+    
     const rulerOptions = {
-        isStatic: true, collisionFilter: {
-            'group': -1,
-            'category': 2,
-            'mask': 0,
+        isStatic: true,
+        collisionFilter: noCollision,
+        render: {
+            lineWidth: 0,
+            fillStyle: '#ffffffaa',
         }
     }
-    World.add(world, [
-        Bodies.rectangle(400, 300, 200, 100, rulerOptions),
-    ]);
+    for (let step = 1; step < 10; step += 1) {
+        World.add(world, [
+            Bodies.rectangle(
+                300 + (step * 10), // X axis first group 
+                300, 1,
+                50 - (5 * step), //height of second group
+                rulerOptions),
+            Bodies.rectangle(
+                400 + (step * 10), // X axis second group
+                300, 1,
+                5 * step, //height of second group
+                rulerOptions)
+        ]);
+    }
 
     // add Score Tree
     var bodyMain = Bodies.rectangle(400, 300, 5, 100,
         {
+            collisionFilter: noCollision,
             render:
             {
                 fillStyle: '#ffffff',
@@ -159,11 +178,14 @@
         if (pro) {
             Body.setAngle(partA, 180 * (Math.PI / 180))
         }
-        partB = Bodies.circle(400, 300, 70 * fraction, { render: { fillStyle: '#ffffff00', } });
+        partB = Bodies.circle(400, 300,
+            (baseSize * fraction) + (baseSize / 6),
+            { render: { fillStyle: '#ffffff02', } }
+        );
         //partB = Bodies.polygon(400, 300, 5,70 * fraction, { render: { fillStyle: '#ffffff11', } });
         result.body = Body.create({
             frictionAir: friction,
-            parts: [partA, partB]
+            parts: [partB, partA]
         });
 
         result.constraint = Constraint.create({
@@ -179,6 +201,7 @@
             }
         });
         result.thrust = function () {
+            //apply an amount of force in the right direction based on the fraction of the whole
             Body.applyForce(
                 result.body,
                 result.body.position,
@@ -186,6 +209,11 @@
                     x: result.fraction * thrustForce * (result.pro ? 1 : -1),
                     y: 0
                 })
+
+            //Stop the ships from rotating
+            Body.setAngle(result.body, 0);//90 * (Math.PI/180));
+            Body.setAngularVelocity(result.body, 0);//90 * (Math.PI/180));
+
         }
         World.add(world, [result.constraint, result.body]);
         ships.push(result)
@@ -197,7 +225,7 @@
 
         const style = {
             lineWidth: 0,
-            fillStyle: '#ffffffaa',
+            fillStyle: '#ffffff88',
         };
 
         result.body = Bodies.circle(400, 300, 10, { render: style });
@@ -796,7 +824,12 @@
         if (childScoreIds) {
             for (const childScoreId of childScoreIds) {
                 const childScore = rsData.items[childScoreId];
-                const child = createShip(childScore.fraction, childScore.pro, parent.body) // TODO:proMain?
+                let child;
+                if (childScore.childCount) {
+                    child = createNodule(parent.body) // TODO:proMain?
+                } else {
+                    child = createShip(childScore.fraction, childScore.pro, parent.body) // TODO:proMain?
+                }
                 child.score = childScore;
                 createShipdandNodules(rsData, child);
             }
@@ -805,15 +838,9 @@
 
     const ships = [], pro = true, con = false
     //const parentShipdOrNodule = createShip(1, pro, bodyMain)
-    const parentShipdOrNodule = { body:bodyMain}
+    const parentShipdOrNodule = { body: bodyMain }
     parentShipdOrNodule.score = mainScore;
     createShipdandNodules(rsData, parentShipdOrNodule)
-
-
-    // const nodule1 = createNodule(bodyMain)
-    // const ship1 = createShip(.2, pro, nodule1.body)
-    // const ship2 = createShip(.2, pro, nodule1.body)
-    // const ship4 = createShip(.6, con, bodyMain)
 
     Events.on(engine, 'beforeUpdate', function (event) {
 
@@ -823,15 +850,6 @@
 
         for (const ship of ships) {
             ship.thrust();
-
-            //Stop the ships from rotating
-            Body.setAngle(ship.body, 0);//90 * (Math.PI/180));
-            Body.setAngularVelocity(ship.body, 0);//90 * (Math.PI/180));
-            const v = ship.body.velocity;
-            // v.x = v.x * .1;
-            // v.y = v.y * .1;
-            // Body.setVelocity(ship.body, v);
-
         }
     });
 
