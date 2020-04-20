@@ -1,0 +1,216 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reason Score Space Visualization</title>
+    <script src="matter.min.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+    var Engine = Matter.Engine,
+        Render = Matter.Render,
+        Runner = Matter.Runner,
+        Composites = Matter.Composites,
+        Common = Matter.Common,
+        Constraint = Matter.Constraint,
+        MouseConstraint = Matter.MouseConstraint,
+        Mouse = Matter.Mouse,
+        World = Matter.World,
+        Bodies = Matter.Bodies,
+        Events = Matter.Events,
+        Body = Matter.Body;
+
+    // create engine
+    var engine = Engine.create(),
+        world = engine.world;
+    world.gravity.y = 0;
+
+    // create renderer
+    var render = Render.create({
+        element: document.body,
+        engine: engine,
+        options: {
+            width: 800,
+            height: 600,
+            wireframes: false
+            // showAngleIndicator: true,
+            // showVelocity: true,
+        }
+    });
+
+    Render.run(render);
+
+    // create runner
+    var runner = Runner.create();
+    Runner.run(runner, engine);
+
+    // add ruler
+    const rulerOptions = {
+        isStatic: true, collisionFilter: {
+            'group': -1,
+            'category': 2,
+            'mask': 0,
+        }
+    }
+    World.add(world, [
+        Bodies.rectangle(400, 300, 200, 100, rulerOptions),
+    ]);
+
+    // add Score Tree
+    var bodyMain = Bodies.rectangle(400, 300, 5, 100,
+        {
+            render:
+            {
+                fillStyle: '#ffffff88',
+                lineWidth: 0,
+                opacity: .5
+            }
+        }
+    );
+    var constraintMainTop = Constraint.create({
+        bodyA: bodyMain,
+        pointA: { x: 0, y: -50 },
+        pointB: { x: 400, y: 250 },
+        stiffness: .02,
+        damping: .1,
+        length: 0,
+        render:
+        {
+            strokeStyle: "#ffffff33"
+        }
+    });
+    var constraintMainBottom = Constraint.create({
+        bodyA: bodyMain,
+        pointA: { x: 0, y: 50 },
+        pointB: { x: 400, y: 350 },
+        stiffness: .02,
+        damping: .1,
+        length: 0,
+        render:
+        {
+            strokeStyle: "#ffffff33"
+        }
+    });
+    World.add(world, [bodyMain, constraintMainTop, constraintMainBottom]);
+    const ships = [];
+
+    function createShip(fraction, pro, parent) {
+        if (fraction == undefined) {
+            fraction = .5
+        }
+        const result = {
+            fraction: fraction,
+            pro: pro
+        }
+
+        const style = {
+            lineWidth: 0,
+            fillStyle: pro ? '#c880ff' : '#ffa71a'
+        };
+
+        const width = 100 * fraction;
+        result.body = Bodies.rectangle(400, 300, width, 50 * fraction, { render: style });
+
+        result.constraint = Constraint.create({
+            bodyA: parent,
+            pointA: { x: 0, y: 0 },
+            bodyB: result.body,
+            pointB: { x: width / 2, y: 0 },
+            stiffness: 0.1,
+            damping: 0.1,
+            length: 100,
+            render:
+            {
+                strokeStyle: "#ffffff33"
+            }
+        });
+        result.thrust = function () {
+            Body.applyForce(
+                result.body,
+                result.body.position,
+                {
+                    x: result.fraction * .05 * (result.pro ? 1 : -1),
+                    y: 0
+                })
+        }
+        World.add(world, [result.body, result.constraint]);
+        ships.push(result)
+        return result;
+    }
+
+    function createNodule(parent) {
+        result = {};
+
+        const style = {
+            lineWidth: 0,
+            fillStyle: '#ffffffaa',
+        };
+
+        result.body = Bodies.circle(400, 300, 10, { render: style });
+
+        result.constraint = Constraint.create({
+            bodyA: parent,
+            pointA: { x: 0, y: 0 },
+            bodyB: result.body,
+            pointB: { x: 0, y: 0 },
+            stiffness: 0.1,
+            damping: 0.1,
+            length: 100,
+            render:
+            {
+                strokeStyle: "#ffffff33"
+            }
+        });
+        World.add(world, [result.body, result.constraint]);
+        return result;
+    }
+
+
+    //Add all the ships and nodules
+    const pro = true, con = false
+    const nodule1 = createNodule(bodyMain)
+    const ship1 = createShip(.25, pro, nodule1.body)
+    const ship2 = createShip(.25, pro, nodule1.body)
+    const ship4 = createShip(.5, con, bodyMain)
+    // createShip(.1666, pro, bodyMain);
+    // createShip(.1666, pro, bodyMain);
+    // const ship1 = createShip(.5, pro, bodyMain);
+    // createShip(.1666, con, ship1.body);
+
+    Events.on(engine, 'beforeUpdate', function (event) {
+        for (const ship of ships) {
+            ship.thrust();
+        }
+    });
+
+    // add mouse control
+    var mouse = Mouse.create(render.canvas),
+        mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                // allow bodies on mouse to rotate
+                angularStiffness: 0,
+                render: {
+                    visible: false
+                }
+            }
+        });
+
+    World.add(world, mouseConstraint);
+
+    // keep the mouse in sync with rendering
+    render.mouse = mouse;
+
+    // fit the render viewport to the scene
+    Render.lookAt(render, {
+        min: { x: 0, y: 0 },
+        max: { x: 800, y: 600 }
+    });
+
+</script>
+
+</html>

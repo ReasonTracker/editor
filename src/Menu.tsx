@@ -117,15 +117,16 @@ class Menu extends React.Component<MyProps, MyState> {
     getData(): iRsData {
         const rsDataCopy: iRsData = JSON.parse(JSON.stringify(this.props.repository.rsData));
 
-        //remove all scores so we are not passing them back and forth
-        const items = rsDataCopy.items;
-        for (const itemKey in items) {
-            if (items[itemKey].type === "score") {
-                delete items[itemKey];
-            }
-        }
-        rsDataCopy.scoreIdsBySourceId = {};
-        rsDataCopy.childIdsByScoreId = {};
+        // //remove all scores so we are not passing them back and forth
+        // const items = rsDataCopy.items;
+        // for (const itemKey in items) {
+        //     if (items[itemKey].type === "score") {
+        //         delete items[itemKey];
+        //     }
+        // }
+        // rsDataCopy.scoreIdsBySourceId = {};
+        // rsDataCopy.childIdsByScoreId = {};
+
         return rsDataCopy;
     }
 

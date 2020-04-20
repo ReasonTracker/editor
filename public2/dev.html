@@ -8,8 +8,8 @@
       disableExternalDb: false,
       numbers: true,
       largeNumbers: false,
-      lines: false,
-      editable: false,
+      lines: true,
+      editable: true,
       startClosed: false,
       portData: true,
       scoreDescription: false,
@@ -32,14 +32,17 @@
         expanderElement.classList.add("collapsed");
       }
     }
-
+//![Image](https://bentleydavis.com/img/hero.jpg)
     window.RsActions = [
       {
         "newData": {
           "content": "Should Fiction City convert Elm Street to only pedestrian traffic?",
           "id": "topClaim",
           "reversible": false,
-          "type": "claim"
+          "type": "claim",
+          "labelMin": "Low",
+          "labelMid": "Medium",
+          "labelMax": "High"
         },
         "type": "add_claim",
         "dataId": "topClaim"
@@ -214,9 +217,7 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <title>Reason Score Editor</title>
+  <title>Development - Reason Score</title>
   <style>
     body {
       padding: 5%;

@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Space Visualization for Reason Score</title>
+    <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+
+<body>
+    <svg style="display: none;" }>
+        <!-- <rect width="10" height="10" fill="grey" style="opacity:.5;"/> -->
+        <symbol id="pro" fill="blue" viewbox="0 0 10 10">
+            <path d="M5 3 L10 5 L5 7z" />
+        </symbol>
+        <symbol id="con" fill="red" viewbox="0 0 10 10">
+            <path d="M5 3 L0 5 L5 7z" />
+        </symbol>
+        <symbol id="mainScore" fill="white" viewbox="0 0 10 10">
+            <circle cx="5" cy="5" r="2.5" />
+        </symbol>
+        <symbol id="item" fill="grey" viewbox="0 0 10 10">
+            <circle cx="5" cy="5" r="2.5" />
+        </symbol>
+    </svg>
+
+    <div id="main" style="
+        background: black;
+    "></div>
+
+    <script>
+        const width = 1000;
+        const height = 1000;
+        const color = "blue";
+        const velocityMultiplier = 5;
+
+        function drag(
+            simulation) {
+
+            function dragstarted(d) {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            }
+
+            function dragended(d) {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+
+        const rsData = {
+            "ScoreTreeIds": [
+                "ScoreTree"
+            ],
+            "actionsLog": [],
+            "childIdsByScoreId": {
+                "topScore": [
+                    "Y55lMwcQ3Ic3",
+                    "Y55lMwcXE6n6",
+                    "Y55lMwbeQvsG"
+                ],
+                "Y55lMwcQ3Ic3": [
+                    "Y55lMwcjYgxT"
+                ],
+                "Y55lMwcXE6n6": [
+                    "Y55lMwbSgdSk"
+                ],
+                "Y55lMwbeQvsG": [
+                    "Y55lMwbOMwo0",
+                    "Y55lMwbtOVHp"
+                ],
+                "Y55lMwbOMwo0": [
+                    "Y55lMwbPsAmI"
+                ],
+                "Y55lMwbPsAmI": [
+                    "Y55lMwb6PUrV",
+                    "Y55lMwbRgRyr",
+                    "Y55lIB1Z7Lba"
+                ]
+            },
+            "claimEdgeIdsByChildId": {
+                "Y5lGAlZOlnB7": [
+                    "Y5lGAlUH9kvl"
+                ],
+                "Y5lJ3auJv8mo": [
+                    "Y5lJ3auGmzOd"
+                ],
+                "Y5lMkgfELlRV": [
+                    "Y5lMkgfZBd5x"
+                ],
+                "Y62ZZTSy14wt": [
+                    "Y62ZZTRmlt6x"
+                ],
+                "Y63AM1RDq02V": [
+                    "Y5lHyveMdlvh"
+                ],
+                "Y63nNJN0k9sG": [
+                    "Y5lHVuVD2QFu"
+                ],
+                "Y63uvoffmLhz": [],
+                "Y63v8y8WWeSO": [
+                    "Y63v8y8hSG0g"
+                ],
+                "Y63vLOi2FItk": [
+                    "Y63vLOig6YjJ"
+                ],
+                "Y63xF7JifLHA": [
+                    "Y63xF7JBOjng"
+                ],
+                "Y63yE1vOJxR7": [
+                    "Y63yE1timgKf"
+                ],
+                "Y55lJqAKIUda": [
+                    "Y55lJqAVwgtq"
+                ]
+            },
+            "claimEdgeIdsByParentId": {
+                "Y5lJ3auJv8mo": [
+                    "Y5lHVuVD2QFu",
+                    "Y5lGAlUH9kvl"
+                ],
+                "Y62ZZTSy14wt": [
+                    "Y5lMkgfZBd5x"
+                ],
+                "Y63AM1RDq02V": [
+                    "Y63xF7JBOjng",
+                    "Y63vLOig6YjJ",
+                    "Y55lJqAVwgtq"
+                ],
+                "Y63nNJN0k9sG": [
+                    "Y5lHyveMdlvh"
+                ],
+                "Y63yE1vOJxR7": [
+                    "Y63v8y8hSG0g"
+                ],
+                "topClaim": [
+                    "Y63yE1timgKf",
+                    "Y62ZZTRmlt6x",
+                    "Y5lJ3auGmzOd"
+                ]
+            },
+            "items": {
+                "ScoreTree": {
+                    "confidence": 1,
+                    "id": "ScoreTree",
+                    "sourceClaimId": "topClaim",
+                    "topScoreId": "topScore",
+                    "type": "scoreTree"
+                },
+                "Y5lGAlUH9kvl": {
+                    "affects": "relevance",
+                    "childId": "Y5lGAlZOlnB7",
+                    "id": "Y5lGAlUH9kvl",
+                    "parentId": "Y5lJ3auJv8mo",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y5lGAlZOlnB7": {
+                    "content": "The concern for injury and death in more important that other facts in the passing of this bill.",
+                    "id": "Y5lGAlZOlnB7",
+                    "labelMax": "",
+                    "labelMid": "",
+                    "labelMin": "",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y5lHVuVD2QFu": {
+                    "affects": "confidence",
+                    "childId": "Y63nNJN0k9sG",
+                    "id": "Y5lHVuVD2QFu",
+                    "parentId": "Y5lJ3auJv8mo",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y5lHyveMdlvh": {
+                    "affects": "confidence",
+                    "childId": "Y63AM1RDq02V",
+                    "id": "Y5lHyveMdlvh",
+                    "parentId": "Y63nNJN0k9sG",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y5lJ3auGmzOd": {
+                    "affects": "confidence",
+                    "childId": "Y5lJ3auJv8mo",
+                    "id": "Y5lJ3auGmzOd",
+                    "parentId": "topClaim",
+                    "priority": "",
+                    "pro": false,
+                    "type": "claimEdge"
+                },
+                "Y5lJ3auJv8mo": {
+                    "content": "Dog bites in Denver will increase if this bill passes.",
+                    "id": "Y5lJ3auJv8mo",
+                    "labelMax": "",
+                    "labelMid": "",
+                    "labelMin": "",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y5lMkgfELlRV": {
+                    "content": "An [article at Good Pit Bulls.com](https://www.goodpitbulls.com/breed-bans/denver-pit-bull-ban/) documents the deaths form 2003 to 2011.",
+                    "id": "Y5lMkgfELlRV",
+                    "labelMax": "",
+                    "labelMid": "",
+                    "labelMin": "",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y5lMkgfZBd5x": {
+                    "affects": "confidence",
+                    "childId": "Y5lMkgfELlRV",
+                    "id": "Y5lMkgfZBd5x",
+                    "parentId": "Y62ZZTSy14wt",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y62ZZTRmlt6x": {
+                    "affects": "confidence",
+                    "childId": "Y62ZZTSy14wt",
+                    "id": "Y62ZZTRmlt6x",
+                    "parentId": "topClaim",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y62ZZTSy14wt": {
+                    "content": "This legislation results in the death of hundreds of peaceful family companions per year.",
+                    "id": "Y62ZZTSy14wt",
+                    "labelMax": "high",
+                    "labelMid": "confidence",
+                    "labelMin": "low",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63AM1RDq02V": {
+                    "content": "Pit bulls are disproportionately dangerous compared with other dog breeds.",
+                    "id": "Y63AM1RDq02V",
+                    "labelMax": "high",
+                    "labelMid": "confidence",
+                    "labelMin": "low",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63nNJN0k9sG": {
+                    "content": "Less than 20% of pets in Denver are currently licensed which raises significant questions about the effectiveness of this proposed system.",
+                    "id": "Y63nNJN0k9sG",
+                    "labelMax": "high",
+                    "labelMid": "confidence",
+                    "labelMin": "low",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63uvoffmLhz": {
+                    "content": "It is true that 100 cities have repealed their bans entirely.",
+                    "id": "Y63uvoffmLhz",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63v8y8WWeSO": {
+                    "content": "It is more important to make decisions based on evidence rather than the decisions other have made. [argumentum ad populum](https://en.wikipedia.org/wiki/Argumentum_ad_populum)",
+                    "id": "Y63v8y8WWeSO",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63v8y8hSG0g": {
+                    "affects": "relevance",
+                    "childId": "Y63v8y8WWeSO",
+                    "id": "Y63v8y8hSG0g",
+                    "parentId": "Y63yE1vOJxR7",
+                    "priority": "",
+                    "pro": false,
+                    "type": "claimEdge"
+                },
+                "Y63vLOi2FItk": {
+                    "content": "In the 14-year period of 2005 through 2018, canines killed 471 Americans. Pit bulls contributed to 66% (311) of these deaths. Combined, pit bulls and rottweilers contributed to 76% of the total recorded deaths. [dogsbite.org](https://www.dogsbite.org/dog-bite-statistics-fatalities-2018.php)",
+                    "id": "Y63vLOi2FItk",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63vLOig6YjJ": {
+                    "affects": "confidence",
+                    "childId": "Y63vLOi2FItk",
+                    "id": "Y63vLOig6YjJ",
+                    "parentId": "Y63AM1RDq02V",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y63xF7JBOjng": {
+                    "affects": "confidence",
+                    "childId": "Y63xF7JifLHA",
+                    "id": "Y63xF7JBOjng",
+                    "parentId": "Y63AM1RDq02V",
+                    "priority": "",
+                    "pro": false,
+                    "type": "claimEdge"
+                },
+                "Y63xF7JifLHA": {
+                    "content": " A [review of controlled studies](https://www.avma.org/resources-tools/literature-reviews/dog-bite-risk-and-prevention-role-breed) documents that pit bulls are not disproportionately dangerous compared with other dog breeds.",
+                    "id": "Y63xF7JifLHA",
+                    "labelMax": "",
+                    "labelMid": "",
+                    "labelMin": "",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "Y63yE1timgKf": {
+                    "affects": "confidence",
+                    "childId": "Y63yE1vOJxR7",
+                    "id": "Y63yE1timgKf",
+                    "parentId": "topClaim",
+                    "priority": "",
+                    "pro": true,
+                    "type": "claimEdge"
+                },
+                "Y63yE1vOJxR7": {
+                    "content": " Over 100 cities have repealed their bans entirely.",
+                    "id": "Y63yE1vOJxR7",
+                    "labelMax": "high",
+                    "labelMid": "confidence",
+                    "labelMin": "low",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "topClaim": {
+                    "content": "Should [Denver](https://m.wikidata.org/wiki/Q16554) pass bill [20-0071](https://denver.legistar.com/LegislationDetail.aspx?ID=4348531&GUID=B44E6268-3326-4061-8F8B-F241193F0204) replacing it's \"pit-bull ban\" with [breed\nrestricted-licenses](https://denver.legistar.com/View.ashx?M=F&ID=8168874&GUID=5AAFF9B8-5BE4-4AB8-B351-7864F33AE96E)?",
+                    "id": "topClaim",
+                    "labelMax": "Replace",
+                    "labelMid": "",
+                    "labelMin": "Keep",
+                    "reversible": false,
+                    "type": "claim"
+                },
+                "topScore": {
+                    "sourceClaimId": "topClaim",
+                    "scoreTreeId": "ScoreTree",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 0.5897435897435898,
+                    "relevance": 1,
+                    "id": "topScore",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwcQ3Ic3": {
+                    "sourceClaimId": "Y63yE1vOJxR7",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "topScore",
+                    "sourceEdgeId": "Y63yE1timgKf",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 0.5,
+                    "id": "Y55lMwcQ3Ic3",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwcjYgxT": {
+                    "sourceClaimId": "Y63v8y8WWeSO",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwcQ3Ic3",
+                    "sourceEdgeId": "Y63v8y8hSG0g",
+                    "reversible": false,
+                    "pro": false,
+                    "affects": "relevance",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwcjYgxT",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwcXE6n6": {
+                    "sourceClaimId": "Y62ZZTSy14wt",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "topScore",
+                    "sourceEdgeId": "Y62ZZTRmlt6x",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwcXE6n6",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbSgdSk": {
+                    "sourceClaimId": "Y5lMkgfELlRV",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwcXE6n6",
+                    "sourceEdgeId": "Y5lMkgfZBd5x",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwbSgdSk",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbeQvsG": {
+                    "sourceClaimId": "Y5lJ3auJv8mo",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "topScore",
+                    "sourceEdgeId": "Y5lJ3auGmzOd",
+                    "reversible": false,
+                    "pro": false,
+                    "affects": "confidence",
+                    "confidence": 0.3333333333333333,
+                    "relevance": 2,
+                    "id": "Y55lMwbeQvsG",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbOMwo0": {
+                    "sourceClaimId": "Y63nNJN0k9sG",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbeQvsG",
+                    "sourceEdgeId": "Y5lHVuVD2QFu",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 0.3333333333333333,
+                    "relevance": 1,
+                    "id": "Y55lMwbOMwo0",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbPsAmI": {
+                    "sourceClaimId": "Y63AM1RDq02V",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbOMwo0",
+                    "sourceEdgeId": "Y5lHyveMdlvh",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 0.3333333333333333,
+                    "relevance": 1,
+                    "id": "Y55lMwbPsAmI",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwb6PUrV": {
+                    "sourceClaimId": "Y63xF7JifLHA",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbPsAmI",
+                    "sourceEdgeId": "Y63xF7JBOjng",
+                    "reversible": false,
+                    "pro": false,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwb6PUrV",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbRgRyr": {
+                    "sourceClaimId": "Y63vLOi2FItk",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbPsAmI",
+                    "sourceEdgeId": "Y63vLOig6YjJ",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwbRgRyr",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lMwbtOVHp": {
+                    "sourceClaimId": "Y5lGAlZOlnB7",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbeQvsG",
+                    "sourceEdgeId": "Y5lGAlUH9kvl",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "relevance",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lMwbtOVHp",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                },
+                "Y55lJqAKIUda": {
+                    "content": "",
+                    "id": "Y55lJqAKIUda",
+                    "reversible": false,
+                    "type": "claim",
+                    "labelMin": "",
+                    "labelMid": "",
+                    "labelMax": ""
+                },
+                "Y55lJqAVwgtq": {
+                    "parentId": "Y63AM1RDq02V",
+                    "childId": "Y55lJqAKIUda",
+                    "affects": "confidence",
+                    "pro": true,
+                    "id": "Y55lJqAVwgtq",
+                    "priority": "",
+                    "type": "claimEdge"
+                },
+                "Y55lIB1Z7Lba": {
+                    "sourceClaimId": "Y55lJqAKIUda",
+                    "scoreTreeId": "ScoreTree",
+                    "parentScoreId": "Y55lMwbPsAmI",
+                    "sourceEdgeId": "Y55lJqAVwgtq",
+                    "reversible": false,
+                    "pro": true,
+                    "affects": "confidence",
+                    "confidence": 1,
+                    "relevance": 1,
+                    "id": "Y55lIB1Z7Lba",
+                    "priority": "",
+                    "content": "",
+                    "type": "score"
+                }
+            },
+            "scoreIdsBySourceId": {
+                "topClaim": [
+                    "topScore"
+                ],
+                "Y63yE1vOJxR7": [
+                    "Y55lMwcQ3Ic3"
+                ],
+                "Y63yE1timgKf": [
+                    "Y55lMwcQ3Ic3"
+                ],
+                "Y63v8y8WWeSO": [
+                    "Y55lMwcjYgxT"
+                ],
+                "Y63v8y8hSG0g": [
+                    "Y55lMwcjYgxT"
+                ],
+                "Y62ZZTSy14wt": [
+                    "Y55lMwcXE6n6"
+                ],
+                "Y62ZZTRmlt6x": [
+                    "Y55lMwcXE6n6"
+                ],
+                "Y5lMkgfELlRV": [
+                    "Y55lMwbSgdSk"
+                ],
+                "Y5lMkgfZBd5x": [
+                    "Y55lMwbSgdSk"
+                ],
+                "Y5lJ3auJv8mo": [
+                    "Y55lMwbeQvsG"
+                ],
+                "Y5lJ3auGmzOd": [
+                    "Y55lMwbeQvsG"
+                ],
+                "Y63nNJN0k9sG": [
+                    "Y55lMwbOMwo0"
+                ],
+                "Y5lHVuVD2QFu": [
+                    "Y55lMwbOMwo0"
+                ],
+                "Y63AM1RDq02V": [
+                    "Y55lMwbPsAmI"
+                ],
+                "Y5lHyveMdlvh": [
+                    "Y55lMwbPsAmI"
+                ],
+                "Y63xF7JifLHA": [
+                    "Y55lMwb6PUrV"
+                ],
+                "Y63xF7JBOjng": [
+                    "Y55lMwb6PUrV"
+                ],
+                "Y63vLOi2FItk": [
+                    "Y55lMwbRgRyr"
+                ],
+                "Y63vLOig6YjJ": [
+                    "Y55lMwbRgRyr"
+                ],
+                "Y5lGAlZOlnB7": [
+                    "Y55lMwbtOVHp"
+                ],
+                "Y5lGAlUH9kvl": [
+                    "Y55lMwbtOVHp"
+                ],
+                "Y55lJqAKIUda": [
+                    "Y55lIB1Z7Lba"
+                ],
+                "Y55lJqAVwgtq": [
+                    "Y55lIB1Z7Lba"
+                ]
+            }
+        }
+
+        data = {
+            "nodes": [
+                { "id": "topScore", "type": "mainScore", "strength": 1 },
+                // { "id": "1", "type": "pro", "strength": 1 },
+                // { "id": "2", "type": "con", "strength": 3 },
+                // { "id": "3", "type": "pro", "strength": .7 },
+                // { "id": "4", "type": "pro", "strength": .5 },
+                // { "id": "1-1", "type": "con", "strength": 1 },
+            ],
+            "links": [
+                // { "source": "topScore", "target": "1" },
+                // { "source": "1", "target": "1-1" },
+                // { "source": "topScore", "target": "2" },
+                // { "source": "topScore", "target": "3" },
+                // { "source": "topScore", "target": "4" },
+            ]
+        }
+
+        for (const id in rsData.items) {
+            const item = rsData.items[id];
+            if (item.type == "score" && item.parentScoreId) {
+                const node = {
+                    id: item.id,
+                }
+                if (rsData.childIdsByScoreId[item.id]?.length) {
+                    //if it has children
+                    node.type = "item";
+                    node.strength = .3;
+                } else {
+                    // If no children
+                    node.type = item.pro ? "pro" : "con";
+                    node.strength = 1;
+                }
+                data.nodes.push(node)
+                data.links.push({
+                    source: item.id,
+                    target: item.parentScoreId
+                })
+            }
+        }
+
+        const links = data.links.map(d => Object.create(d));
+        const nodes = data.nodes.map(d => Object.create(d));
+
+        function forceThrust() {
+            const x = function () {
+                for (const node of nodes) {
+                    if (node.type === "pro") {
+                        node.vx += node.strength * velocityMultiplier * simulation.alpha();
+                    }
+                    if (node.type === "con") {
+                        node.vx -= node.strength * velocityMultiplier * simulation.alpha();
+                    }
+                    // console.log(node.id + ".vx=" + node.vx)
+
+                }
+            }
+            return x
+        }
+
+        const field = {};
+        field.center = width / 2;
+        field.left = field.center - width / 4;
+        field.right = field.center - width / 4;
+
+        function forceCenter() {
+            const x = function () {
+                for (const node of nodes) {
+                    if (node.type === "mainScore") {
+                        node.y = height / 2; //set Y axis to center
+                        //node.
+                        node.fieldPercentage = (node.x - field.center) / field.right;
+                        const centerField = width / 2;
+                        const goalDistance = width / 4;
+                        strength = - node.fieldPercentage
+                        node.vx += strength * velocityMultiplier * simulation.alpha() * 5;
+                        // console.log(node.id + ".strength=" + strength)
+                    }
+                }
+            }
+            return x
+        }
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("thrust", forceThrust())
+            .force("center", forceCenter())
+            .force("link", d3.forceLink(links).id(d => d.id).strength(1).distance(100))
+            .force("charge", d3.forceManyBody(50))
+
+        simulation.alphaDecay(0);
+
+        const svg = d3.create("svg")
+            .attr("viewBox", [0, 0, width, height])
+
+        svg.append("rect")
+            .attr("x", width / 4)
+            .attr("y", (height / 2) - 100)
+            .attr("width", width / 4)
+            .attr("height", 200)
+            .attr("stroke-width", 1)
+            .attr("stroke", "white")
+
+        svg.append("rect")
+            .attr("x", width / 2)
+            .attr("y", (height / 2) - 100)
+            .attr("width", width / 4)
+            .attr("height", 200)
+            .attr("stroke-width", 1)
+            .attr("stroke", "white")
+
+        const link = svg.append("g")
+            .attr("stroke", "#999")
+            .attr("stroke-opacity", 0.5)
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("stroke-width", 3);
+
+        const node = svg.append("g")
+            .selectAll("g.node")
+            .data(nodes)
+            .join("g")
+            .call(drag(simulation));
+
+        node.append("g")
+            .attr("transform", d => `translate(${-(d.strength * 100) / 2} ${-(d.strength * 100) / 2})`)
+            .append("use")
+            .attr("href", d => "#" + d.type)
+            .attr("height", d => d.strength * 100)
+            .attr("width", d => d.strength * 100)
+
+        node.append("title")
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node
+                // .attr("x", d => d.x)
+                // .attr("y", d => d.y)
+                .attr("transform", d => `translate(${d.x} ${d.y})`)
+        });
+
+        //invalidation.then(() => simulation.stop());
+
+        window.document.getElementById("main").append(svg.node());
+    </script>
+</body>
+
+</html>
