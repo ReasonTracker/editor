@@ -13,47 +13,72 @@
 <script>
     // Important Environemtn Variables
     var thrustForce = .1;
-        stiffness = .05;
-        length = 0;
-        indicatorStiffness = .04;
-        friction = .1;
+    stiffness = .1;
+    length = 0;
+    indicatorStiffness = .04;
+    friction = .1;
+    baseSize = 50;
+    {  //System Variables
+        var Engine = Matter.Engine,
+            Render = Matter.Render,
+            Runner = Matter.Runner,
+            Composites = Matter.Composites,
+            Common = Matter.Common,
+            Constraint = Matter.Constraint,
+            MouseConstraint = Matter.MouseConstraint,
+            Mouse = Matter.Mouse,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Events = Matter.Events,
+            Body = Matter.Body;
 
-    var Engine = Matter.Engine,
-        Render = Matter.Render,
-        Runner = Matter.Runner,
-        Composites = Matter.Composites,
-        Common = Matter.Common,
-        Constraint = Matter.Constraint,
-        MouseConstraint = Matter.MouseConstraint,
-        Mouse = Matter.Mouse,
-        World = Matter.World,
-        Bodies = Matter.Bodies,
-        Events = Matter.Events,
-        Body = Matter.Body;
+        // create engine
+        var engine = Engine.create(),
+            world = engine.world;
+        world.gravity.y = 0;
 
-    // create engine
-    var engine = Engine.create(),
-        world = engine.world;
-    world.gravity.y = 0;
+        // create renderer
+        var render = Render.create({
+            element: document.body,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false
+                // showAngleIndicator: true,
+                // showVelocity: true,
+            }
+        });
+        Render.run(render);
 
-    // create renderer
-    var render = Render.create({
-        element: document.body,
-        engine: engine,
-        options: {
-            width: 800,
-            height: 600,
-            wireframes: false
-            // showAngleIndicator: true,
-            // showVelocity: true,
-        }
-    });
+        // create runner
+        var runner = Runner.create();
+        Runner.run(runner, engine);
 
-    Render.run(render);
+        // add mouse control
+        var mouse = Mouse.create(render.canvas),
+            mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    // allow bodies on mouse to rotate
+                    angularStiffness: 0,
+                    render: {
+                        visible: false
+                    }
+                }
+            });
 
-    // create runner
-    var runner = Runner.create();
-    Runner.run(runner, engine);
+        World.add(world, mouseConstraint);
+
+        // keep the mouse in sync with rendering
+        render.mouse = mouse;
+
+        // fit the render viewport to the scene
+        Render.lookAt(render, {
+            min: { x: 0, y: 0 },
+            max: { x: 800, y: 600 }
+        });
+    }
 
     // add ruler
     const rulerOptions = {
@@ -74,7 +99,7 @@
             {
                 fillStyle: '#ffffff',
                 lineWidth: 0,
-                opacity: .5
+                opacity: 1
             }
         }
     );
@@ -86,7 +111,8 @@
         damping: 0,
         render:
         {
-            strokeStyle: "#ffffff33"
+            strokeStyle: "#ffffff22",
+            lineSize: 5
         }
     }
     var baseMainTopConstraint = {
@@ -113,7 +139,6 @@
         constraintMainTop,
         constraintMainBottom
     ]);
-    const ships = [];
 
     function createShip(fraction, pro, parent) {
         if (fraction == undefined) {
@@ -130,11 +155,11 @@
         };
 
         const width = 100 * fraction;
-        partA = Bodies.polygon(400, 300, 3, 50 * fraction, { render: style });
+        partA = Bodies.polygon(400, 300, 3, baseSize * fraction, { render: style });
         if (pro) {
             Body.setAngle(partA, 180 * (Math.PI / 180))
         }
-        partB = Bodies.circle(400, 300, 70 * fraction, { render: { fillStyle: '#ffffff11', } });
+        partB = Bodies.circle(400, 300, 70 * fraction, { render: { fillStyle: '#ffffff00', } });
         //partB = Bodies.polygon(400, 300, 5,70 * fraction, { render: { fillStyle: '#ffffff11', } });
         result.body = Body.create({
             frictionAir: friction,
@@ -189,15 +214,12 @@
         return result;
     }
 
-
     //Add all the ships and nodules
-    const pro = true, con = false
-    //const ship1 = createShip(1, pro, bodyMain)
-
+    const ships = [], pro = true, con = false
     const nodule1 = createNodule(bodyMain)
     const ship1 = createShip(.2, pro, nodule1.body)
     const ship2 = createShip(.2, pro, nodule1.body)
-    const ship4 = createShip(.6, pro, bodyMain)
+    const ship4 = createShip(.6, con, bodyMain)
 
     Events.on(engine, 'beforeUpdate', function (event) {
 
@@ -217,30 +239,6 @@
             // Body.setVelocity(ship.body, v);
 
         }
-    });
-
-    // add mouse control
-    var mouse = Mouse.create(render.canvas),
-        mouseConstraint = MouseConstraint.create(engine, {
-            mouse: mouse,
-            constraint: {
-                // allow bodies on mouse to rotate
-                angularStiffness: 0,
-                render: {
-                    visible: false
-                }
-            }
-        });
-
-    World.add(world, mouseConstraint);
-
-    // keep the mouse in sync with rendering
-    render.mouse = mouse;
-
-    // fit the render viewport to the scene
-    Render.lookAt(render, {
-        min: { x: 0, y: 0 },
-        max: { x: 800, y: 600 }
     });
 
 </script>
