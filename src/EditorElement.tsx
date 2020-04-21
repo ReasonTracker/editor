@@ -1,5 +1,7 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Claim, Action, Messenger, iClaimEdge, iClaim, ClaimEdge } from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Action, Messenger} from "@reasonscore/core";
+import { ClaimEdge } from './dataModels/ClaimEdge';
+import { Claim } from './dataModels/Claim';
 
 type MyProps = {
     claimId: string,
@@ -8,14 +10,14 @@ type MyProps = {
     handleEditClose: () => void,
     messenger: Messenger,
     new?: boolean,
-    claimEdge?: iClaimEdge
+    claimEdge?: ClaimEdge
 };
 
 type MyState = {
     pasteClaim: string,
     proMain: boolean,
-    claim?: iClaim,
-    claimEdge?: iClaimEdge,
+    claim?: Claim,
+    claimEdge?: ClaimEdge,
 };
 
 class EditorElement extends React.Component<MyProps, MyState> {
@@ -34,7 +36,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
             newState.claim = new Claim();
             newState.claimEdge = new ClaimEdge(this.props.claimId, newState.claim.id);
         } else {
-            const claim = await this.props.repository.getClaim(this.props.claimId);
+            const claim = await this.props.repository.getClaim(this.props.claimId) as Claim;
             if (claim) {
                 newState.claim = claim;
             }

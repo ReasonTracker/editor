@@ -1,7 +1,9 @@
 import React from 'react';
-import { RepositoryLocalPure, Claim, Score, Messenger, iScore, Action, iClaimEdge, iClaim } from "@reasonscore/core";
+import { RepositoryLocalPure, Score, Messenger, Action} from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { ClaimEdge } from './dataModels/ClaimEdge';
+import { Claim } from './dataModels/Claim';
 
 const commonmark: any = require('commonmark');
 
@@ -17,10 +19,10 @@ type MyState = {
     childrenVisible: boolean,
     editorVisible: boolean,
     addMode: boolean,
-    score: iScore,
-    claim: iClaim,
-    childScores: iScore[],
-    claimEdge?: iClaimEdge,
+    score: Score,
+    claim: Claim,
+    childScores: Score[],
+    claimEdge?: ClaimEdge,
 };
 
 class ScoreElement extends React.Component<MyProps, MyState> {
@@ -41,17 +43,17 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
-        const score = await this.props.repository.getScore(this.props.scoreId);
-        let claim = new Claim() as iClaim;
+        const score = await this.props.repository.getScore(this.props.scoreId) as Score;
+        let claim = new Claim() as Claim;
         //TODO: Figure out how to remove Children Visible completely
         let childrenVisible = this.state.childrenVisible;
         if (score) {
-            let claimEdge: iClaimEdge | undefined;
+            let claimEdge: ClaimEdge | undefined;
             if (score.sourceEdgeId) {
-                claimEdge = await this.props.repository.getClaimEdge(score.sourceEdgeId)
+                claimEdge = await this.props.repository.getClaimEdge(score.sourceEdgeId) as ClaimEdge
             }
             const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
-            const childScores = await this.props.repository.getChildrenByScoreId(score.id);
+            const childScores = await this.props.repository.getChildrenByScoreId(score.id) as Score[];
             if (!score.parentScoreId && !this.props.settings.startClosed) {
                 childrenVisible = true;
             }
