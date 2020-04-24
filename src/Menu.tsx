@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 
 declare global {
@@ -127,8 +127,8 @@ class Menu extends Component<MyProps, MyState> {
         hiddenElement.click();
     }
 
-    getData(): iRsData {
-        const rsDataCopy: iRsData = JSON.parse(JSON.stringify(this.props.repository.rsData));
+    getData(): RsData {
+        const rsDataCopy: RsData = JSON.parse(JSON.stringify(this.props.repository.rsData));
 
         //remove all scores so we are not passing them back and forth
         const items = rsDataCopy.items;

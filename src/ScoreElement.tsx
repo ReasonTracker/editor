@@ -119,13 +119,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         }
     }
 
-    // // Removed, handled outside react
-    // handleExpanderClick = () => {
-    //     this.setState({
-    //         childrenVisible: !this.state.childrenVisible
-    //     });
-    // }
-
     handleEditButtonClick = () => {
         this.setState({
             editorVisible: !this.state.editorVisible,
@@ -260,11 +253,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <div className="tic" style={{ left: '100%' }}></div>
                                 </div>
                             </div>
-                            <span className={'numbers'}>
+                            <span className={'numbers'}
+                                title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
                                 {scoreNumbers}
                             </span>
-                            <span className={'score-description'}>
+                            <span className={'score-description'}
+                                title={scoreNumbers + '% confidence based on ' + this.state.score.descendantCount + ' claims'}>
                                 {scoreDescription}
+                                {this.state.score.descendantCount > 0 &&
+                                    <sub title={'based on ' + this.state.score.descendantCount + ' claims'}> {this.state.score.descendantCount}</sub>
+                                }
                             </span>
                             <span className={'content'} dangerouslySetInnerHTML={createMarkup()}>
                             </span>
