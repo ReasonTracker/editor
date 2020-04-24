@@ -3,16 +3,16 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@reasonscore/core": "^0.2.32",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.37",
+    "@reasonscore/core": "^0.3.4",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.2",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "@types/react-transition-group": "^4.2.4",
     "bootstrap": "^4.4.1",
     "commonmark": "^0.29.1",
-    "eslint-plugin-flowtype": "^3.0",
-    "node-sass": "^4.13.1",
+    "eslint-plugin-flowtype": "^4.7",
+    "node-sass": "^4.14.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "delete_node_modules": "rmdir /q/s node_modules"
+    "delete_node_modules": "rmdir /q/s node_modules",
+    "upgrade-all": "ncu -u && npm install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "npm-check-updates": "^4.1.2"
   }
 }

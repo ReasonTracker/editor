@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Score, Messenger, Action} from "@reasonscore/core";
+import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ClaimEdge } from './dataModels/ClaimEdge';
@@ -13,6 +13,7 @@ type MyProps = {
     proMainContext: boolean,
     messenger: Messenger,
     settings: any,
+    scoreTree: ScoreTree,
 };
 
 type MyState = {
@@ -251,12 +252,12 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                         <path d="m 0,1.3 a 10,10 0 0 1 10,0 L 5,10 Z" />
                                     </svg>
                                     <span className="min">{claim.labelMin}</span>
-                                <span className="mid">{claim.labelMid}</span>
-                                <span className="max">{claim.labelMax}</span>
-                                <div className="tic" style={{left:'0%'}}></div>
-                                <div className="tic" style={{left:'33.3%'}}></div>
-                                <div className="tic" style={{left:'66.6%'}}></div>
-                                <div className="tic" style={{left:'100%'}}></div>
+                                    <span className="mid">{claim.labelMid}</span>
+                                    <span className="max">{claim.labelMax}</span>
+                                    <div className="tic" style={{ left: '0%' }}></div>
+                                    <div className="tic" style={{ left: '33.3%' }}></div>
+                                    <div className="tic" style={{ left: '66.6%' }}></div>
+                                    <div className="tic" style={{ left: '100%' }}></div>
                                 </div>
                             </div>
                             <span className={'numbers'}>
@@ -303,6 +304,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                         proMainContext={proMain}
                                         messenger={props.messenger}
                                         settings={props.settings}
+                                        scoreTree={props.scoreTree}
                                     />
                                 </li>
                             </CSSTransition>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { RepositoryLocalPure, Messenger, iRsData, calculateScoreActions, Action, ScoreTree } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 
@@ -23,7 +23,7 @@ type MyState = {
     scoreTree?: ScoreTree,
 };
 
-class Menu extends React.Component<MyProps, MyState> {
+class Menu extends Component<MyProps, MyState> {
 
     constructor(props: MyProps) {
         super(props);
@@ -54,6 +54,19 @@ class Menu extends React.Component<MyProps, MyState> {
         this.setState({
             scoreTree: await this.props.repository.getScoreTree(this.props.scoreTreeId),
         })
+        this.props.messenger.subscribe(this.handleDataDispatch)
+    }
+
+    handleDataDispatch = async (actions: Action[]) => {
+        for (const action of actions) {
+            const { newData, type, dataId } = action;
+            let newState: Partial<MyState> = {}
+            if (type === "modify_scoreTree" && dataId === this.state.scoreTree?.id) {
+                newState.scoreTree = { ...this.state.scoreTree, ...newData };
+            }
+
+            this.setState(newState as MyState);
+        }
     }
 
     handleSave = () => {
@@ -117,15 +130,15 @@ class Menu extends React.Component<MyProps, MyState> {
     getData(): iRsData {
         const rsDataCopy: iRsData = JSON.parse(JSON.stringify(this.props.repository.rsData));
 
-        // //remove all scores so we are not passing them back and forth
-        // const items = rsDataCopy.items;
-        // for (const itemKey in items) {
-        //     if (items[itemKey].type === "score") {
-        //         delete items[itemKey];
-        //     }
-        // }
-        // rsDataCopy.scoreIdsBySourceId = {};
-        // rsDataCopy.childIdsByScoreId = {};
+        //remove all scores so we are not passing them back and forth
+        const items = rsDataCopy.items;
+        for (const itemKey in items) {
+            if (items[itemKey].type === "score") {
+                delete items[itemKey];
+            }
+        }
+        rsDataCopy.scoreIdsBySourceId = {};
+        rsDataCopy.childIdsByScoreId = {};
 
         return rsDataCopy;
     }
@@ -203,6 +216,7 @@ class Menu extends React.Component<MyProps, MyState> {
                         proMainContext={true}
                         messenger={this.props.messenger}
                         settings={this.state.settings}
+                        scoreTree = {this.state.scoreTree}
                     />
                 }
             </div>
