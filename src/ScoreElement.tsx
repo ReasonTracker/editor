@@ -176,12 +176,20 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     scoreDescription = "Decreases " + scoreDescription;
                 }
             } else {
-                for (const descItem of settings.scoreDescriptions.impact) {
+                let descriptions, trailing
+                if (score.parentScoreId === undefined){
+                    descriptions = settings.scoreDescriptions.result
+                    trailing = "";
+                } else {
+                    descriptions = settings.scoreDescriptions.impact
+                    trailing = proMain ? " Pro" : " Con";
+                }
+                for (const descItem of descriptions) {
                     if (score.confidence * score.relevance >= descItem.min) {
                         scoreDescription = descItem.desc;
                     }
                 }
-                scoreDescription += proMain ? " Pro" : " Con";
+                scoreDescription += trailing;
             }
         }
         if (!childScores.length) {
@@ -255,7 +263,10 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             </div>
                             <span className={'numbers'}
                                 title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
-                                {scoreNumbers}
+                                {/* {scoreNumbers} */}
+                                <span className="sign">{score.parentScoreId !== undefined && (proMain ? "+" : "-")}</span>
+                            <span className="number">{((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100)).toFixed(0)}</span>
+                            {score.parentScoreId === undefined && "%"}
                             </span>
                             <span className={'score-description'}
                                 title={scoreNumbers + '% confidence based on ' + this.state.score.descendantCount + ' claims'}>
@@ -264,8 +275,11 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <sub title={'based on ' + this.state.score.descendantCount + ' claims'}> {this.state.score.descendantCount}</sub>
                                 }
                             </span>
-                            <span className={'content'} dangerouslySetInnerHTML={createMarkup()}>
-                            </span>
+                            {/* {(score.fraction*100).toFixed(0)} |&nbsp;
+                            {-((1-score.confidence) *score.fraction*100 ).toFixed(2)} |&nbsp; */}
+                            {/* {(score.percentOfWeight*100).toFixed(0)} |&nbsp; */}
+                            {/* {(score.fractionSimple-score.fraction)>0?(score.fractionSimple-score.fraction).toFixed(2):"0"}% |&nbsp; */}
+                            {/* <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span> */}
                         </div>
                         <svg className="callout" width="30px" height="30px">
                             <use href="#callout" />

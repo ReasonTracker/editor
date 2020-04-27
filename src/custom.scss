@@ -126,7 +126,7 @@ rs-score {
   }
 
   .claim-inner {
-    padding: 0px 0px 0px 20px;
+    padding: 0px 0px 0px 15px;
     min-height: 2.5em;
     max-height: 4.5em;
     overflow-y: auto;
@@ -306,6 +306,15 @@ rs-score {
     padding: 0;
     margin: 0;
     border: none;
+    .sign {
+      display: inline-block;
+      width: 0.7em;
+      text-align: center;
+    }
+    .number {
+      display: inline-block;
+      width: 1em;
+    }
   }
 
   .s-numbers .numbers {

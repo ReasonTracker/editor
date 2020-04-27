@@ -41,7 +41,15 @@ class Menu extends Component<MyProps, MyState> {
                           { min: .5, desc: "" },
                           { min: .9, desc: "Srong" },
                           { min: 1.1, desc: "Very Srong" },
-                        ]
+                        ],
+                        result: [
+                            { min: -10, desc: "Myth" },
+                            { min: -.1, desc: "Unsupported" },
+                            { min: .1, desc: "Possible" },
+                            { min: .5, desc: "Likely" },
+                            { min: .9, desc: "Probably" },
+                            { min: 1.1, desc: "Probably" },
+                          ]
                       },
                 }, ...this.props.settings
             },

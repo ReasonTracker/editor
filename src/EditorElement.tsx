@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, calculateScoreActions, Action, Messenger} from "@reasonscore/core";
+import { RepositoryLocalPure, calculateScoreActions, Action, Messenger } from "@reasonscore/core";
 import { ClaimEdge } from './dataModels/ClaimEdge';
 import { Claim } from './dataModels/Claim';
 
@@ -46,7 +46,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         }
 
         if (newState.claimEdge) {
-            newState.proMain = this.props.proMainContext ? newState.claimEdge.pro : !newState.claimEdge.checked;
+                newState.proMain = this.props.proMainContext ? newState.claimEdge.pro : !newState.claimEdge.pro;
         }
 
         //TODO: Temp for items with blank properties. This correctes error: A component is changing an uncontrolled input of type text to be controlled
