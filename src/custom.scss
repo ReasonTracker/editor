@@ -189,11 +189,13 @@ rs-score {
     .score-description {
       max-width: 100%;
       padding-right: 0.3em;
-      border-right: 1px solid #ffffff91;
       margin-right: 0.3em;
+      border-right: 1px solid #ffffff70;
+      border-bottom: 1px solid #ffffff70;
+      border-bottom-right-radius: 7px;
     }
-    sub{
-      opacity: .5;
+    sub {
+      opacity: 0.5;
     }
   }
 
