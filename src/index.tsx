@@ -23,7 +23,7 @@ async function startApp() {
     settings.dbCollection = "rsData"
   }
 
-  //TODO: Temp
+  //TODO: This is for easy testing for now
   const u = undefined, pro = true, con = false
   window.RsActions = [
     new Action(new Claim('mainClaim', 'mainClaim'), u, 'add_claim'), new Action(new ScoreTree('mainClaim', 'mainClaim-score', u, 'ScoreTree'), u, 'add_scoreTree'),

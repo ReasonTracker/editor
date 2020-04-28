@@ -223,6 +223,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         const proMainText = proMain ? "pro" : "con";
 
+        let fractionalizedScore = ((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100)).toFixed(0);
+        if (fractionalizedScore === "100") fractionalizedScore = "99";
+
         function createMarkup() {
             var reader = new commonmark.Parser({});
             var writer = new commonmark.HtmlRenderer({ safe: true });
@@ -263,9 +266,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             </div>
                             <span className={'numbers'}
                                 title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
-                                {/* {scoreNumbers} */}
                                 <span className="sign">{score.parentScoreId !== undefined && (proMain ? "+" : "-")}</span>
-                            <span className="number">{((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100)).toFixed(0)}</span>
+                            <span className="number">{fractionalizedScore}</span>
                             {score.parentScoreId === undefined && "%"}
                             </span>
                             <span className={'score-description'}
