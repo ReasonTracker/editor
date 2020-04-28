@@ -7,13 +7,13 @@
     window.RsSettings = {
       disableExternalDb: false,
       numbers: true,
-      largeNumbers: false,
+      largeNumbers: true,
       lines: false,
       editable: true,
       startClosed: false,
       portData: true,
       scoreDescription: false,
-      saveToCloud: true,
+      saveToCloud: false,
       scoreDescription: true,
     }
 
@@ -35,23 +35,20 @@
       }
     }
 
-
     window.RsActions = [
       {
         "newData": {
-          "content": "new Claim",
-          "id": "topClaim",
-          "reversible": false,
+          "content": "This is a new claim. select the pencil icon on the right to edit it. select the + button to add a pro or con to this claim.",
+          "id": "mainClaim",
           "type": "claim"
         },
         "type": "add_claim",
-        "dataId": "topClaim"
+        "dataId": "mainClaim"
       },
       {
         "newData": {
-          "sourceClaimId": "topClaim",
-          "topScoreId": "topScore",
-          "confidence": 1,
+          "sourceClaimId": "mainClaim",
+          "topScoreId": "mainScore",
           "id": "ScoreTree",
           "type": "scoreTree"
         },
@@ -79,8 +76,6 @@
 </head>
 
 <body>
-  <div id="UserName" style="text-align: right;min-height: 24px;"></div>
-  <div id="firebaseui-auth-container" style="display: none;"></div>
   <rs-score score-tree-id="ScoreTree"></rs-score>
 
   <!-- Firestore Script, This whole script can be removed if firebase is not in use -->
@@ -88,7 +83,6 @@
   <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-firestore.js"></script>
   <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
   <script>
     // Firestore Setup
     if (!window.RsSettings || !window.RsSettings.disableExternalDb) {
@@ -106,35 +100,6 @@
       window.RsDatabase = firebase
         .firestore()
         .collection("beta01")
-
-      //Detect Logged in
-      firebase
-        .auth()
-        .onAuthStateChanged(function (user) {
-          if (user) {
-            document
-              .getElementById('UserName')
-              .innerText = user.displayName;
-          } else {
-            //Show LogIn Screen
-            var ui = new firebaseui
-              .auth
-              .AuthUI(firebase.auth());
-            ui.start('#firebaseui-auth-container', {
-              callbacks: {
-                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-                  return false; //Do not redirect
-                }
-              },
-              signInFlow: 'popup',
-              signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID, firebase.auth.FacebookAuthProvider.PROVIDER_ID, firebase.auth.TwitterAuthProvider.PROVIDER_ID, firebase.auth.GithubAuthProvider.PROVIDER_ID, firebase.auth.EmailAuthProvider.PROVIDER_ID
-              ],
-              tosUrl: 'terms-of-service',
-              privacyPolicyUrl: 'privacy-policy'
-            });
-          }
-        });
     }
   </script>
 
