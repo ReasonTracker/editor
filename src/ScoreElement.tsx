@@ -275,11 +275,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <sub title={'based on ' + this.state.score.descendantCount + ' claims'}> {this.state.score.descendantCount}</sub>
                                 }
                             </span>
-                            {/* {(score.fraction*100).toFixed(0)} |&nbsp;
-                            {-((1-score.confidence) *score.fraction*100 ).toFixed(2)} |&nbsp; */}
-                            {/* {(score.percentOfWeight*100).toFixed(0)} |&nbsp; */}
-                            {/* {(score.fractionSimple-score.fraction)>0?(score.fractionSimple-score.fraction).toFixed(2):"0"}% |&nbsp; */}
-                            {/* <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span> */}
                         </div>
                         <svg className="callout" width="30px" height="30px">
                             <use href="#callout" />
