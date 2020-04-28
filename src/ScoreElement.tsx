@@ -240,7 +240,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             var parsed = reader.parse(claim.content);
             var html: string = writer.render(parsed)
             //Add target="_blank"
-            html = html.replace(/href="/g, ' target="_blank" href="');
+            html = html.replace(/href="/g, ' target="_blank" rel="noopener noreferrer"  href="');
+            // rel="noopener noreferrer" due to security vulnerability https://www.jitbit.com/alexblog/256/
             return { __html: html };
         }
 
