@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, Claim, ClaimEdge, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action} from "@reasonscore/core";
+// import { Claim, ClaimEdge, ScoreTree } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -36,7 +37,7 @@ async function startApp() {
   //   new Action(new Claim('04', '04'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '04', u, pro, '04-edge'), u, 'add_claimEdge'),
   // ]
 
-  //Populate the Reporsitory
+  //Populate the Repository
   if (window.RsDatabase) {
     doc = await window.RsDatabase.doc(settings.dbCollection).get()
   }
