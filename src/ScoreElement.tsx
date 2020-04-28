@@ -177,7 +177,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 }
             } else {
                 let descriptions, trailing
-                if (score.parentScoreId === undefined){
+                if (score.parentScoreId === undefined) {
                     descriptions = settings.scoreDescriptions.result
                     trailing = "";
                 } else {
@@ -267,8 +267,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <span className={'numbers'}
                                 title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
                                 <span className="sign">{score.parentScoreId !== undefined && (proMain ? "+" : "-")}</span>
-                            <span className="number">{fractionalizedScore}</span>
-                            {score.parentScoreId === undefined && "%"}
+                                <span className="number">{fractionalizedScore}</span>
+                                {score.parentScoreId === undefined && "%"}
                             </span>
                             <span className={'score-description'}
                                 title={scoreNumbers + '% confidence based on ' + this.state.score.descendantCount + ' claims'}>
@@ -277,6 +277,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <sub title={'based on ' + this.state.score.descendantCount + ' claims'}> {this.state.score.descendantCount}</sub>
                                 }
                             </span>
+                            <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span>
                         </div>
                         <svg className="callout" width="30px" height="30px">
                             <use href="#callout" />

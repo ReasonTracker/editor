@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- flyway.html -->
+
 <head>
-  <script src="iframeResizer.contentWindow.min.js"></script>
   <script> //Settings for this page
     window.RsSettings = {
       disableExternalDb: false,
       numbers: false,
+      largeNumbers: false,
       lines: true,
       editable: true,
       startClosed: false,
@@ -15,9 +16,6 @@
       saveToCloud: true,
       dbCollection: "f-flyway"
     }
-
-    //window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
-
     //Enable expanding children
     window.RsExpandChildren = function (elementId) {
       const expanderElement = window.document.getElementById("expander-" + elementId);
@@ -33,31 +31,6 @@
         expanderElement.classList.add("collapsed");
       }
     }
-
-
-    window.RsActions = [
-      {
-        "newData": {
-          "content": "new Claim",
-          "id": "topClaim",
-          "reversible": false,
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "topClaim"
-      },
-      {
-        "newData": {
-          "sourceClaimId": "topClaim",
-          "topScoreId": "topScore",
-          "confidence": 1,
-          "id": "ScoreTree",
-          "type": "scoreTree"
-        },
-        "type": "add_scoreTree",
-        "dataId": "ScoreTree"
-      },
-    ]
   </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
