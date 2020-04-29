@@ -70,41 +70,21 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             });
         }
         this.props.messenger.subscribe(this.handleDataDispatch)
-        this.handleChildrenVisible1()
+        this.handleChildrenVisible()
     }
 
-    handleChildrenVisible1 = () => {
-    }
-
-    handleChildrenVisible = (e: React.FormEvent<HTMLInputElement>) => {
-        const expanderCheckbox2 = window.document.getElementById("expander2-" + (this.state.score.id)) as HTMLInputElement;
-        const expanderCheckbox3 = window.document.getElementById("expander3-" + (this.state.score.id)) as HTMLInputElement;
-        // if (expanderCheckbox2 && expanderCheckbox3){
-        // //expanderCheckbox2.checked = false;
-        // expanderCheckbox3.checked = !expanderCheckbox3.checked;
-        // }
-        // return false;
-        if (expanderCheckbox2.checked === true) {
-            const expander2s = window.document.getElementsByClassName('expander2') as HTMLCollectionOf<HTMLInputElement>;
-            for (const expander of expander2s) {
-                expander.checked = false;
-            }
-            const expander3s = window.document.getElementsByClassName('expander3') as HTMLCollectionOf<HTMLInputElement>;
-            for (const expander of expander3s) {
-                expander.checked = false;
-            }
-            expanderCheckbox2.checked = true;
-            expanderCheckbox3.checked = true;
+    handleChildrenVisible() {
+        // //Set up the click event to open the children outside React so it can be used with an embed without javascript code
+        // const expanderElement = window.document.getElementById("expander-" + (this.state.score.id));
+        // expanderElement?.setAttribute("onClick", `window.RsExpandChildren('${this.state.score.id}');`);
+        const expanderCheckbox = window.document.getElementById("expander2-" + (this.state.score.id)) as HTMLInputElement;
+        if (expanderCheckbox && this.state.childrenVisible !== expanderCheckbox.checked){
+            expanderCheckbox.checked =  this.state.childrenVisible;
         }
-        else{
-            expanderCheckbox2.checked = false;
-            expanderCheckbox3.checked = false;
-        }
-
     }
 
     componentDidUpdate() {
-        this.handleChildrenVisible1()
+        this.handleChildrenVisible()
     }
 
     componentWillUnmount() {
@@ -272,8 +252,11 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         return (
             <div className={'claim-outer'}>
-                <input id={"expander2-" + score.id} type="checkbox" className="expander2" onChange={this.handleChildrenVisible}></input>
-                <input id={"expander3-" + score.id} type="checkbox" className="expander3"></input>
+                {childScores.length > 0 && <>
+                    <input type="checkbox" className="expander2"></input>
+                </>
+                }
+                <input type="checkbox" className="expander3"></input>
                 <div className={'claim-hider'}>
                     <div className={'claim ' + proMainText} >
                         <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
@@ -300,7 +283,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <div className="tic" style={{ left: '100%' }}></div>
                                 </div>
                             </div>
-                            <label htmlFor={"expander2-" + score.id} className={'numbers'}
+                            <label htmlFor={"expander2-" + claim.id} className={'numbers'}
                                 title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
                                 <span className="number">
                                     <span className="sign">{sign}</span>

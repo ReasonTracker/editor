@@ -34,7 +34,7 @@ rs-score {
     max-width: 600px;
   }
 
-  input[type="checkbox"] {
+  input[type="checkbox"].form-check {
     transform: scale(2);
     transform-origin: left;
     margin-right: 20px;
@@ -105,9 +105,71 @@ rs-score {
     display: block;
   }
 
-  .children.hide li > div > .claim-hider {
+  // expanders
+  .expander {
+    //TODO: remove old expander
+    display: none;
+    cursor: pointer;
+    fill: white;
+    position: absolute;
+    bottom: 9px;
+    left: opx;
+    z-index: 2;
+    transition: transform 0.3s;
+    opacity: 0.5;
+  }
+  .expanded {
+    transform: rotate(90deg);
+  }
+
+  .expander2 {
+    display: none;
+  }
+  .expander2-label,
+  .expander3 {
+    position: absolute;
+    left: -5px;
+    z-index: 2;
+    //opacity: 0.3;
+    display: none;
+  }
+  .expander2-label {
+    top: 43px;
+    left: 46px;
+    color: white;
+    opacity: 0.75;
+    font-size: small;
+  }
+  .expander3 {
+    top: 35px;
+    opacity: 0.3;
+  }
+
+  > div > .claim-outer > .expander2-label,
+  > div > .claim-outer > .expander3,
+  .expander3:checked,
+  .expander2:checked ~ .expander2-label {
+    display: unset;
+    //opacity: 1;
+  }
+  .expander2:not(:checked) ~ ul > li > div > .claim-hider {
     max-height: 0px;
   }
+  .expander2:checked ~ ul > li > div {
+    > .expander2-label,
+    > .expander3 {
+      display: unset;
+      //opacity: 1;
+    }
+  }
+
+  .expander3:checked ~ div.claim-hider {
+    max-height: 100px !important;
+  }
+
+  // .children.hide li > div > .claim-hider {
+  //   max-height: 0px;
+  // }
 
   .score-enter > div > .claim-hider {
     max-height: 0;
@@ -126,7 +188,7 @@ rs-score {
   }
 
   .claim-inner {
-    padding: 0px 0px 0px 15px;
+    padding: 0px 0px 0px 5px;
     min-height: 2.5em;
     max-height: 4.5em;
     overflow-y: auto;
@@ -197,21 +259,6 @@ rs-score {
     sub {
       opacity: 0.5;
     }
-  }
-
-  .expander {
-    cursor: pointer;
-    fill: white;
-    position: absolute;
-    bottom: 9px;
-    left: opx;
-    z-index: 2;
-    transition: transform 0.3s;
-    opacity: 0.5;
-  }
-
-  .expanded {
-    transform: rotate(90deg);
   }
 
   .editor-enter {
@@ -312,14 +359,13 @@ rs-score {
     padding: 0;
     margin: 0;
     border: none;
+    cursor: pointer;
     .sign {
-      display: inline-block;
-      width: 0.7em;
-      text-align: center;
+      font-size: smaller;
+      vertical-align: top;
     }
     .number {
       display: inline-block;
-      width: 1em;
     }
   }
 
