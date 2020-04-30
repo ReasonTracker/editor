@@ -146,8 +146,8 @@ rs-score {
   }
 
   > div > .claim-outer > .expander2-label,
-  > div > .claim-outer > .expander3,
-  .expander3:checked,
+  //> div > .claim-outer > .expander3,
+  //.expander3:checked,
   .expander2:checked ~ .expander2-label {
     display: unset;
     //opacity: 1;
@@ -156,8 +156,9 @@ rs-score {
     max-height: 0px;
   }
   .expander2:checked ~ ul > li > div {
-    > .expander2-label,
-    > .expander3 {
+    > .expander2-label
+    // > .expander3 
+    {
       display: unset;
       //opacity: 1;
     }
@@ -385,7 +386,9 @@ rs-score {
     border: none;
     margin: 0;
     min-width: unset;
-    padding-right: 0.2em;
+    padding-right: 0em;
+    position: relative;
+    left: -5px;
   }
 
   .lines {

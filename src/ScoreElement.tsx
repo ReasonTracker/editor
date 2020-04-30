@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree, selectNode, selectedStatus, selectedStatuses } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ClaimEdge } from './dataModels/ClaimEdge';
@@ -74,33 +74,35 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     handleChildrenVisible1 = () => {
+        if (this.state.childrenVisible){
+            const expander2 = window.document.getElementById("expander2-" + this.state.score.id) as HTMLInputElement;
+            expander2.checked = true
+        }
     }
 
     handleChildrenVisible = (e: React.FormEvent<HTMLInputElement>) => {
-        const expanderCheckbox2 = window.document.getElementById("expander2-" + (this.state.score.id)) as HTMLInputElement;
-        const expanderCheckbox3 = window.document.getElementById("expander3-" + (this.state.score.id)) as HTMLInputElement;
-        // if (expanderCheckbox2 && expanderCheckbox3){
-        // //expanderCheckbox2.checked = false;
-        // expanderCheckbox3.checked = !expanderCheckbox3.checked;
-        // }
-        // return false;
-        if (expanderCheckbox2.checked === true) {
-            const expander2s = window.document.getElementsByClassName('expander2') as HTMLCollectionOf<HTMLInputElement>;
-            for (const expander of expander2s) {
-                expander.checked = false;
+        const selectedNodes = selectNode(this.state.score.id, this.props.repository.rsData);
+        const expander2s = window.document.getElementsByClassName('expander2') as HTMLCollectionOf<HTMLInputElement>;
+        for (const expander2 of expander2s) {
+            const expander3 = window.document.getElementById(expander2.id.replace("expander2", "expander3")) as HTMLInputElement;
+            // TODO: Find feels very slow here. Should it be a dictionairy
+            const selectedNode = selectedNodes.find(e => e.itemId === expander2.id.substring(10, 100))
+            if (selectedNode) {
+                if (selectedNode.status === `selected`) {
+                    expander2.checked = true;
+                    expander3.checked = true;
+                } else if (selectedNode.status === `ancestor`) {
+                    expander2.checked = false;
+                    expander3.checked = true;
+                } else {
+                    expander2.checked = false;
+                    expander3.checked = false;    
+                }
+            } else {
+                expander2.checked = false;
+                expander3.checked = false;
             }
-            const expander3s = window.document.getElementsByClassName('expander3') as HTMLCollectionOf<HTMLInputElement>;
-            for (const expander of expander3s) {
-                expander.checked = false;
-            }
-            expanderCheckbox2.checked = true;
-            expanderCheckbox3.checked = true;
         }
-        else{
-            expanderCheckbox2.checked = false;
-            expanderCheckbox3.checked = false;
-        }
-
     }
 
     componentDidUpdate() {
