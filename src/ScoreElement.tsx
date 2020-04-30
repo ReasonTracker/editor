@@ -1,5 +1,5 @@
 import React from 'react';
-import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree, selectNode, selectedStatus, selectedStatuses } from "@reasonscore/core";
+import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree, selectNode } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ClaimEdge } from './dataModels/ClaimEdge';
@@ -74,7 +74,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     handleChildrenVisible1 = () => {
-        if (this.state.childrenVisible){
+        if (this.state.childrenVisible) {
             const expander2 = window.document.getElementById("expander2-" + this.state.score.id) as HTMLInputElement;
             expander2.checked = true
         }
@@ -96,7 +96,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     expander3.checked = true;
                 } else {
                     expander2.checked = false;
-                    expander3.checked = false;    
+                    expander3.checked = false;
                 }
             } else {
                 expander2.checked = false;
@@ -278,8 +278,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 <input id={"expander3-" + score.id} type="checkbox" className="expander3"></input>
                 <div className={'claim-hider'}>
                     <div className={'claim ' + proMainText} >
-                        <div className={'editor-button'} onClick={this.handleEditButtonClick}><svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 48 48" width="15"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg></div>
-                        <div className={'add-button'} onClick={this.handleAddButtonClick}>+</div>
                         {childScores.length > 0 &&
                             <div id={"expander-" + (this.state.score.id)} className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} >
                                 <svg width="20px" height="20px">
@@ -318,11 +316,20 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 }
                             </span>
                             <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span>
+                            <label className="more-info" htmlFor={"expander2-" + score.id} >
+                                More info&hellip;
+                            </label>
                         </div>
                         <svg className="callout" width="30px" height="30px">
                             <use href="#callout" />
                         </svg>
                     </div>
+                </div>
+                <div className="scoreInfo">
+                    {scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}
+                    <span className="editable">
+                    <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
+                    <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
                     <div>

@@ -157,7 +157,7 @@ rs-score {
   }
   .expander2:checked ~ ul > li > div {
     > .expander2-label
-    // > .expander3 
+    // > .expander3
     {
       display: unset;
       //opacity: 1;
@@ -171,6 +171,35 @@ rs-score {
   // .children.hide li > div > .claim-hider {
   //   max-height: 0px;
   // }
+
+  .expander2:checked ~ .claim-hider .more-info {
+    max-width: 0;
+  }
+
+  .more-info {
+    text-decoration: underline;
+    font-size: small;
+    opacity: 0.8;
+    display: inline-block;
+    max-width: 5em;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.5s;
+    vertical-align: text-bottom;
+  }
+
+  .scoreInfo {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.5s;
+    margin-left: 30px;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    padding-left: 12px;
+  }
+
+  .expander2:checked ~ .scoreInfo {
+    max-height: 5em;
+  }
 
   .score-enter > div > .claim-hider {
     max-height: 0;
@@ -288,27 +317,20 @@ rs-score {
     overflow: hidden;
   }
 
-  .editor-button {
-    cursor: pointer;
-    position: absolute;
-    opacity: 0.5;
-    right: 5px;
-    fill: white;
-    top: 0;
-    transition: 1s;
+  .editable {
+    opacity: 0.7;
     overflow: hidden;
-    width: 0;
+    display: none;
+  }
+  .s-editable {
+    .editable {
+      display: inline;
+    }
   }
 
-  .add-button {
-    cursor: pointer;
-    position: absolute;
-    opacity: 0.5;
-    top: 20px;
-    right: 5px;
-    transition: 1s;
-    overflow: hidden;
-    width: 0;
+  button.btn-inline {
+    margin: 2px 0.1em;
+    padding: 1px 0.5em;
   }
 
   form {
@@ -335,15 +357,6 @@ rs-score {
   .show-settings {
     max-height: 1000px;
     margin-bottom: 0.5rem;
-  }
-
-  .s-editable {
-    .editor-button {
-      width: 15px;
-    }
-    .add-button {
-      width: 15px;
-    }
   }
 
   /* Visulaizations */
