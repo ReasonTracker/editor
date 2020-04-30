@@ -164,8 +164,15 @@ rs-score {
     }
   }
 
-  .expander3:checked ~ div.claim-hider {
+  .expander3:checked ~ claim-hider {
     max-height: 100px !important;
+  }
+
+  .expander2:checked ~ .claim-hider {
+    max-height: 20em !important;
+    .claim-inner {
+      max-height: 18em;
+    }
   }
 
   // .children.hide li > div > .claim-hider {
@@ -181,11 +188,15 @@ rs-score {
     font-size: small;
     opacity: 0.8;
     display: inline-block;
-    max-width: 5em;
+    max-width: 0;
     white-space: nowrap;
     overflow: hidden;
     transition: 0.5s;
     vertical-align: text-bottom;
+  }
+
+  .s-moreInfo .more-info {
+    max-width: 5em;
   }
 
   .scoreInfo {
@@ -195,6 +206,7 @@ rs-score {
     margin-left: 30px;
     border-left: 1px solid rgba(0, 0, 0, 0.2);
     padding-left: 12px;
+    opacity: 0.8;
   }
 
   .expander2:checked ~ .scoreInfo {
@@ -222,7 +234,7 @@ rs-score {
     min-height: 2.5em;
     max-height: 4.5em;
     overflow-y: auto;
-    margin-right: 20px;
+    transition: 0.5s;
   }
 
   .claim-inner a {
@@ -231,17 +243,17 @@ rs-score {
   }
 
   .claim-inner::-webkit-scrollbar {
-    width: 0.5em;
+    width: 0.6em;
   }
 
   .claim-inner::-webkit-scrollbar-track {
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
+    border-radius: 0px 1em 1em 0px;
   }
 
   .claim-inner::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
+    border-radius: 0px 1em 1em 0px;
   }
 
   .claim-outer {

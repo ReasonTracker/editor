@@ -202,10 +202,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     scoreDescription = "Decreases " + scoreDescription;
                 }
             } else {
-                let descriptions, trailing
+                let descriptions, trailing = "";
                 if (score.parentScoreId === undefined) {
                     descriptions = settings.scoreDescriptions.result
-                    trailing = "";
                 } else {
                     descriptions = settings.scoreDescriptions.impact
                     trailing = proMain ? " Pro" : " Con";
@@ -215,11 +214,17 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         scoreDescription = descItem.desc;
                     }
                 }
-                scoreDescription += trailing;
+                scoreDescription += trailing + ": ";
             }
         }
         if (!childScores.length) {
-            scoreDescription = "Assumed, " + scoreDescription
+            scoreDescription = "Assumed " + scoreDescription
+        }
+        let basedOn = ""
+        if (this.state.score.descendantCount > 0){
+            basedOn = " based on " + this.state.score.descendantCount + " claim";
+            if (this.state.score.descendantCount > 1) basedOn += "s"
+            basedOn += "."
         }
 
         //Prioritize the children for the display order
@@ -301,7 +306,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 </div>
                             </div>
                             <label htmlFor={"expander2-" + score.id} className={'numbers'}
-                                title={scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}>
+                                title={scoreDescription + basedOn}>
                                 <span className="number">
                                     <span className="sign">{sign}</span>
                                     {fractionalizedScore}
@@ -309,11 +314,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 {score.parentScoreId === undefined && "%"}
                             </label>
                             <span className={'score-description'}
-                                title={scoreNumbers + '% confidence based on ' + this.state.score.descendantCount + ' claims'}>
-                                {scoreDescription}
-                                {this.state.score.descendantCount > 0 &&
-                                    <sub title={'based on ' + this.state.score.descendantCount + ' claims'}> {this.state.score.descendantCount}</sub>
-                                }
+                                title={scoreNumbers + '% confidence based on ' + basedOn}>
+                                {scoreDescription + basedOn}
                             </span>
                             <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span>
                             <label className="more-info" htmlFor={"expander2-" + score.id} >
@@ -326,7 +328,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     </div>
                 </div>
                 <div className="scoreInfo">
-                    {scoreDescription + ' based on ' + this.state.score.descendantCount + ' claims'}
+                    {scoreDescription + basedOn}
                     <span className="editable">
                     <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
                     <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
