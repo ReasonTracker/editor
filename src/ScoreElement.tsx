@@ -261,7 +261,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         let sign;
         if (score.parentScoreId === undefined) {
             if (score.confidence < 0) sign = "-";
-            else sign = "-";
+            else sign = " ";
         } else {
             sign = proMain ? "+" : "-";
         }
