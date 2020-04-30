@@ -164,7 +164,7 @@ rs-score {
     }
   }
 
-  .expander3:checked ~ claim-hider {
+  .expander3:checked ~ .claim-hider {
     max-height: 100px !important;
   }
 
@@ -193,6 +193,7 @@ rs-score {
     overflow: hidden;
     transition: 0.5s;
     vertical-align: text-bottom;
+    cursor: pointer;
   }
 
   .s-moreInfo .more-info {
@@ -266,15 +267,15 @@ rs-score {
     // display: inline-block;
   }
 
-  .content p:first-of-type {
+  .rs-content p:first-of-type {
     display: inline;
   }
 
-  .content p:last-of-type {
+  .rs-content p:last-of-type {
     margin-bottom: 0;
   }
 
-  .content img {
+  .rs-content img {
     max-width: 40%;
     float: right;
   }

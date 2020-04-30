@@ -317,7 +317,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 title={scoreNumbers + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}
                             </span>
-                            <span className={'content'} dangerouslySetInnerHTML={createMarkup()}></span>
+                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup()}></span>
                             <label className="more-info" htmlFor={"expander2-" + score.id} >
                                 More info&hellip;
                             </label>
