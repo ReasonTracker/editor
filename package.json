@@ -17,8 +17,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
     "react-transition-group": "^4.3.0",
-    "typescript": "^3.8.3",
-    "snyk": "^1.316.1"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,9 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "delete_node_modules": "rmdir /q/s node_modules",
-    "upgrade-all": "ncu -u && npm install",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "upgrade-all": "ncu -u && npm install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,6 +44,5 @@
   },
   "devDependencies": {
     "npm-check-updates": "^4.1.2"
-  },
-  "snyk": true
+  }
 }
