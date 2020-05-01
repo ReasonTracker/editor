@@ -11,7 +11,7 @@
       lines: false,
       editable: false,
       startClosed: false,
-      portData: true,
+      portData: false,
       scoreDescription: false,
       saveToCloud: false,
       moreInfo: true,
@@ -38,7 +38,7 @@
     window.RsActions = [
       {
         "newData": {
-          "content": "Fiction City should convert Elm Street to only pedestrian traffic?",
+          "content": "[Fiction City](https://en.wikipedia.org/wiki/Fictional_city) should convert Elm Street to [only pedestrian traffic](https://en.wikipedia.org/wiki/Pedestrian_zone)?",
           "id": "topClaim",
           "type": "claim"
         },
@@ -212,14 +212,17 @@
   <title>Reason Score Demo</title>
 
   <style>
-    body {
-      padding: 5%;
+    html {
+      overflow-x: unset !important;
     }
-
-    @media (max-width: 600px) {
-      body {
+    #demo {
+      margin-top: 3rem;
+    }
+    @media (max-width:600px) {
+      #demo {
         padding: 0;
         margin: 0;
+        margin-top: 1rem;
       }
     }
   </style>

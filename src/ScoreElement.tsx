@@ -106,7 +106,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     componentDidUpdate() {
-        this.handleChildrenVisible1()
+        //this.handleChildrenVisible1()
     }
 
     componentWillUnmount() {
