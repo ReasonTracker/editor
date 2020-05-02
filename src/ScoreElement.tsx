@@ -1,9 +1,10 @@
 import React from 'react';
-import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree, selectNode } from "@reasonscore/core";
+import { RepositoryLocalPure, Score, Messenger, Action, ScoreTree } from "@reasonscore/core";
 import EditorElement from './EditorElement';
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ClaimEdge } from './dataModels/ClaimEdge';
 import { Claim } from './dataModels/Claim';
+import { selectElement } from './selectElement';
 
 const commonmark: any = require('commonmark');
 
@@ -46,8 +47,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     async componentDidMount() {
         const score = await this.props.repository.getScore(this.props.scoreId) as Score;
         let claim = new Claim() as Claim;
-        //TODO: Figure out how to remove Children Visible completely
-        let childrenVisible = this.state.childrenVisible;
         if (score) {
             let claimEdge: ClaimEdge | undefined;
             if (score.sourceEdgeId) {
@@ -55,9 +54,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
             const claimResult = await this.props.repository.getClaim(score.sourceClaimId);
             const childScores = await this.props.repository.getChildrenByScoreId(score.id) as Score[];
-            if (!score.parentScoreId && !this.props.settings.startClosed) {
-                childrenVisible = true;
-            }
             if (claimResult) {
                 claim = claimResult as Claim;
             }
@@ -65,48 +61,14 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 score: score,
                 claim: claim,
                 childScores: childScores,
-                childrenVisible: childrenVisible,
                 claimEdge: claimEdge
             });
         }
         this.props.messenger.subscribe(this.handleDataDispatch)
-        this.handleChildrenVisible1()
     }
 
-    handleChildrenVisible1 = () => {
-        if (this.state.childrenVisible) {
-            const expander2 = window.document.getElementById("expander2-" + this.state.score.id) as HTMLInputElement;
-            expander2.checked = true
-        }
-    }
-
-    handleChildrenVisible = (e: React.FormEvent<HTMLInputElement>) => {
-        const selectedNodes = selectNode(this.state.score.id, this.props.repository.rsData);
-        const expander2s = window.document.getElementsByClassName('expander2') as HTMLCollectionOf<HTMLInputElement>;
-        for (const expander2 of expander2s) {
-            const expander3 = window.document.getElementById(expander2.id.replace("expander2", "expander3")) as HTMLInputElement;
-            // TODO: Find feels very slow here. Should it be a dictionairy
-            const selectedNode = selectedNodes.find(e => e.itemId === expander2.id.substring(10, 100))
-            if (selectedNode) {
-                if (selectedNode.status === `selected`) {
-                    expander2.checked = true;
-                    expander3.checked = true;
-                } else if (selectedNode.status === `ancestor`) {
-                    expander2.checked = false;
-                    expander3.checked = true;
-                } else {
-                    expander2.checked = false;
-                    expander3.checked = false;
-                }
-            } else {
-                expander2.checked = false;
-                expander3.checked = false;
-            }
-        }
-    }
-
-    componentDidUpdate() {
-        //this.handleChildrenVisible1()
+    handleChildrenVisible = () => {
+        selectElement(this.state.score.id, this.props.repository.rsData);
     }
 
     componentWillUnmount() {
@@ -203,7 +165,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 }
             } else {
                 let descriptions, trailing = "";
-                if (score.parentScoreId === undefined) {
+                if (!score.parentScoreId) {
                     descriptions = settings.scoreDescriptions.result
                 } else {
                     descriptions = settings.scoreDescriptions.impact
@@ -221,7 +183,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             scoreDescription = "Assumed " + scoreDescription
         }
         let basedOn = ""
-        if (this.state.score.descendantCount > 0){
+        if (this.state.score.descendantCount > 0) {
             basedOn = " based on " + this.state.score.descendantCount + " claim";
             if (this.state.score.descendantCount > 1) basedOn += "s"
             basedOn += "."
@@ -254,16 +216,21 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         const proMainText = proMain ? "pro" : "con";
 
-        let fractionalizedScore = Math.abs(
-            ((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100))
-        ).toFixed(0);
-        if (fractionalizedScore === "100") fractionalizedScore = "99";
-        let sign;
-        if (score.parentScoreId === undefined) {
-            if (score.confidence < 0) sign = "-";
-            else sign = " ";
+        let fractionalizedScore, sign;
+        if (score.affects === "relevance") {
+            fractionalizedScore = score.pro ? "X" : "÷";
+            fractionalizedScore += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
         } else {
-            sign = proMain ? "+" : "-";
+            fractionalizedScore = Math.abs(
+                ((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100))
+            ).toFixed(0);
+            if (fractionalizedScore === "100") fractionalizedScore = "99";
+            if (!score.parentScoreId) {
+                if (score.confidence < 0) sign = "-";
+                else sign = " ";
+            } else {
+                sign = proMain ? "+" : "-";
+            }
         }
 
         function createMarkup() {
@@ -311,7 +278,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <span className="sign">{sign}</span>
                                     {fractionalizedScore}
                                 </span>
-                                {score.parentScoreId === undefined && "%"}
+                                {!score.parentScoreId && "%"}
                             </label>
                             <span className={'score-description'}
                                 title={scoreNumbers + '% confidence based on ' + basedOn}>
@@ -330,8 +297,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 <div className="scoreInfo">
                     {scoreDescription + basedOn}
                     <span className="editable">
-                    <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
-                    <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
+                        <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
+                        <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
                     <div>

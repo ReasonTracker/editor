@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- demo.html -->
+<!-- edit.html -->
 
 <head>
   <script> //Settings for this page
@@ -9,15 +9,15 @@
       numbers: true,
       largeNumbers: true,
       lines: false,
-      editable: false,
+      editable: true,
       startClosed: false,
-      portData: false,
+      portData: true,
       scoreDescription: false,
       saveToCloud: false,
       moreInfo: true,
     }
 
-    window.RsSettings.dbCollection = "f-demo";
+    window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
 
     //Enable expanding children
     window.RsExpandChildren = function (elementId) {
@@ -38,191 +38,38 @@
     window.RsActions = [
       {
         "newData": {
-          "content": "[Fiction City](https://en.wikipedia.org/wiki/Fictional_city) should convert Elm Street to [only pedestrian traffic](https://en.wikipedia.org/wiki/Pedestrian_zone)?",
-          "id": "topClaim",
+          "content": 'This is a new claim. Select the "edit this claim" button below to change this text. Select the "add a pro or con" button to add additional claims. Select the "Import" and "Export" buttons below to save a copy to your device.',
+          "id": "mainClaim",
           "type": "claim"
         },
         "type": "add_claim",
-        "dataId": "topClaim"
+        "dataId": "mainClaim"
       },
       {
         "newData": {
-          "content": "The planning commission estimates this will increase foot traffic to local shops by 12% during peak hours.",
-          "id": "Y6N1dZyym0X5",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZyym0X5"
-      },
-      {
-        "newData": {
-          "content": "The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.",
-          "id": "Y6N1dZycnavJ",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZycnavJ"
-      },
-      {
-        "newData": {
-          "content": "This will result in traffic being diverted down residential streets.",
-          "id": "Y6N1dZxFx9Hk",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZxFx9Hk"
-      },
-      {
-        "newData": {
-          "content": "Children safety is more important than profit for local shops.",
-          "id": "Y6N1dZxEuMNA",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZxEuMNA"
-      },
-      {
-        "newData": {
-          "content": "A set of railroad tracks are no longer in use and the City can convert that to a new street.",
-          "id": "Y6N1dZxbqJ0O",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZxbqJ0O"
-      },
-      {
-        "newData": {
-          "content": "The conversion will cost 2 Million dollars.",
-          "id": "Y6N1dZxRu7nP",
-          "type": "claim"
-        },
-        "type": "add_claim",
-        "dataId": "Y6N1dZxRu7nP"
-      },
-      {
-        "newData": {
-          "parentId": "topClaim",
-          "childId": "Y6N1dZyym0X5",
-          "affects": "confidence",
-          "pro": true,
-          "id": "Y6N1dZx0x2kP",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZx0x2kP"
-      },
-      {
-        "newData": {
-          "parentId": "Y6N1dZyym0X5",
-          "childId": "Y6N1dZycnavJ",
-          "affects": "relevance",
-          "pro": true,
-          "id": "Y6N1dZxT7A8H",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZxT7A8H"
-      },
-      {
-        "newData": {
-          "parentId": "topClaim",
-          "childId": "Y6N1dZxFx9Hk",
-          "affects": "confidence",
-          "pro": false,
-          "id": "Y6N1dZxX6c8l",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZxX6c8l"
-      },
-      {
-        "newData": {
-          "parentId": "Y6N1dZxFx9Hk",
-          "childId": "Y6N1dZxEuMNA",
-          "affects": "relevance",
-          "pro": true,
-          "id": "Y6N1dZxqrFG1",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZxqrFG1"
-      },
-      {
-        "newData": {
-          "parentId": "Y6N1dZxFx9Hk",
-          "childId": "Y6N1dZxbqJ0O",
-          "affects": "confidence",
-          "pro": false,
-          "id": "Y6N1dZxpzBQq",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZxpzBQq"
-      },
-      {
-        "newData": {
-          "parentId": "topClaim",
-          "childId": "Y6N1dZxRu7nP",
-          "affects": "confidence",
-          "pro": false,
-          "id": "Y6N1dZxeFD9X",
-          "priority": "",
-          "type": "claimEdge"
-        },
-        "type": "add_claimEdge",
-        "dataId": "Y6N1dZxeFD9X"
-      },
-      {
-        "newData": {
-          "sourceClaimId": "topClaim",
-          "topScoreId": "topClaim",
-          "reversible": false,
-          "pro": true,
-          "affects": "confidence",
-          "confidence": 0,
-          "relevance": 1,
-          "id": "topScore",
-          "priority": "",
-          "type": "score",
-          "scoreTreeId": "ScoreTree"
-        },
-        "type": "add_score",
-        "dataId": "topScore"
-      },
-      {
-        "newData": {
-          "confidence": 1,
+          "sourceClaimId": "mainClaim",
+          "topScoreId": "mainScore",
           "id": "ScoreTree",
-          "sourceClaimId": "topClaim",
-          "topScoreId": "topScore",
           "type": "scoreTree"
         },
         "type": "add_scoreTree",
         "dataId": "ScoreTree"
-      }
+      },
     ]
   </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reason Score Demo</title>
+  <title>Reason Score Prototype Editor</title>
 
   <style>
-    html {
-      overflow-x: unset !important;
+    body {
+      padding: 5%;
     }
-    #demo {
-      margin-top: 3rem;
-    }
-    @media (max-width:600px) {
-      #demo {
+
+    @media (max-width: 600px) {
+      body {
         padding: 0;
         margin: 0;
-        margin-top: 1rem;
       }
     }
   </style>
@@ -230,6 +77,32 @@
 
 <body>
   <rs-score score-tree-id="ScoreTree"></rs-score>
+
+  <!-- Firestore Script, This whole script can be removed if firebase is not in use -->
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-firestore.js"></script>
+  <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+  <script>
+    // Firestore Setup
+    if (!window.RsSettings || !window.RsSettings.disableExternalDb) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyBmu9Lhj9Stp8dhamvCA4oi16o_jU4qnQM",
+        authDomain: "reason-score.firebaseapp.com",
+        databaseURL: "https://reason-score.firebaseio.com",
+        projectId: "reason-score",
+        storageBucket: "reason-score.appspot.com",
+        messagingSenderId: "403624872089",
+        appId: "1:403624872089:web:5d9685888a79f58ebe5008"
+      });
+
+      //Add Sirestore to the global for the page so it can be accessed by other objects on the page
+      window.RsDatabase = firebase
+        .firestore()
+        .collection("beta01")
+    }
+  </script>
+
 </body>
 
 </html>

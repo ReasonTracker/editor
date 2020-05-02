@@ -8,18 +8,22 @@ const App: React.FC<{
   scoreTreeId: string,
   repository: RepositoryLocalPure,
   messenger: Messenger,
-  settings: any
+  settings: any,
+  selectId?: string | null,
 }> = ({
   scoreTreeId,
   repository,
   messenger,
-  settings
+  settings,
+  selectId
 }) => (
       <>
         <Menu repository={repository}
           scoreTreeId={scoreTreeId}
           messenger={messenger}
-          settings={settings}></Menu>
+          settings={settings}
+          selectId={selectId}>
+        </Menu>
       </>
     );
 

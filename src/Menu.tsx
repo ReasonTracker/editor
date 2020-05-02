@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree} from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
+import { selectElement } from './selectElement';
 
 declare global {
     interface Window {
@@ -13,6 +14,7 @@ type MyProps = {
     repository: RepositoryLocalPure,
     messenger: Messenger,
     settings: any,
+    selectId?: string | null,
 };
 
 type MyState = {
@@ -59,10 +61,23 @@ class Menu extends Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
+        const scoreTree = await this.props.repository.getScoreTree(this.props.scoreTreeId)
         this.setState({
-            scoreTree: await this.props.repository.getScoreTree(this.props.scoreTreeId),
+            scoreTree: scoreTree,
         })
         this.props.messenger.subscribe(this.handleDataDispatch)
+
+        //Open the proper scores for display
+        // TODO: sleep hack because children may take awhile to be created. How can we do this better?
+        setTimeout(() => {
+            if (this.props.selectId) {
+                selectElement(this.props.selectId, this.props.repository.rsData);
+            } else if (!this.props.settings.startClosed && scoreTree) {
+                selectElement(scoreTree.topScoreId, this.props.repository.rsData);
+            }
+        }, 500);
+
+
     }
 
     handleDataDispatch = async (actions: Action[]) => {
@@ -77,11 +92,16 @@ class Menu extends Component<MyProps, MyState> {
         }
     }
 
-    handleSave = () => {
-        const rsDataCopy = this.getData();
+    handleSave = async () => {
+        //TODO: temp, change undefineds to nulls for parent IDs so they can be store din firestore
+        const topScore = await this.props.repository.getScore("topScore")
+        if (topScore){
+        topScore.parentScoreId = null;
+        topScore.sourceEdgeId = null;
+        }
 
         //Save the scores to Firebase
-        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCopy)
+        window.RsDatabase.doc(this.state.settings.dbCollection).set(this.props.repository.rsData)
             .then(function () {
                 console.log("Document successfully written!");
             })
@@ -127,28 +147,11 @@ class Menu extends Component<MyProps, MyState> {
     }
 
     handleExport = () => {
-        const rsDataCopy = this.getData();
         var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(rsDataCopy));
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.props.repository.rsData));
         hiddenElement.target = '_blank';
         hiddenElement.download = 'rsData.json';
         hiddenElement.click();
-    }
-
-    getData(): RsData {
-        const rsDataCopy: RsData = JSON.parse(JSON.stringify(this.props.repository.rsData));
-
-        //remove all scores so we are not passing them back and forth
-        const items = rsDataCopy.items;
-        for (const itemKey in items) {
-            if (items[itemKey].type === "score") {
-                delete items[itemKey];
-            }
-        }
-        rsDataCopy.scoreIdsBySourceId = {};
-        rsDataCopy.childIdsByScoreId = {};
-
-        return rsDataCopy;
     }
 
     toggleSettings = () => {

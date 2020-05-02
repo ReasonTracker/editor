@@ -67,11 +67,14 @@ async function startApp() {
       })
     }
 
+    const selectId = new URL(window.location.href).searchParams.get("s")
+
     ReactDOM.render(<App
       scoreTreeId={scoreTreeId}
       repository={repository}
       messenger={messenger}
       settings={window.RsSettings}
+      selectId={selectId}
     />, scoreElement);
 
   }
