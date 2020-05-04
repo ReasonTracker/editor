@@ -38,7 +38,7 @@
     window.RsActions = [
       {
         "newData": {
-          "content": 'This is a new claim. Select the "edit this claim" button below to change this text. Select the "add a pro or con" button to add additional claims. Select the "Import" and "Export" buttons below to save a copy to your device.',
+          "content": "This is a new claim.\n\n.\n* Select the \"edit this claim\" button below to change this text.\n* Select the \"add a pro or con\" button to add additional claims.\n* Select the \"Import\" and \"Export\" buttons at the bottom to save a copy to your device.",
           "id": "mainClaim",
           "type": "claim"
         },
@@ -96,7 +96,7 @@
         appId: "1:403624872089:web:5d9685888a79f58ebe5008"
       });
 
-      //Add Sirestore to the global for the page so it can be accessed by other objects on the page
+      //Add Firestore to the global for the page so it can be accessed by other objects on the page
       window.RsDatabase = firebase
         .firestore()
         .collection("beta01")

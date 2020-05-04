@@ -1,0 +1,1 @@
+document.body.appendChild(document.createElement('script')).src = `ReasonScoreFull2.js?x=${new Date().getDate()}`;
