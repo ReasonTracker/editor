@@ -267,9 +267,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <svg className="lines-pointer" style={{ left: scoreImpact * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
                                         <path d="m 0,1.3 a 10,10 0 0 1 10,0 L 5,10 Z" />
                                     </svg>
-                                    <span className="min">{claim.labelMin}</span>
-                                    <span className="mid">{claim.labelMid}</span>
-                                    <span className="max">{claim.labelMax}</span>
+                                    <span className="min" title={claim.labelMin}>{claim.labelMin}</span>
+                                    <span className="mid" title={claim.labelMid}>{claim.labelMid}</span>
+                                    <span className="max" title={claim.labelMax}>{claim.labelMax}</span>
                                     <div className="tic" style={{ left: '0%' }}></div>
                                     <div className="tic" style={{ left: '33.3%' }}></div>
                                     <div className="tic" style={{ left: '66.6%' }}></div>

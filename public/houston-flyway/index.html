@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script> //Settings for this page
+    window.RsSettings = {
+      disableExternalDb: false,
+      numbers: false,
+      largeNumbers: false,
+      lines: true,
+      editable: true,
+      startClosed: false,
+      portData: true,
+      scoreDescription: false,
+      saveToCloud: true,
+      moreInfo: true,
+      dbCollection: "f-flyway"
+    }
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Houston Flyway - Reason Score</title>
+
+  <style>
+    body {
+      padding: 5%;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <rs-score score-tree-id="ScoreTree"> </rs-score>
+  <script src="/static/js/ReasonScoreFull.js"></script>
+</body>
+
+</html>

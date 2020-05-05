@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { RepositoryLocalPure, Messenger, calculateScoreActions, Action} from "@reasonscore/core";
-import { Claim, ClaimEdge, ScoreTree } from "@reasonscore/core";
+//import { Claim, ClaimEdge, ScoreTree } from "@reasonscore/core";
 
 declare global {
   interface Window {
@@ -14,6 +14,7 @@ declare global {
 }
 
 async function startApp() {
+  console.log("startApp")
   const repository = new RepositoryLocalPure();
   const messenger = new Messenger();
   const settings = window.RsSettings;
@@ -24,18 +25,18 @@ async function startApp() {
     settings.dbCollection = "rsData"
   }
 
-  //TODO: This is for easy testing for now
-  const u = undefined, pro = true, con = false
-  window.RsActions = [
-    new Action(new Claim('mainClaim', 'mainClaim'), u, 'add_claim'), new Action(new ScoreTree('mainClaim', 'mainClaim-score', u, 'ScoreTree'), u, 'add_scoreTree'),
-    new Action(new Claim('01', '01'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '01', u, con, '01-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('02', '02'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '02', u, pro, '02-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('02-1', '02-1'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-1', u, pro, '02-1-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('02-2', '02-2'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-2', u, con, '02-2-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('02-3', '02-3'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-3', u, pro, '02-3-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('03', '03'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '03', u, pro, '03-edge'), u, 'add_claimEdge'),
-    new Action(new Claim('04', '04'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '04', u, pro, '04-edge'), u, 'add_claimEdge'),
-  ]
+  // //TODO: This is for easy testing for now
+  // const u = undefined, pro = true, con = false
+  // window.RsActions = [
+  //   new Action(new Claim('mainClaim', 'mainClaim'), u, 'add_claim'), new Action(new ScoreTree('mainClaim', 'mainClaim-score', u, 'ScoreTree'), u, 'add_scoreTree'),
+  //   new Action(new Claim('01', '01'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '01', u, con, '01-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('02', '02'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '02', u, pro, '02-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('02-1', '02-1'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-1', u, pro, '02-1-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('02-2', '02-2'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-2', u, con, '02-2-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('02-3', '02-3'), u, 'add_claim'), new Action(new ClaimEdge('02', '02-3', u, pro, '02-3-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('03', '03'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '03', u, pro, '03-edge'), u, 'add_claimEdge'),
+  //   new Action(new Claim('04', '04'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '04', u, pro, '04-edge'), u, 'add_claimEdge'),
+  // ]
 
   //Populate the Repository
   if (window.RsDatabase) {
@@ -50,6 +51,7 @@ async function startApp() {
 
   //Look in the HTML to see what we need to prep
   //Loop through the html scores and start an app for each
+  console.log('loading...');
   const scoreElements = document.getElementsByTagName('rs-score');
   for (const scoreElement of scoreElements) {
     const possibleScoreId = scoreElement.getAttribute('score-tree-Id');

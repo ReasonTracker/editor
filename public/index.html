@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- edit.html -->
 
 <head>
   <script> //Settings for this page
@@ -18,22 +17,6 @@
     }
 
     window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
-
-    //Enable expanding children
-    window.RsExpandChildren = function (elementId) {
-      const expanderElement = window.document.getElementById("expander-" + elementId);
-      const childrenElement = window.document.getElementById("children-" + elementId);
-
-      if (childrenElement.classList.contains("hide")) {
-        childrenElement.classList.remove("hide");
-        expanderElement.classList.add("expanded");
-        expanderElement.classList.remove("collapsed");
-      } else {
-        childrenElement.classList.add("hide");
-        expanderElement.classList.remove("expanded");
-        expanderElement.classList.add("collapsed");
-      }
-    }
 
     window.RsActions = [
       {
@@ -76,33 +59,11 @@
 </head>
 
 <body>
-  <rs-score score-tree-id="ScoreTree"></rs-score>
-
-  <!-- Firestore Script, This whole script can be removed if firebase is not in use -->
-  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.3.0/firebase-firestore.js"></script>
-  <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-  <script>
-    // Firestore Setup
-    if (!window.RsSettings || !window.RsSettings.disableExternalDb) {
-      firebase.initializeApp({
-        apiKey: "AIzaSyBmu9Lhj9Stp8dhamvCA4oi16o_jU4qnQM",
-        authDomain: "reason-score.firebaseapp.com",
-        databaseURL: "https://reason-score.firebaseio.com",
-        projectId: "reason-score",
-        storageBucket: "reason-score.appspot.com",
-        messagingSenderId: "403624872089",
-        appId: "1:403624872089:web:5d9685888a79f58ebe5008"
-      });
-
-      //Add Firestore to the global for the page so it can be accessed by other objects on the page
-      window.RsDatabase = firebase
-        .firestore()
-        .collection("beta01")
-    }
-  </script>
-
+  <a href="/edit/?i=denverpbb">Edit Denver</a></br>
+  <a href="/demo/">Demo</a></br>
+  <a href="/houston-flyway/">Flyway</a></br>
+  <!-- <rs-score score-tree-id="ScoreTree"></rs-score>
+  <script src="/static/js/ReasonScoreFull.js"></script> -->
 </body>
 
 </html>

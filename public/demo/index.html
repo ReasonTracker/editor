@@ -5,7 +5,7 @@
 <head>
   <script> //Settings for this page
     window.RsSettings = {
-      disableExternalDb: false,
+      disableExternalDb: true,
       numbers: true,
       largeNumbers: true,
       lines: false,
@@ -18,22 +18,6 @@
     }
 
     window.RsSettings.dbCollection = "f-demo";
-
-    //Enable expanding children
-    window.RsExpandChildren = function (elementId) {
-      const expanderElement = window.document.getElementById("expander-" + elementId);
-      const childrenElement = window.document.getElementById("children-" + elementId);
-
-      if (childrenElement.classList.contains("hide")) {
-        childrenElement.classList.remove("hide");
-        expanderElement.classList.add("expanded");
-        expanderElement.classList.remove("collapsed");
-      } else {
-        childrenElement.classList.add("hide");
-        expanderElement.classList.remove("expanded");
-        expanderElement.classList.add("collapsed");
-      }
-    }
 
     window.RsActions = [
       {
@@ -230,6 +214,7 @@
 
 <body>
   <rs-score score-tree-id="ScoreTree"></rs-score>
+  <script src="/static/js/ReasonScoreFull.js"></script>
 </body>
 
 </html>

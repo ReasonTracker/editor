@@ -436,14 +436,14 @@ rs-score {
       bottom: 0px;
     }
     span.min {
-      left: -30px;
+      left: 0;
     }
     span.mid {
       left: 50%;
       transform: translate(-50%);
     }
     span.max {
-      right: -30px;
+      right: 0;
     }
     .tic {
       width: 0;
@@ -457,7 +457,7 @@ rs-score {
 
   .lines-inner {
     border-bottom: 1px solid #ffffff91;
-    margin: 0 30px;
+    margin: 0;
     height: 20px;
     position: relative;
   }
