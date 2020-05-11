@@ -25,6 +25,7 @@ async function startApp() {
     settings.dbCollection = "rsData"
   }
 
+
   // //TODO: This is for easy testing for now
   // const u = undefined, pro = true, con = false
   // window.RsActions = [
@@ -37,6 +38,30 @@ async function startApp() {
   //   new Action(new Claim('03', '03'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '03', u, pro, '03-edge'), u, 'add_claimEdge'),
   //   new Action(new Claim('04', '04'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '04', u, pro, '04-edge'), u, 'add_claimEdge'),
   // ]
+
+  if (!window.RsActions){
+    window.RsActions = [
+      {
+        "newData": {
+          "content": "This is a new claim.\n\n.\n* Select the \"edit this claim\" button below to change this text.\n* Select the \"add a pro or con\" button to add additional claims.\n* Select the \"Import\" and \"Export\" buttons at the bottom to save a copy to your device.",
+          "id": "mainClaim",
+          "type": "claim"
+        },
+        "type": "add_claim",
+        "dataId": "mainClaim"
+      },
+      {
+        "newData": {
+          "sourceClaimId": "mainClaim",
+          "topScoreId": "mainScore",
+          "id": "ScoreTree",
+          "type": "scoreTree"
+        },
+        "type": "add_scoreTree",
+        "dataId": "ScoreTree"
+      },
+    ] as Action[] //TODO: need to correct order of params for actions to allow no old data more easily
+  }
 
   //Populate the Repository
   if (window.RsDatabase) {
