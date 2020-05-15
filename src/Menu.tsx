@@ -207,7 +207,7 @@ class Menu extends Component<MyProps, MyState> {
                         </>}
 
                     </div>
-                    <div className="btn-group mr-3 float-right" role="group" aria-label="Settings">
+                    <div className="btn-group mr-3 float-right btn-settings" role="group" aria-label="Settings">
                         <svg onClick={this.toggleSettings} style={{ cursor: "pointer", height: "1em", fill: "#aaa", stroke: "none" }} viewBox="0 0 1280.000000 1280.000000">
                             <metadata>Created by potrace 1.15, written by Peter Selinger 2001-2017</metadata>
                             <g transform="translate(0,1280) scale(0.1,-0.1)">

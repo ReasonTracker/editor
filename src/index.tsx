@@ -1,3 +1,4 @@
+import './custom.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -5,19 +6,29 @@ import * as serviceWorker from './serviceWorker';
 import { RepositoryLocalPure, Messenger, calculateScoreActions, Action} from "@reasonscore/core";
 //import { Claim, ClaimEdge, ScoreTree } from "@reasonscore/core";
 
+// TODO: hacks below to use global window to pass objects between javascript an dtypescript. Later pass items out as well for use in vide-script and animated demos
 declare global {
   interface Window {
     RsDatabase: any,
     RsActions: Action[],
     RsSettings: any,
+    RsMessenger: Messenger,
+    RsRepository: RepositoryLocalPure,
+    RsCalculateScoreActions: any,
   }
 }
 
+
 async function startApp() {
   console.log("startApp")
-  const repository = new RepositoryLocalPure();
-  const messenger = new Messenger();
-  const settings = window.RsSettings;
+  const repository =  window.RsRepository? window.RsRepository : new RepositoryLocalPure();
+  window.RsRepository = repository;
+  const messenger = window.RsMessenger? window.RsMessenger : new Messenger();
+  window.RsMessenger = messenger;
+  const settings = window.RsSettings? window.RsSettings : {};
+  window.RsSettings = settings;
+  //const calculator : iCalculateScore = window.RsCalculator? window.RsCalculator : calculateScoreActions;
+  window.RsCalculateScoreActions = calculateScoreActions;
 
   let doc
 
@@ -39,7 +50,7 @@ async function startApp() {
   //   new Action(new Claim('04', '04'), u, 'add_claim'), new Action(new ClaimEdge('mainClaim', '04', u, pro, '04-edge'), u, 'add_claimEdge'),
   // ]
 
-  if (!window.RsActions){
+  if (!window.RsActions) {
     window.RsActions = [
       {
         "newData": {

@@ -40,6 +40,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             childScores: [],
             claimEdge: undefined,
         };
+        this.state.score.confidence = .5;
 
 
     }
@@ -142,8 +143,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             if (!score.pro) {
                 proMain = !proMain;
             }
-            if (!score.reversible && score.confidence < 0) {
-                scoreImpact = 0;
+            if (!claim.reversible && score.confidence < 0) {
+               scoreImpact = 0;
             }
             if (score.affects === "relevance") {
                 scoreNumbers = score.pro ? "X" : "÷";
@@ -264,8 +265,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <div className={'claim-inner'}>
                             <div className="lines">
                                 <div className="lines-inner">
-                                    <svg className="lines-pointer" style={{ left: scoreImpact * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
-                                        <path d="m 0,1.3 a 10,10 0 0 1 10,0 L 5,10 Z" />
+                                    <svg className="lines-pointer" style={{ left: (proMain? (scoreImpact + 1)/2: 1-(scoreImpact + 1)/2) * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
+                                        <path d="M 9,3 C 9,6 6,5 5,10 4,5 1,6 1,3 1,1 3,0 5,0 7,0 9,1 9,3 Z" />
                                     </svg>
                                     <span className="min" title={claim.labelMin}>{claim.labelMin}</span>
                                     <span className="mid" title={claim.labelMid}>{claim.labelMid}</span>
@@ -284,9 +285,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 </span>
                                 {!score.parentScoreId && "%"}
                             </label>
-                            {fractionalizedScoreNumber < 1 && "(" + 
+                            {/* {fractionalizedScoreNumber < 1 && "(" + 
                                     (score.percentOfWeight * 100).toFixed(0) + "%) "
-                                }
+                                } */}
                             <span className={'score-description'}
                                 title={scoreNumbers + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}

@@ -425,7 +425,7 @@ rs-score {
   }
 
   .lines {
-    transition: 0.5s;
+    transition: 1s;
     height: 0;
     position: relative;
     overflow: hidden;
@@ -436,14 +436,14 @@ rs-score {
       bottom: 0px;
     }
     span.min {
-      left: 0;
+      left: 10px;
     }
     span.mid {
       left: 50%;
       transform: translate(-50%);
     }
     span.max {
-      right: 0;
+      right: 10px;
     }
     .tic {
       width: 0;
@@ -460,12 +460,14 @@ rs-score {
     margin: 0;
     height: 20px;
     position: relative;
+    margin: 0 10px;
   }
 
   .lines-pointer {
     transform: translate(-50%);
     fill: #ffffff91;
     position: absolute;
+    transition: 3s;
   }
 
   .edit-lines {

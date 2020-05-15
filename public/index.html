@@ -1,29 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Video Script -->
 
 <head>
-  <script> //Settings for this page
-    window.RsSettings = {
-      disableExternalDb: false,
-      numbers: true,
-      largeNumbers: true,
-      lines: false,
-      editable: true,
-      startClosed: false,
-      portData: true,
-      scoreDescription: false,
-      saveToCloud: false,
-      moreInfo: true,
+  <script>
+    //Video Script
+    let speedMultiplier = 1
+    const u = undefined, pro = true, con = false;
+    function seconds(seconds) {
+      return new Promise(resolve => setTimeout(resolve, seconds * 1000 * speedMultiplier));
     }
 
-    window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
+    async function typeOut(content, claimId, duration) {
+      let tempContent = ""
+      let interval = .01;
+      if (seconds !== undefined) {
+        interval = duration / content.length;
+      }
+      for (char of content.split('')) {
+        tempContent += char;
+        RsMessenger.notify([
+          {
+            "newData": {
+              "content": tempContent,
+            },
+            "type": "modify_claim",
+            "dataId": claimId
+          },])
+        await seconds(interval);
+      }
+    }
+
+    async function addClaim(content, claimId, parentClaimId, isPro, affects) {
+      claimEdgeId = claimId + "Edge";
+      scoreId = claimId + "Score";
+      parentScoreId = parentClaimId + "Score"
+      if (isPro === undefined) isPro = true;
+      if (affects === undefined) affects = "confidence"
+      const actions = [
+        {
+          "newData": {
+            "content": content,
+            "id": claimId,
+            "type": "claim"
+          },
+          "type": "add_claim",
+          "dataId": claimId
+        },
+        {
+          "newData": {
+            "parentId": parentClaimId,
+            "childId": claimId,
+            "affects": affects,
+            "pro": isPro,
+            "id": claimEdgeId,
+            "type": "claimEdge"
+          },
+          "type": "add_claimEdge",
+          "dataId": claimEdgeId,
+        },
+        {
+          "newData": {
+            "sourceClaimId": claimId,
+            "sourceEdgeId": claimEdgeId,
+            "parentScoreId": parentScoreId,
+            "reversible": false,
+            "pro": isPro,
+            "affects": affects,
+            "id": scoreId,
+            "type": "score",
+            "scoreTreeId": "ScoreTree"
+          },
+          "type": "add_score",
+          "dataId": scoreId,
+        },
+      ];
+      await window.RsRepository.notify(actions);
+      // const newActions = await window.RsCalculateScoreActions({
+      //   actions: actions,
+      //   repository: window.RsRepository
+      // })
+      await window.RsMessenger.notify(actions);
+      // await window.RsMessenger.notify(newActions);
+    }
+
+    async function notify(actions) {
+      await window.RsRepository.notify(actions);
+      await window.RsMessenger.notify(actions);
+    }
+
+    async function calculate() {
+      actions = [{
+        "newData": {
+          "sourceClaimId": "mainClaim",
+          "topScoreId": "mainClaimScore",
+          "id": "ScoreTree",
+          "type": "scoreTree",
+        },
+        "type": "add_scoreTree",
+        "dataId": "ScoreTree"
+      }]
+      newActions = await window.RsCalculateScoreActions({
+        actions: actions,
+        repository: window.RsRepository
+      });
+      // TODO: Have to run twice because something the score updates are returned out of order. Not sure why.
+      let newActions2 = await window.RsCalculateScoreActions({
+        actions: actions,
+        repository: window.RsRepository
+      });
+      await window.RsMessenger.notify([...newActions, ...newActions2])
+    }
+
+    //Audio
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+    async function PlayAudio(filepath) {
+      const response = await fetch(filepath);
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      const sampleSource = audioContext.createBufferSource();
+      sampleSource.buffer = audioBuffer;
+      sampleSource.connect(audioContext.destination)
+      sampleSource.start();
+      //return sampleSource;
+      return audioBuffer.duration //* 1000
+    }
+
+    async function videoScript() {
+      let duration = 0
+      await notify([
+        { newData: { confidence: -1 }, "type": "modify_score", "dataId": "mainClaimScore", },
+      ]);
+      await seconds(2);
+      await typeOut("Should Fictional City convert Elm Street to pedestrian use only?", "mainClaim",
+        await PlayAudio('audio/intro.mp3')
+      )
+      await PlayAudio('audio/circle.mp3')
+      await seconds(1);
+      await notify([
+        { newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },
+      ]);
+      await notify([{ newData: { "labelMax": "Should" }, "type": "modify_claim", "dataId": "mainClaim", }]);
+      await seconds(2);
+      await notify([{ newData: { "labelMin": "Should Not" }, "type": "modify_claim", "dataId": "mainClaim", },]);
+      await seconds(2);
+      await notify([{ newData: { "labelMid": "Undetermined" }, "type": "modify_claim", "dataId": "mainClaim", },]);
+      await seconds(4);
+      await addClaim("", "footTraffic", "mainClaim", pro)
+      await typeOut("The planning commission estimates this will increase foot traffic to local shops by 12% during peak hours.", "footTraffic", 1)
+      await calculate();
+      await seconds(2);
+      await addClaim("", "resedential", "mainClaim", con)
+      await typeOut("This will result in traffic being diverted down residential streets.", "resedential", 1)
+      await seconds(1);
+      await calculate();
+      await seconds(4);
+      await addClaim("", "children", "resedential", pro, "relevance")
+      await typeOut("Children safety is more important than local shops profit.", "children", 1)
+      await seconds(1);
+      await calculate();
+      await seconds(4);
+      await addClaim("", "railroad", "resedential", con)
+      await typeOut("A set of railroad tracks are no longer in use and the City can convert that to a new street.", "railroad", 1)
+      await seconds(1);
+      await calculate();
+      await seconds(4);
+      await addClaim("", "costs", "mainClaim", con)
+      await typeOut("The conversion will cost 2 Million dollars.", "costs", 1)
+      await seconds(1);
+      await calculate();
+      await seconds(4);
+      await addClaim("", "payoff", "footTraffic", pro, "relevance")
+      await typeOut("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.", "payoff", 1)
+      await seconds(1);
+      await calculate();
+      await seconds(4);
+    }
+
+    function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+    // TODO: re-use the messenger code innstead of copying code into this html file.
+    class Messenger {
+      constructor() {
+        _defineProperty(this, "subscribers", []);
+
+        _defineProperty(this, "actionsLog", []);
+
+        _defineProperty(this, "notify", actions => {
+          this.actionsLog.push(actions);
+
+          for (const subscriber of this.subscribers) {
+            subscriber(actions);
+          }
+        });
+      }
+
+      subscribe(callback) {
+        this.subscribers.push(callback);
+      }
+
+      unsubscribe(callback) {
+        const index = this.subscribers.indexOf(callback, 0);
+
+        if (index > -1) {
+          this.subscribers.splice(index, 1);
+        }
+      }
+      /** this function can be called by outside code to notfy this repository of changes */
+
+
+    }
+    window.RsMessenger = new Messenger();
+
+
+    window.RsSettings = {
+      disableExternalDb: true,
+      numbers: false,
+      largeNumbers: false,
+      lines: true,
+      editable: false,
+      startClosed: false,
+      portData: false,
+      scoreDescription: false,
+      saveToCloud: false,
+      moreInfo: false,
+    }
 
     window.RsActions = [
       {
         "newData": {
-          "content": "This is a new claim.\n\n.\n* Select the \"edit this claim\" button below to change this text.\n* Select the \"add a pro or con\" button to add additional claims.\n* Select the \"Import\" and \"Export\" buttons at the bottom to save a copy to your device.",
+          "content": "",
           "id": "mainClaim",
-          "type": "claim"
+          "type": "claim",
+          "reversible": true,
         },
         "type": "add_claim",
         "dataId": "mainClaim"
@@ -31,22 +241,61 @@
       {
         "newData": {
           "sourceClaimId": "mainClaim",
-          "topScoreId": "mainScore",
+          "topScoreId": "mainClaimScore",
           "id": "ScoreTree",
           "type": "scoreTree"
         },
         "type": "add_scoreTree",
         "dataId": "ScoreTree"
       },
+      // {
+      //   "newData": {
+      //     "sourceClaimId": "mainClaim",
+      //     "topScoreId": "mainClaimScore",
+      //     "parentScoreId": "mainClaimScore",
+      //     "reversible": true,
+      //     "confidence": .5,
+      //     "pro": true,
+      //     "affects": "confidence",
+      //     "id": "mainClaimScore",
+      //     "type": "score",
+      //     "scoreTreeId": "ScoreTree"
+      //   },
+      //   "type": "add_score",
+      //   "dataId": "mainClaimScore",
+      // },
     ]
+    //videoScript();
+
   </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reason Score Prototype Editor</title>
+  <title>Reason Score Video Script</title>
 
+
+</head>
+
+<body>
+  <div style="width: calc(546px * 16/9);height: 546px;border: 1px solid #00000022;">
+    <rs-score score-tree-id="ScoreTree"></rs-score>
+    <script src="/static/js/ReasonScoreFull.js"></script>
+  </div>
+  <button onclick="videoScript();">Play</button>
   <style>
     body {
       padding: 5%;
+    }
+
+    .btn-settings {
+      opacity: 0;
+    }
+
+    .scoreInfo {
+      display: none;
+    }
+
+    rs-score .expander2:not(:checked)~ul>li>div>.claim-hider {
+      max-height: 150px;
     }
 
     @media (max-width: 600px) {
@@ -56,14 +305,6 @@
       }
     }
   </style>
-</head>
-
-<body>
-  <a href="/edit/?i=denverpbb">Edit Denver</a></br>
-  <a href="/demo/">Demo</a></br>
-  <a href="/houston-flyway/">Flyway</a></br>
-  <!-- <rs-score score-tree-id="ScoreTree"></rs-score>
-  <script src="/static/js/ReasonScoreFull.js"></script> -->
 </body>
 
 </html>

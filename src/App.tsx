@@ -1,5 +1,4 @@
 import React from 'react';
-import './custom.scss';
 import { Messenger, RepositoryLocalPure } from "@reasonscore/core";
 import Menu from './Menu';
 
