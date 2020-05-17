@@ -11,18 +11,20 @@
       return new Promise(resolve => setTimeout(resolve, seconds * 1000 * speedMultiplier));
     }
 
-    async function typeOut(content, claimId, duration) {
+    async function typeOut(content, claimId, duration, property) {
       let tempContent = ""
+      if (property === undefined) property = "content"
       let interval = .01;
       if (seconds !== undefined) {
-        interval = duration / content.length;
+        interval = (duration / (content.length -1))
+         - (content.length * .0001); // it takes some time for the screen to update, without this the timing is too long
       }
       for (char of content.split('')) {
         tempContent += char;
         RsMessenger.notify([
           {
             "newData": {
-              "content": tempContent,
+              [property]: tempContent,
             },
             "type": "modify_claim",
             "dataId": claimId
@@ -115,7 +117,8 @@
     //Audio
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
-    async function PlayAudio(filepath) {
+    async function PlayAudio(fileName) {
+      const filepath = `audio/${fileName}.mp3`
       const response = await fetch(filepath);
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -123,59 +126,60 @@
       sampleSource.buffer = audioBuffer;
       sampleSource.connect(audioContext.destination)
       sampleSource.start();
-      //return sampleSource;
-      return audioBuffer.duration //* 1000
+      return audioBuffer.duration
     }
 
     async function videoScript() {
-      let duration = 0
       await notify([
         { newData: { confidence: -1 }, "type": "modify_score", "dataId": "mainClaimScore", },
       ]);
-      await seconds(2);
+      await seconds(3);
       await typeOut("Should Fictional City convert Elm Street to pedestrian use only?", "mainClaim",
-        await PlayAudio('audio/intro.mp3')
+        await PlayAudio('intro')
       )
-      await PlayAudio('audio/circle.mp3')
-      await seconds(1);
-      await notify([
-        { newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },
-      ]);
-      await notify([{ newData: { "labelMax": "Should" }, "type": "modify_claim", "dataId": "mainClaim", }]);
-      await seconds(2);
-      await notify([{ newData: { "labelMin": "Should Not" }, "type": "modify_claim", "dataId": "mainClaim", },]);
-      await seconds(2);
-      await notify([{ newData: { "labelMid": "Undetermined" }, "type": "modify_claim", "dataId": "mainClaim", },]);
-      await seconds(4);
+      await notify([{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },]);
+      await seconds(await PlayAudio('circle'))
+      await typeOut("should", "mainClaim", await PlayAudio('label-should'),'labelMax')
+      await seconds(await PlayAudio('convert'))
+      await seconds(await PlayAudio('or'))
+      await typeOut("should not", "mainClaim", await PlayAudio('label-not'),'labelMin')
+      await seconds(await PlayAudio('or'))
+      await seconds(await PlayAudio('if-it-is'))
+      await typeOut("unknown", "mainClaim", await PlayAudio('unknown'),'labelMid')
+      await seconds(.5);
       await addClaim("", "footTraffic", "mainClaim", pro)
-      await typeOut("The planning commission estimates this will increase foot traffic to local shops by 12% during peak hours.", "footTraffic", 1)
-      await calculate();
-      await seconds(2);
+      await typeOut("The planning commission estimates this will increase foot traffic to local shops by 15% during peak hours.", "footTraffic",
+        await PlayAudio('foot-traffic'))
       await addClaim("", "resedential", "mainClaim", con)
-      await typeOut("This will result in traffic being diverted down residential streets.", "resedential", 1)
-      await seconds(1);
+      await typeOut("This will result in traffic being diverted down residential streets.", "resedential",
+        await PlayAudio('resedential'))
       await calculate();
-      await seconds(4);
+      await seconds(await PlayAudio('zero'))
       await addClaim("", "children", "resedential", pro, "relevance")
-      await typeOut("Children safety is more important than local shops profit.", "children", 1)
-      await seconds(1);
+      await typeOut("Children safety is more important than local shops profit.", "children",
+        await PlayAudio('safety'))
       await calculate();
-      await seconds(4);
-      await addClaim("", "railroad", "resedential", con)
-      await typeOut("A set of railroad tracks are no longer in use and the City can convert that to a new street.", "railroad", 1)
-      await seconds(1);
+      await seconds(await PlayAudio('should-not'))
+      await addClaim("", "traintracks", "resedential", con)
+      await typeOut("A set of railroad tracks are no longer in use and the City can convert that to a new street.", "traintracks",
+        await PlayAudio('traintracks'))
       await calculate();
-      await seconds(4);
-      await addClaim("", "costs", "mainClaim", con)
-      await typeOut("The conversion will cost 2 Million dollars.", "costs", 1)
-      await seconds(1);
+      await seconds(await PlayAudio('cancelled'));
+      await seconds(.25);
+      await seconds(await PlayAudio('check-info'));
+      await addClaim("", "cost", "mainClaim", con)
+      await typeOut("The conversion will cost 2 Million dollars.", "cost",
+        await PlayAudio('cost'))
       await calculate();
-      await seconds(4);
+      await seconds(await PlayAudio('zero-again'));
+      await seconds(await PlayAudio('check-info-2'));
       await addClaim("", "payoff", "footTraffic", pro, "relevance")
-      await typeOut("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.", "payoff", 1)
-      await seconds(1);
+      await typeOut("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.", "payoff", 
+        await PlayAudio('payoff'))
       await calculate();
-      await seconds(4);
+      await seconds('last-score');
+      await seconds(await PlayAudio('closing'));
+
     }
 
     function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
