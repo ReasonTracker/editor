@@ -319,6 +319,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 handleEditClose={this.handleEditClose}
                                 messenger={props.messenger}
                                 new={this.state.addMode}
+                                scoreId={this.state.score.id}
                             />
                         }
                     </div>

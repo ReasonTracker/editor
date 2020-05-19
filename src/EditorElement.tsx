@@ -9,6 +9,7 @@ type MyProps = {
     proMainContext: boolean,
     handleEditClose: () => void,
     messenger: Messenger,
+    scoreId: string,
     new?: boolean,
     claimEdge?: ClaimEdge
 };
@@ -251,7 +252,17 @@ class EditorElement extends React.Component<MyProps, MyState> {
                                 </div>
                             }
                         </div>
-                        <span>ID: {this.state.claim.id}</span>
+<br></br>
+                        <div className="form-row">
+                            <div className="form-group col-6">
+                                <label htmlFor="claim.claimId">Claim ID</label>
+                                <input  disabled type="text" className="form-control" id="claim.claimId" value={this.state.claim.id} onChange={this.handleText}></input>
+                            </div>
+                            <div className="form-group col-6">
+                                <label htmlFor="claim.scoreId">Score ID</label>
+                                <input  disabled type="text" className="form-control" id="claim.scoreId" value={this.props.scoreId} onChange={this.handleText}></input>
+                            </div>
+                        </div>
                     </form>
                 }</>
         );
