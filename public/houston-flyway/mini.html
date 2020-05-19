@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- edit.html -->
 
 <head>
   <script> //Settings for this page
@@ -39,17 +38,24 @@
 
     rs-score ul.children li {
       margin-left: 0;
+      border-left: none;
     }
 
     .expander2:checked~ul>li>div>.claim-hider {
       max-height: 0px;
     }
-    .scoreInfo{
+
+    .scoreInfo {
       display: none;
     }
-    rs-score > div > div> .claim-hider {
-    display: none;
-}
+
+    rs-score>div>div>.claim-hider {
+      display: none;
+    }
+
+    rs-score .claim {
+      margin: 0 6px 0 6px;
+    }
   </style>
   <rs-score score-tree-id="ScoreTree"></rs-score>
   <script src="/static/js/ReasonScoreFull.js"></script>
