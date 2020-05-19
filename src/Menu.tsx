@@ -71,9 +71,9 @@ class Menu extends Component<MyProps, MyState> {
         // TODO: sleep hack because children may take awhile to be created. How can we do this better?
         setTimeout(() => {
             if (this.props.selectId) {
-                selectElement(this.props.selectId, this.props.repository.rsData);
+                selectElement(this.props.selectId, this.props.repository.rsData, this.state.settings);
             } else if (!this.props.settings.startClosed && scoreTree) {
-                selectElement(scoreTree.topScoreId, this.props.repository.rsData);
+                selectElement(scoreTree.topScoreId, this.props.repository.rsData,this.state.settings);
             }
         }, 500);
 

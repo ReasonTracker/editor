@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- edit.html -->
+
+<head>
+  <script> //Settings for this page
+    window.RsSettings = {
+      disableExternalDb: false,
+      numbers: false,
+      largeNumbers: false,
+      lines: true,
+      editable: false,
+      startClosed: true,
+      portData: false,
+      scoreDescription: false,
+      saveToCloud: false,
+      moreInfo: false,
+      selectedOnly: true,
+    }
+
+    window.RsSettings.dbCollection = "f-" + new URL(window.location.href).searchParams.get("i");
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reason Score Prototype Editor</title>
+
+</head>
+
+<body>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .Content {
+      display: none;
+    }
+
+    rs-score ul.children li {
+      margin-left: 0;
+    }
+
+    .expander2:checked~ul>li>div>.claim-hider {
+      max-height: 0px;
+    }
+    .scoreInfo{
+      display: none;
+    }
+    rs-score > div > div> .claim-hider {
+    display: none;
+}
+  </style>
+  <rs-score score-tree-id="ScoreTree"></rs-score>
+  <script src="/static/js/ReasonScoreFull.js"></script>
+</body>
+
+</html>

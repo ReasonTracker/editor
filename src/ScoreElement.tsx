@@ -69,7 +69,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
     }
 
     handleChildrenVisible = () => {
-        selectElement(this.state.score.id, this.props.repository.rsData);
+        selectElement(this.state.score.id, this.props.repository.rsData, this.props.settings);
     }
 
     componentWillUnmount() {

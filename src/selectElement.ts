@@ -1,6 +1,6 @@
 import { selectNode, RsData } from "@reasonscore/core";
 
-export function selectElement(scoreId: string, rsData: RsData) {
+export function selectElement(scoreId: string, rsData: RsData, settings: any) {
     const selectedNodes = selectNode(scoreId, rsData);
     const expander2s = window.document.getElementsByClassName('expander2') as HTMLCollectionOf<HTMLInputElement>;
     for (const expander2 of expander2s) {
@@ -11,7 +11,7 @@ export function selectElement(scoreId: string, rsData: RsData) {
             if (selectedNode.status === `selected`) {
                 expander2.checked = true;
                 expander3.checked = true;
-            } else if (selectedNode.status === `ancestor`) {
+            } else if (selectedNode.status === `ancestor` && !settings?.selectedOnly) {
                 expander2.checked = false;
                 expander3.checked = true;
             } else {

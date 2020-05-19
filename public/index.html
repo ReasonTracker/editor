@@ -16,8 +16,8 @@
       if (property === undefined) property = "content"
       let interval = .01;
       if (seconds !== undefined) {
-        interval = (duration / (content.length -1))
-         - (content.length * .0001); // it takes some time for the screen to update, without this the timing is too long
+        interval = (duration / (content.length - 1))
+          - (content.length * .0001); // it takes some time for the screen to update, without this the timing is too long
       }
       for (char of content.split('')) {
         tempContent += char;
@@ -139,13 +139,13 @@
       )
       await notify([{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },]);
       await seconds(await PlayAudio('circle'))
-      await typeOut("should", "mainClaim", await PlayAudio('label-should'),'labelMax')
+      await typeOut("should", "mainClaim", await PlayAudio('label-should'), 'labelMax')
       await seconds(await PlayAudio('convert'))
       await seconds(await PlayAudio('or'))
-      await typeOut("should not", "mainClaim", await PlayAudio('label-not'),'labelMin')
+      await typeOut("should not", "mainClaim", await PlayAudio('label-not'), 'labelMin')
       await seconds(await PlayAudio('or'))
       await seconds(await PlayAudio('if-it-is'))
-      await typeOut("unknown", "mainClaim", await PlayAudio('unknown'),'labelMid')
+      await typeOut("unknown", "mainClaim", await PlayAudio('unknown'), 'labelMid')
       await seconds(.5);
       await addClaim("", "footTraffic", "mainClaim", pro)
       await typeOut("The planning commission estimates this will increase foot traffic to local shops by 15% during peak hours.", "footTraffic",
@@ -174,7 +174,7 @@
       await seconds(await PlayAudio('zero-again'));
       await seconds(await PlayAudio('check-info-2'));
       await addClaim("", "payoff", "footTraffic", pro, "relevance")
-      await typeOut("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.", "payoff", 
+      await typeOut("The increase in revenue is expected to pay off the expense in under 2 years meeting the cities investment requirements.", "payoff",
         await PlayAudio('payoff'))
       await calculate();
       await seconds('last-score');
@@ -280,6 +280,43 @@
 </head>
 
 <body>
+  <!--  -->
+  <div class="rs-score" style="max-width: 300px;">
+    <div class="s-lines s-scoreDescriptions s-disableExternalDb s-DbNotAvailable ">
+      <div class="claim-outer">
+        <div class="claim-hider">
+          <div class="claim pro">
+            <div class="claim-inner" style="min-height: 0px;">
+              <div class="lines">
+                <div class="lines-inner">
+                  <svg class="lines-pointer" height="20" width="20" viewBox="0 0 10 10" style="left: 75%;">
+                    <path d="M 9,3 C 9,6 6,5 5,10 4,5 1,6 1,3 1,1 3,0 5,0 7,0 9,1 9,3 Z"></path>
+                  </svg>
+                  <span class="min">low</span>
+                  <span class="mid">medium</span>
+                  <span class="max">high</span>
+                  <div class="tic" style="left: 0%;"></div>
+                  <div class="tic" style="left: 33.3%;"></div>
+                  <div class="tic" style="left: 66.6%;"></div>
+                  <div class="tic" style="left: 100%;"></div>
+                </div>
+              </div>
+            </div>
+            <svg class="callout" width="30px" height="30px">
+              <use href="#callout"></use>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br><br><br><br><br>
+  <!--  -->
+
+
+
+
   <div style="width: calc(546px * 16/9);height: 546px;border: 1px solid #00000022;">
     <rs-score score-tree-id="ScoreTree"></rs-score>
     <script src="/static/js/ReasonScoreFull.js"></script>
