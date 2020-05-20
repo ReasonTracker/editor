@@ -47,7 +47,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
         }
 
         if (newState.claimEdge) {
-                newState.proMain = this.props.proMainContext ? newState.claimEdge.pro : !newState.claimEdge.pro;
+            newState.proMain = this.props.proMainContext ? newState.claimEdge.pro : !newState.claimEdge.pro;
         }
 
         //TODO: Temp for items with blank properties. This correctes error: A component is changing an uncontrolled input of type text to be controlled
@@ -252,15 +252,16 @@ class EditorElement extends React.Component<MyProps, MyState> {
                                 </div>
                             }
                         </div>
-<br></br>
+                        
+                        <br></br>
                         <div className="form-row">
                             <div className="form-group col-6">
                                 <label htmlFor="claim.claimId">Claim ID</label>
-                                <input  disabled type="text" className="form-control" id="claim.claimId" value={this.state.claim.id} onChange={this.handleText}></input>
+                                <input disabled type="text" className="form-control" id="claim.claimId" value={this.state.claim.id} onChange={this.handleText}></input>
                             </div>
                             <div className="form-group col-6">
                                 <label htmlFor="claim.scoreId">Score ID</label>
-                                <input  disabled type="text" className="form-control" id="claim.scoreId" value={this.props.scoreId} onChange={this.handleText}></input>
+                                <input disabled type="text" className="form-control" id="claim.scoreId" value={this.props.scoreId} onChange={this.handleText}></input>
                             </div>
                         </div>
                     </form>

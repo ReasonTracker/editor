@@ -32,10 +32,6 @@
       margin: 0;
     }
 
-    .Content {
-      display: none;
-    }
-
     rs-score ul.children li {
       margin-left: 0;
       border-left: none;
@@ -45,19 +41,32 @@
       max-height: 0px;
     }
 
-    .scoreInfo {
+    rs-score .Content,
+    rs-score .scoreInfo,
+    rs-score>div>div>.claim-hider,
+    rs-score .lines span,
+    rs-score .numbers,
+    rs-score .more-info,
+    rs-score .score-description,
+    rs-score .rs-content {
       display: none;
     }
 
-    rs-score>div>div>.claim-hider {
-      display: none;
+    rs-score .claim-inner {
+      min-height: unset;
     }
 
     rs-score .claim {
       margin: 0 6px 0 6px;
     }
   </style>
-  <rs-score score-tree-id="ScoreTree"></rs-score>
+  <a id="main-link" href="https://reasonscore.com/houston-flyway/">
+    <rs-score score-tree-id="ScoreTree"></rs-score>
+  </a>
+  <script>
+    let e = document.getElementById("main-link");
+    e.href = e.href + "?" + location.href.split("?")[1];
+  </script>
   <script src="/static/js/ReasonScoreFull.js"></script>
 </body>
 
