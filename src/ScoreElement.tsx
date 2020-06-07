@@ -144,7 +144,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 proMain = !proMain;
             }
             if (!claim.reversible && score.confidence < 0) {
-               scoreImpact = 0;
+                scoreImpact = 0;
             }
             if (score.affects === "relevance") {
                 scoreNumbers = score.pro ? "X" : "÷";
@@ -264,13 +264,14 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         }
                         <div className={'claim-inner'}>
                             <div className="lines">
+                                <span className="min" title={claim.labelMin}>{claim.labelMin}</span>
+                                <span className="mid" title={claim.labelMid}>{claim.labelMid}</span>
+                                <span className="max" title={claim.labelMax}>{claim.labelMax}</span>
+
                                 <div className="lines-inner">
-                                    <svg className="lines-pointer" style={{ left: (proMain? (scoreImpact + 1)/2: 1-(scoreImpact + 1)/2) * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
+                                    <svg className="lines-pointer" style={{ left: (proMain ? (scoreImpact + 1) / 2 : 1 - (scoreImpact + 1) / 2) * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
                                         <path d="M 9,3 C 9,6 6,5 5,10 4,5 1,6 1,3 1,1 3,0 5,0 7,0 9,1 9,3 Z" />
                                     </svg>
-                                    <span className="min" title={claim.labelMin}>{claim.labelMin}</span>
-                                    <span className="mid" title={claim.labelMid}>{claim.labelMid}</span>
-                                    <span className="max" title={claim.labelMax}>{claim.labelMax}</span>
                                     <div className="tic" style={{ left: '0%' }}></div>
                                     <div className="tic" style={{ left: '33.3%' }}></div>
                                     <div className="tic" style={{ left: '66.6%' }}></div>

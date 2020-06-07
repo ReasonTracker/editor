@@ -1,4 +1,16 @@
 rs-score, .rs-score {
+  // Original colors
+  --pro-foreground: white;
+  --pro-background: #c880ff;
+  --con-foreground: white;
+  --con-background: #ffa71a;
+
+  // //Accessible
+  // --pro-foreground: white;
+  // --pro-background: #960DB0;
+  // --con-foreground: #1D1D1D;
+  // --con-background: #FF8812;
+
   // Import Bootstrap and its default variables
   //TODO: Shrink down bootstrap to just the necessary items
   //TODO: Separate the editor CSS from the viewer so the viewer css is smaller
@@ -74,23 +86,25 @@ rs-score, .rs-score {
   }
 
   .pro {
-    background-color: #c880ff;
-    color: white;
-    border-color: #c880ff;
+    --foreground: var(--pro-foreground);
+    --background: var(--pro-background);
+    background-color: var(--pro-background);
+    color: var(--pro-foreground);
+    border-color: var(--pro-background);
     .callout {
-      left: -21px;
-      fill: #c880ff;
+      left: -20px;
       transform: scaleX(-1);
     }
   }
 
   .con {
-    background-color: #ffa71a;
-    color: white;
-    border-color: #ffa71a;
+    --foreground: var(--con-foreground);
+    --background: var(--con-background);
+    background-color: var(--background);
+    color: var(--con-foreground);
+    border-color: var(--con-background);
     .callout {
       right: -21px;
-      fill: #ffa71a;
     }
   }
 
@@ -98,6 +112,7 @@ rs-score, .rs-score {
     position: absolute;
     bottom: -3px;
     z-index: -1;
+    fill: var(--background);
   }
 
   .claim-hider {
@@ -430,42 +445,43 @@ rs-score, .rs-score {
     position: relative;
     overflow: hidden;
     font-size: small;
+    border-color: var(--foreground);
     span {
-      opacity: 0.8;
       position: absolute;
-      bottom: 0px;
+      top: 4px;
     }
     span.min {
-      left: 10px;
+      left: 13px;
     }
     span.mid {
       left: 50%;
       transform: translate(-50%);
     }
     span.max {
-      right: 10px;
+      right: 13px;
     }
     .tic {
       width: 0;
       height: 10px;
       position: absolute;
-      border: 1px solid #ffffff91;
+      border: 1px solid;
       bottom: -5px;
       transform: translate(-50%);
     }
   }
 
   .lines-inner {
-    border-bottom: 1px solid #ffffff91;
+    border-bottom: 1px solid;
     margin: 0;
     height: 20px;
     position: relative;
     margin: 0 10px;
+    opacity: 75%
   }
 
   .lines-pointer {
     transform: translate(-50%);
-    fill: #ffffff91;
+    fill: var(--foreground);
     position: absolute;
     transition: 3s;
   }
