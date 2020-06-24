@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree} from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 import { selectElement } from './selectElement';
 
@@ -73,7 +73,7 @@ class Menu extends Component<MyProps, MyState> {
             if (this.props.selectId) {
                 selectElement(this.props.selectId, this.props.repository.rsData, this.state.settings);
             } else if (!this.props.settings.startClosed && scoreTree) {
-                selectElement(scoreTree.topScoreId, this.props.repository.rsData,this.state.settings);
+                selectElement(scoreTree.topScoreId, this.props.repository.rsData, this.state.settings);
             }
         }, 500);
 
@@ -93,15 +93,19 @@ class Menu extends Component<MyProps, MyState> {
     }
 
     handleSave = async () => {
-        //TODO: temp, change undefineds to nulls for parent IDs so they can be store din firestore
+        //TODO: temp, change undefineds to nulls for parent IDs so they can be stored in firestore
         const topScore = await this.props.repository.getScore("topScore")
-        if (topScore){
-        topScore.parentScoreId = null;
-        topScore.sourceEdgeId = null;
+        if (topScore) {
+            topScore.parentScoreId = null;
+            topScore.sourceEdgeId = null;
         }
 
+        //remove log before saving, we aren't ready to save full history yet
+        //TODO: Save Log to databse?
+        const rsDataWithtouLog = JSON.parse(JSON.stringify(this.props.repository.rsData));
+
         //Save the scores to Firebase
-        window.RsDatabase.doc(this.state.settings.dbCollection).set(this.props.repository.rsData)
+        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataWithtouLog)
             .then(function () {
                 console.log("Document successfully written!");
             })
