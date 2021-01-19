@@ -20,7 +20,6 @@ declare global {
 
 
 async function startApp() {
-  console.log("startApp")
   const repository =  window.RsRepository? window.RsRepository : new RepositoryLocalPure();
   window.RsRepository = repository;
   const messenger = window.RsMessenger? window.RsMessenger : new Messenger();
@@ -87,7 +86,6 @@ async function startApp() {
 
   //Look in the HTML to see what we need to prep
   //Loop through the html scores and start an app for each
-  console.log('loading...');
   const scoreElements = document.getElementsByTagName('rs-score');
   for (const scoreElement of scoreElements) {
     const possibleScoreId = scoreElement.getAttribute('score-tree-Id');

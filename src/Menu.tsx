@@ -93,19 +93,13 @@ class Menu extends Component<MyProps, MyState> {
     }
 
     handleSave = async () => {
-        //TODO: temp, change undefineds to nulls for parent IDs so they can be stored in firestore
-        const topScore = await this.props.repository.getScore("topScore")
-        if (topScore) {
-            topScore.parentScoreId = null;
-            topScore.sourceEdgeId = null;
-        }
-
-        //remove log before saving, we aren't ready to save full history yet
         //TODO: Save Log to databse?
-        const rsDataWithtouLog = JSON.parse(JSON.stringify(this.props.repository.rsData));
+
+        // This JSON parsing also some undefineds that will cause Firestore to error out
+        const rsDataWithtouUndefined = JSON.parse(JSON.stringify(this.props.repository.rsData));
 
         //Save the scores to Firebase
-        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataWithtouLog)
+        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataWithtouUndefined)
             .then(function () {
                 console.log("Document successfully written!");
             })

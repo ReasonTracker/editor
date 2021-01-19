@@ -62,6 +62,8 @@ fs.writeFileSync('build/static/js/ReasonScoreFull2.js', ReasonScoreFull2Js);
 
 // Delete Unused Files
 fs.unlinkSync(`build/index.html`);
-fs.unlinkSync(`build/service-worker.js`);
+if (fs.existsSync(`build/service-worker.js`)){
+    fs.unlinkSync(`build/service-worker.js`);
+}
 fs.unlinkSync(`build/asset-manifest.json`);
 //fs.unlinkSync(`precache-manifest`); //TODO: Figure out deletion of manifest
