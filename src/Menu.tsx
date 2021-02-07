@@ -194,7 +194,7 @@ class Menu extends Component<MyProps, MyState> {
                 }
             </div>
             <div className="Content">
-                <div style={{ maxWidth: "600px", margin: "10px", padding: "5rem 0 .5rem 0", opacity: .3 }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+                <div style={{ maxWidth: "600px", margin: "10px", padding: "1rem 0 .5rem 0", opacity: .3 }} className="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                     <div className="btn-group mr-3" role="group" aria-label="Save">
                         {!settings.DbNotAvailable && settings.editable && settings.saveToCloud &&
                             <button onClick={this.handleSave} type="button" value="Submit" className="btn btn-secondary">Save to cloud</button>
