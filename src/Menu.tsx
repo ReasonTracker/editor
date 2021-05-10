@@ -153,7 +153,7 @@ class Menu extends Component<MyProps, MyState> {
 
     handleExport = () => {
         var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer));
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer()));
         hiddenElement.target = '_blank';
         hiddenElement.download = 'rsData.json';
         hiddenElement.click();
