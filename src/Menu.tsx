@@ -23,6 +23,7 @@ type MyState = {
     }
     settingsOpen: boolean,
     scoreTree?: ScoreTree,
+    tempVisualLog: string,
 };
 
 class Menu extends Component<MyProps, MyState> {
@@ -57,6 +58,7 @@ class Menu extends Component<MyProps, MyState> {
             },
             settingsOpen: false,
             scoreTree: undefined,
+            tempVisualLog: "",
         };
     }
 
@@ -94,19 +96,20 @@ class Menu extends Component<MyProps, MyState> {
 
     handleSave = async () => {
         //TODO: Save Log to databse?
-        
+
 
         // This JSON parsing also some undefineds that will cause Firestore to error out
         const rsDataCleanedForTransfer = this.getRsDataCleanedForTransfer();
 
         //Save the scores to Firebase
-        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCleanedForTransfer)
-            .then(function () {
-                console.log("Document successfully written!");
-            })
-            .catch(function (error: any) {
-                console.error("Error writing document: ", error);
-            });
+        try {
+            await window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCleanedForTransfer)
+            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Document successfully written!`};
+            this.setState(newState as MyState);
+        } catch (error) {
+            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Error writing document:${error}`};
+            this.setState(newState as MyState);
+        }
     }
 
     getRsDataCleanedForTransfer = () => {
@@ -220,6 +223,7 @@ class Menu extends Component<MyProps, MyState> {
                             </g>
                         </svg>
                     </div>
+                    <div className="tempVisualLog">{this.state.tempVisualLog}</div>
                 </div>
                 <div className={"settings-container " + (this.state.settingsOpen && "show-settings")}>
                     <div className={"settings-grid "}>
