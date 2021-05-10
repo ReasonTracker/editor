@@ -30,15 +30,10 @@
 
     }
 
-    // Add Standard HTML and CSS
-    if (rootAddress !== "") {
-        const r = document.createElement('div')
-        r.innerHTML = `
-        <link href="${rootAddress}/static/css/main.chunk.css" rel="stylesheet">
-
-    `;
-        document.body.appendChild(r);
-    }
+    // Add Standard CSS
+    const r = document.createElement('div')
+    r.innerHTML = `<link href="${rootAddress}/static/css/main.chunk.css" rel="stylesheet">`;
+    document.body.appendChild(r);
 
     // Run any code that requires Javascript to have already been loaded and run 
     onload1 = function () {
