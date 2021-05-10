@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 import { selectElement } from './selectElement';
 
@@ -94,18 +94,25 @@ class Menu extends Component<MyProps, MyState> {
 
     handleSave = async () => {
         //TODO: Save Log to databse?
+        
 
         // This JSON parsing also some undefineds that will cause Firestore to error out
-        const rsDataWithtouUndefined = JSON.parse(JSON.stringify(this.props.repository.rsData));
+        const rsDataCleanedForTransfer = this.getRsDataCleanedForTransfer();
 
         //Save the scores to Firebase
-        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataWithtouUndefined)
+        window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCleanedForTransfer)
             .then(function () {
                 console.log("Document successfully written!");
             })
             .catch(function (error: any) {
                 console.error("Error writing document: ", error);
             });
+    }
+
+    getRsDataCleanedForTransfer = () => {
+        const rsDataWithtouUndefined = JSON.parse(JSON.stringify(this.props.repository.rsData)) as RsData;
+        rsDataWithtouUndefined.actionsLog = [];
+        return rsDataWithtouUndefined;
     }
 
     handleImport = () => {
@@ -146,7 +153,7 @@ class Menu extends Component<MyProps, MyState> {
 
     handleExport = () => {
         var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.props.repository.rsData));
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer));
         hiddenElement.target = '_blank';
         hiddenElement.download = 'rsData.json';
         hiddenElement.click();
