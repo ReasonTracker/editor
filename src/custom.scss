@@ -439,6 +439,10 @@ rs-score, .rs-score {
     left: -5px;
   }
 
+  .s-hideMainScore .mainclaim .numbers{
+    max-width: 0;
+  }
+
   .lines {
     transition: 1s;
     height: 0;

@@ -218,7 +218,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         const proMainText = proMain ? "pro" : "con";
 
-        let fractionalizedScore, sign;
+        let fractionalizedScore: string = "", sign: string = "";
         if (score.affects === "relevance") {
             fractionalizedScore = score.pro ? "X" : "÷";
             fractionalizedScore += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
@@ -237,7 +237,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         function createMarkup() {
 
-            const content = Mustache.render(claim.content, {score,claim});
+            const content = Mustache.render(claim.content, {score,claim, fractionalizedScore, sign});
             var reader = new commonmark.Parser({});
             var writer = new commonmark.HtmlRenderer({ safe: true });
             var parsed = reader.parse(content);
@@ -252,7 +252,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             <div className={'claim-outer'}>
                 <input id={"expander2-" + score.id} type="checkbox" className="expander2" onChange={this.handleChildrenVisible}></input>
                 <input id={"expander3-" + score.id} type="checkbox" className="expander3"></input>
-                <div className={'claim-hider'}>
+                <div className={'claim-hider' + (score.parentScoreId?"":" mainclaim")}>
                     <div className={'claim ' + proMainText} >
                         {childScores.length > 0 &&
                             <div id={"expander-" + (this.state.score.id)} className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} >
