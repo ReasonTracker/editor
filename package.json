@@ -12,6 +12,7 @@
     "bootstrap": "^5.0.0",
     "commonmark": "^0.29.3",
     "eslint-plugin-flowtype": "^5.7",
+    "node-sass": "^5.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^4.0.3",
@@ -25,7 +26,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "delete_node_modules": "rmdir /q/s node_modules",
-    "upgrade-all": "ncu -u && npm install"
+    "npm-install": "npm install --legacy-peer-deps",
+    "upgrade-all": "ncu -u && npm install --legacy-peer-deps"
   },
   "eslintConfig": {
     "extends": "react-app"
