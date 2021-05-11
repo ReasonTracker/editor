@@ -302,9 +302,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         </svg>
                     </div>
                 </div>
-                <div className="scoreInfo editable">
-                    {scoreDescription + basedOn}
+                <div className="scoreInfo">
                     <span className="editable">
+                    {scoreDescription + basedOn}
                         <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
                         <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
                 </div>
