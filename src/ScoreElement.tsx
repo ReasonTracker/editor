@@ -218,7 +218,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const proMainText = proMain ? "pro" : "con";
 
         let fractionalizedScore, sign;
-        let fractionalizedScoreNumber: number = 0;
         if (score.affects === "relevance") {
             fractionalizedScore = score.pro ? "X" : "÷";
             fractionalizedScore += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
@@ -226,9 +225,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             fractionalizedScore = Math.abs(
                 ((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100))
             ).toFixed(0);
-            fractionalizedScoreNumber = Math.abs(
-                ((score.fraction * 100) - ((1 - score.confidence) * score.fraction * 100))
-            );
             if (fractionalizedScore === "100") fractionalizedScore = "99";
             if (!score.parentScoreId) {
                 if (score.confidence < 0) sign = "-";
