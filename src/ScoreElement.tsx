@@ -5,6 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ClaimEdge } from './dataModels/ClaimEdge';
 import { Claim } from './dataModels/Claim';
 import { selectElement } from './selectElement';
+import Mustache from 'mustache';
 
 const commonmark: any = require('commonmark');
 
@@ -235,9 +236,11 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         }
 
         function createMarkup() {
+
+            const content = Mustache.render(claim.content, {score,claim});
             var reader = new commonmark.Parser({});
             var writer = new commonmark.HtmlRenderer({ safe: true });
-            var parsed = reader.parse(claim.content);
+            var parsed = reader.parse(content);
             var html: string = writer.render(parsed)
             //Add target="_blank"
             html = html.replace(/href="/g, ' target="_blank" rel="noopener noreferrer"  href="');

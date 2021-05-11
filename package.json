@@ -5,6 +5,7 @@
   "dependencies": {
     "@reasonscore/core": "file:../core",
     "@types/jest": "^26.0.23",
+    "@types/mustache": "^4.1.1",
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.4",
@@ -12,6 +13,7 @@
     "bootstrap": "^5.0.0",
     "commonmark": "^0.29.3",
     "eslint-plugin-flowtype": "^5.7",
+    "mustache": "^4.2.0",
     "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
