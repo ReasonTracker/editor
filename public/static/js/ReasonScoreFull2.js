@@ -71,10 +71,11 @@
                 document.body.appendChild(lastScriptElement2);
             }
             lastScriptElement2.onload = function () {
-                // console.log("scripts2 done")
+                window.rsStartApp(); //Start React App
             }
+        } else {
+            window.rsStartApp(); //Start React App
         }
-        window.rsStartApp(); //Start React App
     }
 
 
