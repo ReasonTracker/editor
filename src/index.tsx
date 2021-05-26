@@ -30,7 +30,6 @@ async function startApp() {
   window.RsCalculateScoreActions = calculateScoreActions;
 
   let doc
-
   if (settings.dbCollection === null) {
     settings.dbCollection = "rsData"
   }
@@ -115,7 +114,9 @@ async function startApp() {
 
   }
 }
-startApp();
+// @ts-ignore
+window.rsStartApp = startApp
+//startApp();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

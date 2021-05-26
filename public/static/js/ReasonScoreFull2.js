@@ -74,6 +74,7 @@
                 // console.log("scripts2 done")
             }
         }
+        window.rsStartApp(); //Start React App
     }
 
 
