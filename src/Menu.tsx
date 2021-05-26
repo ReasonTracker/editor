@@ -104,10 +104,10 @@ class Menu extends Component<MyProps, MyState> {
         //Save the scores to Firebase
         try {
             await window.RsDatabase.doc(this.state.settings.dbCollection).set(rsDataCleanedForTransfer)
-            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Document successfully written!`};
+            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Document successfully written!` };
             this.setState(newState as MyState);
         } catch (error) {
-            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Error writing document:${error}`};
+            let newState: Partial<MyState> = { tempVisualLog: `${Date()}: Error writing document:${error}` };
             this.setState(newState as MyState);
         }
     }
@@ -154,12 +154,29 @@ class Menu extends Component<MyProps, MyState> {
         }
     }
 
-    handleExport = () => {
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer()));
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'rsData.json';
-        hiddenElement.click();
+
+    handleExport = async () => {
+        // @ts-ignore
+        if (window.showSaveFilePicker) {
+            // @ts-ignore
+            const fileHandle = await window.showSaveFilePicker();
+            // Create a FileSystemWritableFileStream to write to.
+            const writable = await fileHandle.createWritable();
+            // Write the contents of the file to the stream.
+            await writable.write(JSON.stringify(this.getRsDataCleanedForTransfer()));
+            // Close the file and write the contents to disk.
+            await writable.close();
+        } else {
+            if (window.confirm("Please use Chrome version 91 or above to download large files. Do you want to attepmt anyay?")) {
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer()));
+                hiddenElement.target = '_blank';
+                hiddenElement.download = 'rsData.json';
+                hiddenElement.click();
+            }
+        }
+
+
     }
 
     toggleSettings = () => {
