@@ -135,7 +135,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const claim = this.state.claim;
         const childScores = this.state.childScores;
         let proMain = props.proMainContext;
-        let scoreNumbers = `${Math.round(score.confidence * 100)}%`
+        let scoreNumber = `${Math.round(score.confidence * 100)}%`
         const settings = this.props.settings;
 
         //Score Numbers
@@ -148,10 +148,10 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 scoreImpact = 0;
             }
             if (score.affects === "relevance") {
-                scoreNumbers = score.pro ? "X" : "÷";
-                scoreNumbers += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
+                scoreNumber = score.pro ? "X" : "÷";
+                scoreNumber += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
-                scoreNumbers = `${Math.round(scoreImpact * score.relevance * 100)}`
+                scoreNumber = `${Math.round(scoreImpact * score.relevance * 100)}%`
             }
         }
 
@@ -237,7 +237,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
 
         function createMarkup() {
 
-            const content = Mustache.render(claim.content, {score,claim, fractionalizedScore, sign});
+            const content = Mustache.render(claim.content, { score, claim, fractionalizedScore, sign });
             var reader = new commonmark.Parser({});
             var writer = new commonmark.HtmlRenderer({ safe: true });
             var parsed = reader.parse(content);
@@ -252,7 +252,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             <div className={'claim-outer'}>
                 <input id={"expander2-" + score.id} type="checkbox" className="expander2" onChange={this.handleChildrenVisible}></input>
                 <input id={"expander3-" + score.id} type="checkbox" className="expander3"></input>
-                <div className={'claim-hider' + (score.parentScoreId?"":" mainclaim")}>
+                <div className={'claim-hider' + (score.parentScoreId ? "" : " mainclaim")}>
                     <div className={'claim ' + proMainText} >
                         {childScores.length > 0 &&
                             <div id={"expander-" + (this.state.score.id)} className={"expander" + (this.state.childrenVisible ? " expanded" : " collapsed")} >
@@ -281,7 +281,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 title={scoreDescription + basedOn}>
                                 <span className="number">
                                     <span className="sign">{sign}</span>
-                                    {fractionalizedScore}
+                                    {settings.showFractionalized ? fractionalizedScore : scoreNumber}
                                 </span>
                                 {!score.parentScoreId && "%"}
                             </label>
@@ -289,7 +289,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     (score.percentOfWeight * 100).toFixed(0) + "%) "
                                 } */}
                             <span className={'score-description'}
-                                title={scoreNumbers + '% confidence based on ' + basedOn}>
+                                title={scoreNumber + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}
                             </span>
                             <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup()}></span>
@@ -304,7 +304,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 </div>
                 <div className="scoreInfo">
                     <span className="editable">
-                    {scoreDescription + basedOn}
+                        {scoreDescription + basedOn}
                         <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
                         <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
                 </div>

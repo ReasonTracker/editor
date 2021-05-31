@@ -35,6 +35,7 @@ class Menu extends Component<MyProps, MyState> {
             settings: {
                 ...{
                     numbers: false,
+                    showFractionalized: false,
                     lines: true,
                     scoreDescriptions: {
                         impact: [
