@@ -238,12 +238,12 @@ rs-score, .rs-score {
     max-height: 0;
   }
   .score-enter-active > div > .claim-hider {
-    max-height: 100px;
+    max-height: 500px;
     transition: max-height 500ms ease-in;
   }
 
   .score-exit > div > .claim-hider {
-    max-height: 100px;
+    max-height: 500px;
   }
   .score-exit-active > div > .claim-hider {
     max-height: 0;
