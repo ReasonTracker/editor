@@ -6,7 +6,27 @@ const filesToReplace = [
     { regexString: "js/\\d\\." },
 ]
 
+const copyDestinations = [
+    "../gullibot.github.io/static-root/static",
+    "../reasonscore.github.io/static"
+]
+
 const fs = require('fs')
+const Path = require('path');
+
+function copyDir(src, dest) {
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+    fs.mkdirSync(dest);
+    for (let entry of entries) {
+        const srcPath = Path.join(src, entry.name);
+        const destPath = Path.join(dest, entry.name);
+        if (entry.isDirectory()) {
+            copyDir(srcPath, destPath);
+        } else {
+            fs.copyFileSync(srcPath, destPath);
+        }
+    }
+}
 
 // Gather up the cache busting file names
 let indexHtml
@@ -62,8 +82,15 @@ fs.writeFileSync('build/static/js/ReasonScoreFull2.js', ReasonScoreFull2Js);
 
 // Delete Unused Files
 fs.unlinkSync(`build/index.html`);
-if (fs.existsSync(`build/service-worker.js`)){
+if (fs.existsSync(`build/service-worker.js`)) {
     fs.unlinkSync(`build/service-worker.js`);
 }
 fs.unlinkSync(`build/asset-manifest.json`);
 //fs.unlinkSync(`precache-manifest`); //TODO: Figure out deletion of manifest
+
+
+// Copy the fils to other projects
+for (const dest of copyDestinations) {
+    fs.rmdirSync(dest, { recursive: true });
+    copyDir("./build/static", dest);
+}
