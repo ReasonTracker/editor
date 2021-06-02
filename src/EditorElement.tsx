@@ -122,7 +122,10 @@ class EditorElement extends React.Component<MyProps, MyState> {
     }
 
     handlePriority = (e: React.FormEvent<HTMLInputElement>) => {
-        this.setState({ claimEdge: { priority: e.currentTarget.value } as any });
+        this.setState({ claimEdge: { 
+            ...this.state.claimEdge,
+            priority: e.currentTarget.value
+         } as any });
     }
 
     handlePasteClaim = (e: React.FormEvent<HTMLInputElement>) => {

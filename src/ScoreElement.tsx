@@ -195,22 +195,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         //TODO: move score sorting to the repository to reduce duplicate processing
         let childScoresSorted = childScores;
         if (childScores.length > 1) {
-            childScoresSorted = childScores.sort((a, b) => {
-                if ((a.priority === undefined || a.priority === "") && (b.priority === undefined || b.priority === "")) {
-                    return 0;
-                }
-                if ((a.priority === undefined || a.priority === "")) {
-                    return 1;
-                }
-                if ((b.priority === undefined || b.priority === "")) {
-                    return -1;
-                }
-                if (a.priority > b.priority) {
-                    return 1;
-                }
-                if (a.priority < b.priority) {
-                    return -1;
-                }
+            childScoresSorted = childScores.sort((a: Score, b: Score) => {
+                console.log(`${a.priority}|${b.priority}`);
+                if ((a.priority === undefined || a.priority === "")) return 1;
+                if ((b.priority === undefined || b.priority === ""))  return -1;
+                if (a.priority > b.priority) return 1;
+                if (a.priority < b.priority) return -1;
+                if (a.descendantCount>b.descendantCount) return 1;
+                if (b.descendantCount>a.descendantCount) return -1;
+                if (a.confidence>b.confidence) return 1;
+                if (b.confidence>a.confidence) return -1;
                 return 0;
             });
 
