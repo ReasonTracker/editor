@@ -276,7 +276,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     <span className="sign">{sign}</span>
                                     {settings.showFractionalized ? fractionalizedScore : scoreNumber}
                                 </span>
-                                {!score.parentScoreId && "%"}
+                                {/* {!score.parentScoreId && "%"} */}
                             </label>
                             {/* {fractionalizedScoreNumber < 1 && "(" + 
                                     (score.percentOfWeight * 100).toFixed(0) + "%) "
