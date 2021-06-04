@@ -196,8 +196,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         let childScoresSorted = childScores;
         if (childScores.length > 1) {
             childScoresSorted = childScores.sort((a: Score, b: Score) => {
-                if ((a.priority === undefined || a.priority === "")) return 1;
-                if ((b.priority === undefined || b.priority === ""))  return -1;
+                // if ((a.priority === undefined || a.priority === "")) return 1;
+                // if ((b.priority === undefined || b.priority === ""))  return -1;
                 if (a.priority > b.priority) return 1;
                 if (a.priority < b.priority) return -1;
                 if (a.descendantCount>b.descendantCount) return 1;
@@ -206,7 +206,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 if (b.confidence>a.confidence) return -1;
                 return 0;
             });
-
         }
 
         const proMainText = proMain ? "pro" : "con";
