@@ -151,7 +151,9 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 scoreNumber = score.pro ? "X" : "÷";
                 scoreNumber += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
-                scoreNumber = `${Math.round(scoreImpact * score.relevance * 100)}%`
+                let tempScore = Math.round(scoreImpact * score.relevance * 100)
+                if (tempScore === 100) tempScore = 99;
+                scoreNumber = `${tempScore.toString().padStart(2," ")}%`
             }
         }
 
