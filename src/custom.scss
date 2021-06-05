@@ -97,8 +97,7 @@ rs-score, .rs-score {
     color: var(--pro-foreground);
     border-color: var(--pro-background);
     .callout {
-      left: -20px;
-      transform: scaleX(-1);
+      left: -11px;
     }
   }
 
@@ -109,13 +108,14 @@ rs-score, .rs-score {
     color: var(--con-foreground);
     border-color: var(--con-background);
     .callout {
-      right: -21px;
+      right: -11px;
+      transform: scaleX(-1);
     }
   }
 
   .callout {
     position: absolute;
-    bottom: -3px;
+    top: -1px;
     z-index: -1;
     fill: var(--background);
   }

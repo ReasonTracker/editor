@@ -260,9 +260,9 @@ class Menu extends Component<MyProps, MyState> {
                 </div>
             </div>
             <svg style={{ display: "none" }}>
-                <symbol id="callout" viewBox="0 0 30 30">
+                <symbol id="callout" viewBox="0 0 9 9">
                     <g>
-                        <path d="M 18,28 C 10,28 4,28 2,20 L 10,2 c 0,10 0,23 8,26 z"></path>
+                    <path d="m9 0h-9l9 9z"></path>
                     </g>
                 </symbol>
             </svg>
