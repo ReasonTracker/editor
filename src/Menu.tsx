@@ -36,7 +36,10 @@ class Menu extends Component<MyProps, MyState> {
                 ...{
                     numbers: false,
                     showFractionalized: false,
+                    showScore: false,
+                    showBucket: true,
                     lines: true,
+                    hideMainScore: false,
                     scoreDescriptions: {
                         impact: [
                             { min: -10, desc: "Myth" },

@@ -6,6 +6,7 @@ import { ClaimEdge } from './dataModels/ClaimEdge';
 import { Claim } from './dataModels/Claim';
 import { selectElement } from './selectElement';
 import Mustache from 'mustache';
+import BucketElement from './BucketElement';
 
 const commonmark: any = require('commonmark');
 
@@ -135,11 +136,13 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const claim = this.state.claim;
         const childScores = this.state.childScores;
         let proMain = props.proMainContext;
-        let scoreNumber = `${Math.round(score.confidence * 100)}%`
+        let scoreNumber = Math.round(score.confidence * 100)
+        let scoreNumberText = `${scoreNumber}%`
         const settings = this.props.settings;
 
         //Score Numbers
         let scoreImpact = score.confidence;
+        let fractionalizedScore: string = "", sign: string = "";
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;
@@ -147,13 +150,13 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             if (!claim.reversible && score.confidence < 0) {
                 scoreImpact = 0;
             }
+            scoreNumber = Math.round(scoreImpact * score.relevance * 100)
             if (score.affects === "relevance") {
-                scoreNumber = score.pro ? "X" : "÷";
-                scoreNumber += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
+                sign = score.pro ? "X" : "÷";
+                scoreNumberText = `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
             } else {
-                let tempScore = Math.round(scoreImpact * score.relevance * 100)
-                if (tempScore === 100) tempScore = 99;
-                scoreNumber = `${tempScore.toString().padStart(2," ")}%`
+                if (scoreNumber === 100) scoreNumber = 99;
+                scoreNumberText = `${scoreNumber.toString().padStart(2, " ")}%`
             }
         }
 
@@ -202,19 +205,18 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 // if ((b.priority === undefined || b.priority === ""))  return -1;
                 if (a.priority > b.priority) return 1;
                 if (a.priority < b.priority) return -1;
-                if (a.descendantCount>b.descendantCount) return 1;
-                if (b.descendantCount>a.descendantCount) return -1;
-                if (a.confidence>b.confidence) return 1;
-                if (b.confidence>a.confidence) return -1;
+                if (a.descendantCount > b.descendantCount) return 1;
+                if (b.descendantCount > a.descendantCount) return -1;
+                if (a.confidence > b.confidence) return 1;
+                if (b.confidence > a.confidence) return -1;
                 return 0;
             });
         }
 
         const proMainText = proMain ? "pro" : "con";
 
-        let fractionalizedScore: string = "", sign: string = "";
         if (score.affects === "relevance") {
-            fractionalizedScore = score.pro ? "X" : "÷";
+            sign = score.pro ? "X" : "÷";
             fractionalizedScore += `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
         } else {
             fractionalizedScore = Math.abs(
@@ -274,16 +276,17 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <label htmlFor={"expander2-" + score.id} className={'numbers'}
                                 title={scoreDescription + basedOn}>
                                 <span className="number">
-                                    <span className="sign">{sign}</span>
-                                    {settings.showFractionalized ? fractionalizedScore : scoreNumber}
+                                    {settings.showFractionalized || settings.showScore || settings.showBucket ?
+                                        <span className="sign">{sign}</span> : ""
+                                    }
+                                    {settings.showFractionalized ? fractionalizedScore : ""}
+                                    {settings.showFractionalized && settings.showScore ? " : " : ""}
+                                    {settings.showScore ? scoreNumberText : ""}
+                                    {settings.showBucket ? <BucketElement percentage={scoreNumber}></BucketElement> : ""}
                                 </span>
-                                {/* {!score.parentScoreId && "%"} */}
                             </label>
-                            {/* {fractionalizedScoreNumber < 1 && "(" + 
-                                    (score.percentOfWeight * 100).toFixed(0) + "%) "
-                                } */}
                             <span className={'score-description'}
-                                title={scoreNumber + '% confidence based on ' + basedOn}>
+                                title={scoreNumberText + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}
                             </span>
                             <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup()}></span>

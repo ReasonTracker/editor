@@ -1,0 +1,19 @@
+.rs-bucket{
+    height: .8em;
+    width: .7em;
+    border: solid .06em;
+    border-radius: 0 0 .2em .2em;
+    border-top: none;
+    position: relative;
+    box-shadow: inset 0px 0px 0px .05em var(--background);
+    display: inline-block;
+    margin-left: .1em;
+}
+
+.rs-bucket-fill{
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    bottom:.05em;
+    z-index:-1;
+}
