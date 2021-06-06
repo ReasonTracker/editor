@@ -307,7 +307,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button>
                     </span>
                     {childScores.length === 0 ?<>
-                            I assume this claim is 100% accurate because I have not been give a reason to doubt it yet. I am gullible.
+                            I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
                             If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40Reason_Score`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
                         </> : ""}
                 </div>
