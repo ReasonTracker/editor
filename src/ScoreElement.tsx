@@ -277,7 +277,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <label htmlFor={"expander2-" + score.id} className={'numbers'}
                                 title={scoreDescription + basedOn}>
                                 <span className="number">
-                                    {(settings.showFractionalized || settings.showScore || settings.showBucket) && sign !=" " ?
+                                    {(settings.showFractionalized || settings.showScore || settings.showBucket) && sign != " " ?
                                         <span className="sign">{sign}</span> : ""
                                     }
                                     {settings.showFractionalized ? fractionalizedScore : ""}
@@ -304,7 +304,12 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     <span className="editable">
                         {scoreDescription + basedOn}
                         <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
-                        <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button></span>
+                        <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button>
+                    </span>
+                    {childScores.length === 0 ?<>
+                            I assume this claim is 100% accurate because I have not been give a reason to doubt it yet. I am gullible.
+                            If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40Reason_Score`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
+                        </> : ""}
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
                     <div>
@@ -324,24 +329,26 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                 </CSSTransition>
                 <ul id={"children-" + (this.state.score.id)} className={'children ' + (this.state.childrenVisible ? '' : 'hide')}>
                     <TransitionGroup component={null}>
-                        {childScores.length > 0 && childScoresSorted.map((child) => (
-                            <CSSTransition
-                                key={child.id}
-                                timeout={5000}
-                                classNames='score'>
-                                <li key={child.id}>
-                                    <ScoreElement
-                                        scoreId={child.id}
-                                        repository={props.repository}
-                                        proMainContext={proMain}
-                                        messenger={props.messenger}
-                                        settings={props.settings}
-                                        scoreTree={props.scoreTree}
-                                    />
-                                </li>
-                            </CSSTransition>
-
-                        ))}
+                        {
+                            childScores.length === 0 ?
+                                ""
+                                : childScoresSorted.map((child) => (
+                                    <CSSTransition
+                                        key={child.id}
+                                        timeout={5000}
+                                        classNames='score'>
+                                        <li key={child.id}>
+                                            <ScoreElement
+                                                scoreId={child.id}
+                                                repository={props.repository}
+                                                proMainContext={proMain}
+                                                messenger={props.messenger}
+                                                settings={props.settings}
+                                                scoreTree={props.scoreTree}
+                                            />
+                                        </li>
+                                    </CSSTransition>
+                                ))}
                     </TransitionGroup>
                 </ul>
             </div>
