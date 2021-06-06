@@ -226,6 +226,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             if (!score.parentScoreId) {
                 if (score.confidence < 0) sign = "-";
                 else sign = " ";
+                fractionalizedScore += "%";
             } else {
                 sign = proMain ? "+" : "-";
             }
@@ -276,7 +277,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                             <label htmlFor={"expander2-" + score.id} className={'numbers'}
                                 title={scoreDescription + basedOn}>
                                 <span className="number">
-                                    {settings.showFractionalized || settings.showScore || settings.showBucket ?
+                                    {(settings.showFractionalized || settings.showScore || settings.showBucket) && sign !=" " ?
                                         <span className="sign">{sign}</span> : ""
                                     }
                                     {settings.showFractionalized ? fractionalizedScore : ""}
