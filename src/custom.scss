@@ -418,6 +418,9 @@ rs-score, .rs-score {
     .sign {
       font-size: smaller;
       vertical-align: top;
+      display: inline-block;
+      width: .6em;
+      text-align: center;
     }
     .number {
       display: inline-block;
