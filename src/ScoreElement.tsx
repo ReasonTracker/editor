@@ -308,7 +308,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                     </span>
                     {childScores.length === 0 ? <p>
                         I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
-                            If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40Reason_Score`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
+                            If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40GulliBot`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
                         </p> : ""}
                     {score.scaledWeight < score.weight  ? <p>
                         This claim has a lower impact because other claims in this section have a higher importance. Look at the claims with higher impact to see why they are more important.
