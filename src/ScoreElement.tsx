@@ -141,16 +141,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         const settings = this.props.settings;
 
         //Score Numbers
-        let scoreImpact = score.confidence;
+        let confidence = score.confidence;
         let fractionalizedScore: string = "", sign: string = "";
         if (score) {
             if (!score.pro) {
                 proMain = !proMain;
             }
             if (!claim.reversible && score.confidence < 0) {
-                scoreImpact = 0;
+                confidence = 0;
             }
-            scoreNumber = Math.round(scoreImpact * score.relevance * 100)
+            scoreNumber = Math.round(confidence * score.relevance * 100)
             if (score.affects === "relevance") {
                 sign = score.pro ? "X" : "÷";
                 scoreNumberText = `${(score.relevance + 1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}`;
@@ -265,7 +265,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 <span className="max" title={claim.labelMax}>{claim.labelMax}</span>
 
                                 <div className="lines-inner">
-                                    <svg className="lines-pointer" style={{ left: (proMain ? (scoreImpact + 1) / 2 : 1 - (scoreImpact + 1) / 2) * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
+                                    <svg className="lines-pointer" style={{ left: (proMain ? (confidence + 1) / 2 : 1 - (confidence + 1) / 2) * 100 + "%" }} height="20" width="20" viewBox="0 0 10 10">
                                         <path d="M 9,3 C 9,6 6,5 5,10 4,5 1,6 1,3 1,1 3,0 5,0 7,0 9,1 9,3 Z" />
                                     </svg>
                                     <div className="tic" style={{ left: '0%' }}></div>
@@ -283,7 +283,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     {settings.showFractionalized ? fractionalizedScore : ""}
                                     {settings.showFractionalized && settings.showScore ? " : " : ""}
                                     {settings.showScore ? scoreNumberText : ""}
-                                    {settings.showBucket ? <BucketElement percentage={scoreNumber}></BucketElement> : ""}
+                                    {settings.showBucket ? <BucketElement percentage={score.scaledWeight * 100}></BucketElement> : ""}
                                 </span>
                             </label>
                             <span className={'score-description'}
@@ -306,10 +306,13 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
                         <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button>
                     </span>
-                    {childScores.length === 0 ?<>
-                            I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
+                    {childScores.length === 0 ? <p>
+                        I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
                             If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40Reason_Score`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
-                        </> : ""}
+                        </p> : ""}
+                    {score.scaledWeight < score.weight  ? <p>
+                        This claim has a lower impact because other claims in this section have a higher importance. Look at the claims with higher impact to see why they are more important.
+                        </p> : ""}
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
                     <div>
