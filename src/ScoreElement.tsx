@@ -245,6 +245,10 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             return { __html: html };
         }
 
+        let scoreUrl = new URL(window.location.toString());
+        scoreUrl.searchParams.set("s", score.id);
+        let scoreUrlText = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreUrl.toString())}%20%40GulliBot`
+
         return (
             <div className={'claim-outer'}>
                 <input id={"expander2-" + score.id} type="checkbox" className="expander2" onChange={this.handleChildrenVisible}></input>
@@ -306,11 +310,18 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <button onClick={this.handleEditButtonClick} className="btn-inline" >edit this claim</button>
                         <button onClick={this.handleAddButtonClick} className="btn-inline" >add a pro or con</button>
                     </span>
-                    {childScores.length === 0 ? <p>
-                        I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
-                            If you feel this claim is incorrect please give me your specific reasons and evidence on <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.location.href)}20%40GulliBot`}>Twitter</a> or <a href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a href="https://GulliBot.com/score">How I score claims</a>.
-                        </p> : ""}
-                    {score.scaledWeight < score.weight  ? <p>
+                    {childScores.length === 0 ?
+                        <p>
+                            I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
+                            If you feel this claim is incorrect please give me your specific reasons and evidence
+                        on <a target="_blank" href={scoreUrlText}>Twitter</a>&nbsp;
+                        or <a target="_blank" href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a target="_blank" href="https://GulliBot.com/score">How I score claims</a>.
+                        </p> :
+                        <p style={{marginBottom:`0`}}>
+                            <a target="_blank" href={scoreUrlText}>Tweet about this claim ^^</a>
+                        </p>
+                    }
+                    {score.scaledWeight < score.weight ? <p>
                         This claim has a lower impact because other claims in this section have a higher importance. Look at the claims with higher impact to see why they are more important.
                         </p> : ""}
                 </div>
