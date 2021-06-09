@@ -126,7 +126,7 @@ rs-score, .rs-score {
   .claim-hider {
     max-height: 5000px;
     overflow: hidden;
-    transition: 0.75s;
+    transition: 1s;
   }
 
   .children.hide {
@@ -190,6 +190,10 @@ rs-score, .rs-score {
       display: unset;
       //opacity: 1;
     }
+  }
+
+  .expander2:not(:checked) + .expander3:not(:checked) ~ .rs-bucket-fill{
+      max-height:0 !important;
   }
 
   .expander3:checked ~ .claim-hider {
