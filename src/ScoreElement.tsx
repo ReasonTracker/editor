@@ -7,6 +7,7 @@ import { Claim } from './dataModels/Claim';
 import { selectElement } from './selectElement';
 import Mustache from 'mustache';
 import BucketElement from './BucketElement';
+import { createMarkup } from './creatMarkup';
 
 const commonmark: any = require('commonmark');
 
@@ -232,19 +233,6 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             }
         }
 
-        function createMarkup() {
-
-            const content = Mustache.render(claim.content, { score, claim, fractionalizedScore, sign });
-            var reader = new commonmark.Parser({});
-            var writer = new commonmark.HtmlRenderer({ safe: true });
-            var parsed = reader.parse(content);
-            var html: string = writer.render(parsed)
-            //Add target="_blank"
-            html = html.replace(/href="/g, ' target="_blank" rel="noopener noreferrer"  href="');
-            // rel="noopener noreferrer" due to security vulnerability https://www.jitbit.com/alexblog/256/
-            return { __html: html };
-        }
-
         let scoreUrl = new URL(window.location.toString());
         scoreUrl.searchParams.set("s", score.id);
         let scoreUrlText = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreUrl.toString())}%20%40GulliBot`
@@ -294,7 +282,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 title={scoreNumberText + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}
                             </span>
-                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup()}></span>
+                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim,score, fractionalizedScore,sign)}></span>
                             <label className="more-info" htmlFor={"expander2-" + score.id} >
                                 More info&hellip;
                             </label>

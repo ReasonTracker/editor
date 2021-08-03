@@ -523,4 +523,16 @@ rs-score, .rs-score {
       max-height: 6.4em;
     }
   }
+
+  .search {
+    max-height: 0;
+    overflow: auto;
+    transition: 1s;
+  }
+
+  .s-search{
+    .search{
+      max-height: 50em;
+    }
+  }
 }

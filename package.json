@@ -13,6 +13,7 @@
     "bootstrap": "^5.0.2",
     "commonmark": "^0.30.0",
     "eslint-plugin-flowtype": "^5.8",
+    "flexsearch": "^0.7.21",
     "mustache": "^4.2.0",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",

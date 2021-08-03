@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 import { selectElement } from './selectElement';
+import SearchElement from './SearchElement';
 
 declare global {
     interface Window {
@@ -40,6 +41,7 @@ class Menu extends Component<MyProps, MyState> {
                     showBucket: true,
                     lines: true,
                     hideMainScore: false,
+                    search: true,
                     scoreDescriptions: {
                         impact: [
                             { min: -10, desc: "Myth" },
@@ -214,14 +216,17 @@ class Menu extends Component<MyProps, MyState> {
         return (<>
             <div className={this.classNames()}>
                 {this.state.scoreTree &&
-                    <ScoreElement
-                        scoreId={this.state.scoreTree.topScoreId}
-                        repository={this.props.repository}
-                        proMainContext={true}
-                        messenger={this.props.messenger}
-                        settings={this.state.settings}
-                        scoreTree={this.state.scoreTree}
-                    />
+                    <>
+                        <SearchElement repository={this.props.repository} mainScoreId={this.state.scoreTree.topScoreId} ></SearchElement>
+                        <ScoreElement
+                            scoreId={this.state.scoreTree.topScoreId}
+                            repository={this.props.repository}
+                            proMainContext={true}
+                            messenger={this.props.messenger}
+                            settings={this.state.settings}
+                            scoreTree={this.state.scoreTree}
+                        />
+                    </>
                 }
             </div>
             <div className="Content">
@@ -265,7 +270,7 @@ class Menu extends Component<MyProps, MyState> {
             <svg style={{ display: "none" }}>
                 <symbol id="callout" viewBox="0 0 9 9">
                     <g>
-                    <path d="m9 0h-9l9 9z"></path>
+                        <path d="m9 0h-9l9 9z"></path>
                     </g>
                 </symbol>
             </svg>
