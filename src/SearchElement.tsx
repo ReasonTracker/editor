@@ -17,7 +17,8 @@ type MyProps = {
 const index = new Index({
     encode: encode,
     tokenize: "full",
-    minlength: 3,
+    minlength: 2,
+    filter: [],
 });
 
 let indexPopulated = false;
@@ -34,7 +35,6 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         if (!indexPopulated) {
             indexPopulated = true;
             for (const score of (await repository.getDescendantScoresById(mainScoreId))) {
-                console.log(score)
                 const claim = await repository.getClaim(score.sourceClaimId);
                 if (claim) {
                     index.add(claim.id, claim.content);
