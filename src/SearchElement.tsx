@@ -76,7 +76,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
             <form >
                 <div className="form-row ">
                     <div className="form-group">
-                        <label htmlFor="searchBox">Search</label>
+                        <label htmlFor="searchBox">Search this analysis</label>
                         <input type="text" className="form-control" id="searchBox" value={searchText} onChange={handleText}></input>
                     </div>
                 </div>
