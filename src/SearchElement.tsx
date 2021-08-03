@@ -34,6 +34,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         if (!indexPopulated) {
             indexPopulated = true;
             for (const score of (await repository.getDescendantScoresById(mainScoreId))) {
+                console.log(score)
                 const claim = await repository.getClaim(score.sourceClaimId);
                 if (claim) {
                     index.add(claim.id, claim.content);
@@ -41,7 +42,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
             }
         }
 
-        
+
         // Perform that search
         if (searchText.length > 2) {
             const items: { claim: Claim, score: Score }[] = [];
@@ -78,26 +79,28 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                         <label htmlFor="searchBox">Search</label>
                         <input type="text" className="form-control" id="searchBox" value={searchText} onChange={handleText}></input>
                     </div>
-                    <TransitionGroup component={null}>
-                        {
-                            foundClaims.length === 0 ?
-                                ""
-                                : foundClaims.map(({ claim, score }) => (
-                                    <CSSTransition
-                                        key={claim.id}
-                                        timeout={500}
-                                        classNames='searchitem'>
-                                        <div>
-                                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score)}></span>
-                                            <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a>
-                                            <br></br><a onClick={() =>handleOpenButtonClick(score.id)} target="_blank">Open this claim below the search results</a>
-                                            <hr></hr>
-                                        </div>
-                                    </CSSTransition>
-                                ))}
-                    </TransitionGroup>
                 </div>
             </form>
+            <div className={"search-results-hider" + (!foundClaims.length ? "" : " hidden")}>
+                <div className="searchResults">
+                    <TransitionGroup component={null}>
+                        {
+                            foundClaims.map(({ claim, score },index) => (
+                                <CSSTransition
+                                    key={claim.id}
+                                    timeout={500}
+                                    classNames='searchitem'>
+                                    <div>
+                                        {index? <hr></hr>:""}
+                                        <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score)}></span>
+                                        {/* <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a> */}
+                                        &nbsp;<a className="searchMoreInfo" onClick={() => handleOpenButtonClick(score.id)} target="_blank">More Info&hellip;</a>
+                                    </div>
+                                </CSSTransition>
+                            ))}
+                    </TransitionGroup>
+                </div>
+            </div>
         </div>
     );
 }

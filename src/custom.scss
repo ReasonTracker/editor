@@ -4,6 +4,7 @@ rs-score, .rs-score {
   --pro-background: #c880ff;
   --con-foreground: white;
   --con-background: #ffa71a;
+  --line-subtle: rgba(0, 0, 0, 0.2);
 
   // //Accessible
   // --pro-foreground: white;
@@ -41,7 +42,7 @@ rs-score, .rs-score {
       list-style-type: none;
       width: 100%;
       margin-left: 30px;
-      border-left: 1px solid rgba(0, 0, 0, 0.2);
+      border-left: 1px solid var(--line-subtle);
     }
     li:last-child {
       border-bottom-left-radius: 10px;
@@ -237,7 +238,7 @@ rs-score, .rs-score {
     overflow: hidden;
     transition: 0.5s;
     margin-left: 30px;
-    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--line-subtle);
     padding-left: 12px;
     opacity: 0.8;
   }
@@ -358,7 +359,7 @@ rs-score, .rs-score {
   .editor-exit-active {
     height: 0px;
     transition: height 500ms;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid var(--line-subtle);
     max-width: 600px;
     overflow: hidden;
   }
@@ -521,18 +522,6 @@ rs-score, .rs-score {
     }
     .claim-inner {
       max-height: 6.4em;
-    }
-  }
-
-  .search {
-    max-height: 0;
-    overflow: auto;
-    transition: 1s;
-  }
-
-  .s-search{
-    .search{
-      max-height: 50em;
     }
   }
 }
