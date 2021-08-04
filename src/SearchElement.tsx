@@ -90,7 +90,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                                     key={claim.id}
                                     timeout={500}
                                     classNames='searchitem'>
-                                    <div>
+                                    <div className="search-result" onClick={() => handleOpenButtonClick(score.id)}>
                                         {index? <hr></hr>:""}
                                         <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score)}></span>
                                         {/* <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a> */}

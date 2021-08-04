@@ -15,6 +15,10 @@ overflow: hidden;
     padding:0;
 }
 
+.search-result{
+    cursor: pointer;
+}
+
 .searchResults{
     border: 1px solid var(--line-subtle);
     border-radius: 5px;
