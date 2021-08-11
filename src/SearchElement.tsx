@@ -60,7 +60,6 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         if (searchText.length > 2) {
             const items: { claim: Claim, score: Score, searchResult: any }[] = [];
             const searchResults: any[] = SearchIndex.search({ content: searchText });
-            console.log(searchResults);
             for (const searchResult of searchResults) {
                 const claim = await repository.getClaim(searchResult.item.id);
                 const score = (await repository.getScoresBySourceId(searchResult.item.id))[0];
@@ -68,7 +67,6 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                     items.push({ claim: claim, score: score, searchResult: searchResult });
                 }
             }
-            console.log(items);
             setFoundClaims(items);
         } else if (foundClaims.length) {
             setFoundClaims([]);
@@ -110,9 +108,10 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                                     key={claim.id}
                                     timeout={500}
                                     classNames='searchitem'>
-                                    <div className="search-result" onClick={() => handleOpenButtonClick(score.id)}>
+                                    <div className="search-result" >
+                                    {/* onClick={() => handleOpenButtonClick(score.id)} */}
                                         {index ? <hr></hr> : ""}
-                                        <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score)}></span>
+                                        <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score, undefined, undefined, searchResult.matches)}></span>
                                         {/* <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a> */}
                                         &nbsp;<a className="searchMoreInfo" onClick={() => handleOpenButtonClick(score.id)} target="_blank">More Info&hellip;</a>
                                         &nbsp;&nbsp;<small style={{ opacity: .2 }}>{100-Math.round(searchResult.score * 100)}%</small>
