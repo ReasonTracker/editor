@@ -9,6 +9,7 @@ import Fuse from 'fuse.js'
 import { encode } from "../node_modules/flexsearch/dist/module/lang/latin/extra.js";
 import { selectElement } from './selectElement';
 import { resourceUsage } from 'process';
+import { InstantSearch } from './utils/searchTools';
 
 type MyProps = {
     repository: RepositoryLocalPure,
@@ -38,6 +39,7 @@ let indexPopulated = false;
 const SearchElement = ({ repository, mainScoreId }: MyProps) => {
     const [searchText, setSearchText] = useState("");
     const [foundClaims, setFoundClaims] = useState<{ claim: Claim, score: Score, searchResult: any }[]>([]);
+    const [forcedRender, forceRender] = useState(.5); // TODO: Really hacky force refresh so highlights update
 
     const handleText = async (e: React.FormEvent<HTMLInputElement>) => {
         const searchText = e.currentTarget.value;
@@ -68,17 +70,17 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                 }
             }
             setFoundClaims(items);
+            forceRender(Math.random());
         } else if (foundClaims.length) {
             setFoundClaims([]);
         }
     }
 
+    
     const handleOpenButtonClick = (scoreid: string) => {
         selectElement(scoreid, repository.rsData, {})
         document.getElementById("children-" + scoreid)?.scrollIntoView()
     }
-
-
 
     const getScoreUrl = (score: Score) => {
         if (score) {
@@ -88,6 +90,33 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
             return scoreUrl.toString();
         }
     }
+
+    const getSearchWord = (matches: any) => {
+        let word: string = "";
+        for (const highlight of matches) {
+            for (const index of highlight.indices) {
+                const tempWord = highlight.value.substring(index[0], index[1] + 1);
+                if (tempWord.length > word.length) {
+                    word = tempWord
+                }
+            }
+        }
+        return word
+    }
+
+    useEffect(() => { // Highlight found words 
+        const elements = document.querySelectorAll('[data-highlight]')
+        for (const element of elements) {
+            let highlighter = new InstantSearch(element, [
+                {
+                    token: element.getAttribute("data-highlight") || "", // searchText.value,
+                    className: "highlight", // this is the individual highlight class
+                    sensitiveSearch: false
+                }
+            ]);
+            highlighter.highlight();
+        }
+    });
 
     return (
         <div className="search">
@@ -107,14 +136,13 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                                 <CSSTransition
                                     key={claim.id}
                                     timeout={500}
-                                    classNames='searchitem'>
-                                    <div className="search-result" >
-                                    {/* onClick={() => handleOpenButtonClick(score.id)} */}
+                                    classNames='searchitem' >
+                                    <div className="search-result" data-highlight={getSearchWord(searchResult.matches)} onClick={() => handleOpenButtonClick(score.id)}>
                                         {index ? <hr></hr> : ""}
-                                        <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score, undefined, undefined, searchResult.matches)}></span>
+                                        <span className={'rs-content'} dangerouslySetInnerHTML={{__html:createMarkup(claim, score, undefined, undefined).__html + `<span style="display:none">${forcedRender}</span>`}}></span>
                                         {/* <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a> */}
                                         &nbsp;<a className="searchMoreInfo" onClick={() => handleOpenButtonClick(score.id)} target="_blank">More Info&hellip;</a>
-                                        &nbsp;&nbsp;<small style={{ opacity: .2 }}>{100-Math.round(searchResult.score * 100)}%</small>
+                                        &nbsp;&nbsp;<small style={{ opacity: .2 }}>{100 - Math.round(searchResult.score * 100)}%</small>
                                     </div>
                                 </CSSTransition>
                             ))}
