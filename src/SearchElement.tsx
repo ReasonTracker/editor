@@ -5,11 +5,9 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './SearchElement.scss';
 //@ts-ignore
 import Fuse from 'fuse.js'
-//@ts-ignore
-import { encode } from "../node_modules/flexsearch/dist/module/lang/latin/extra.js";
 import { selectElement } from './selectElement';
-import { resourceUsage } from 'process';
 import { InstantSearch } from './utils/searchTools';
+import { resourceUsage } from 'process';
 
 type MyProps = {
     repository: RepositoryLocalPure,
@@ -26,7 +24,7 @@ const SearchIndex = new Fuse([], {
     // location: 0,
     // threshold: .2,
     // distance: 100,
-    // useExtendedSearch: false,
+    useExtendedSearch: true,
     ignoreLocation: true,
     // ignoreFieldNorm: false,
     keys: [
@@ -63,10 +61,13 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
             const items: { claim: Claim, score: Score, searchResult: any }[] = [];
             const searchResults: any[] = SearchIndex.search({ content: searchText });
             for (const searchResult of searchResults) {
-                const claim = await repository.getClaim(searchResult.item.id);
-                const score = (await repository.getScoresBySourceId(searchResult.item.id))[0];
-                if (claim && score && searchResult.score < .85) {
-                    items.push({ claim: claim, score: score, searchResult: searchResult });
+                searchResult.foundWord = getFoundWord(searchResult.matches, searchText);
+                if (searchResult.score < .82) {
+                    const claim = await repository.getClaim(searchResult.item.id);
+                    const score = (await repository.getScoresBySourceId(searchResult.item.id))[0];
+                    if (claim && score) {
+                        items.push({ claim: claim, score: score, searchResult: searchResult });
+                    }
                 }
             }
             setFoundClaims(items);
@@ -76,7 +77,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         }
     }
 
-    
+
     const handleOpenButtonClick = (scoreid: string) => {
         selectElement(scoreid, repository.rsData, {})
         document.getElementById("children-" + scoreid)?.scrollIntoView()
@@ -91,13 +92,19 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         }
     }
 
-    const getSearchWord = (matches: any) => {
+    const getFoundWord = (matches: any, searchText: string) => {
         let word: string = "";
+        let wordLengthDifference: number = 100;
         for (const highlight of matches) {
             for (const index of highlight.indices) {
                 const tempWord = highlight.value.substring(index[0], index[1] + 1);
-                if (tempWord.length > word.length) {
+                if (tempWord === searchText){ // If an exact match is found then stop and use that
+                    return tempWord;
+                }
+                const tempWordLengthDiff = Math.abs(tempWord.length - searchText.length);
+                if (tempWordLengthDiff < wordLengthDifference) { // else, get the one closest to the length
                     word = tempWord
+                    wordLengthDifference = tempWordLengthDiff;
                 }
             }
         }
@@ -137,9 +144,9 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
                                     key={claim.id}
                                     timeout={500}
                                     classNames='searchitem' >
-                                    <div className="search-result" data-highlight={getSearchWord(searchResult.matches)} onClick={() => handleOpenButtonClick(score.id)}>
+                                    <div className="search-result" data-highlight={searchResult.foundWord} onClick={() => handleOpenButtonClick(score.id)}>
                                         {index ? <hr></hr> : ""}
-                                        <span className={'rs-content'} dangerouslySetInnerHTML={{__html:createMarkup(claim, score, undefined, undefined).__html + `<span style="display:none">${forcedRender}</span>`}}></span>
+                                        <span className={'rs-content'} dangerouslySetInnerHTML={{ __html: createMarkup(claim, score, undefined, undefined).__html + `<span style="display:none">${forcedRender}</span>` }}></span>
                                         {/* <br></br><a href={getScoreUrl(score)} target="_blank">Open this claim in a new window</a> */}
                                         &nbsp;<a className="searchMoreInfo" onClick={() => handleOpenButtonClick(score.id)} target="_blank">More Info&hellip;</a>
                                         &nbsp;&nbsp;<small style={{ opacity: .2 }}>{100 - Math.round(searchResult.score * 100)}%</small>
