@@ -35,11 +35,12 @@ class Menu extends Component<MyProps, MyState> {
         this.state = {
             settings: {
                 ...{
-                    numbers: false,
-                    showFractionalized: false,
-                    showScore: false,
+                    numbers: true,
+                    showFractionalized: true,
+                    showFractionSimple: true,
+                    showScore: true,
                     showBucket: true,
-                    lines: true,
+                    lines: false,
                     hideMainScore: false,
                     search: true,
                     scoreDescriptions: {
@@ -213,6 +214,28 @@ class Menu extends Component<MyProps, MyState> {
 
     render() {
         const settings = this.state.settings;
+
+        // ******************************************* temp
+        if (this.state?.scoreTree?.topScoreId) {
+            this.props.repository.getLeafScoresById(this.state.scoreTree.topScoreId).then((leaves) => {
+                let pro = 0
+                let con = 0;
+                for (const leaf of leaves) {
+                    //console.log(leaf.id, leaf.pro, leaf.proMain);
+                    if (leaf.proMain) {
+                        pro += leaf.fraction;
+                    } else {
+                        con += leaf.fraction;
+                    }
+                }
+                console.log(pro, con);
+                const dif = pro-con;
+                console.log(dif);
+                console.log(dif/(pro+con));
+                console.log(pro/(pro+con))
+            })
+        }
+        // ****************************************
         return (<>
             <div className={this.classNames()}>
                 {this.state.scoreTree &&
