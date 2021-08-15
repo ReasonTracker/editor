@@ -7,7 +7,7 @@ import { Claim } from './dataModels/Claim';
 import { selectElement } from './selectElement';
 import Mustache from 'mustache';
 import BucketElement from './BucketElement';
-import { createMarkup } from './creatMarkup';
+import { createMarkup } from './utils/creatMarkup';
 
 const commonmark: any = require('commonmark');
 

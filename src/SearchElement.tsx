@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createMarkup } from './creatMarkup';
+import { createMarkup } from './utils/creatMarkup';
 import { Claim, RepositoryLocalPure, RsData, Score } from "@reasonscore/core";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './SearchElement.scss';

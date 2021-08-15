@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData } from "@reasonscore/core";
+import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTree, RsData, Claim } from "@reasonscore/core";
 import ScoreElement from './ScoreElement';
 import { selectElement } from './selectElement';
 import SearchElement from './SearchElement';
-import { stringify } from 'querystring';
+import { createMarkup } from './utils/creatMarkup';
 
 declare global {
     interface Window {
@@ -134,20 +134,24 @@ class Menu extends Component<MyProps, MyState> {
             const topScore = await this.props.repository.getScore(this.state.scoreTree.topScoreId)
             if (topScore) scores.unshift(topScore);
 
+
+
+
             for (const score of scores) {
-                const claim = await this.props.repository.getClaim(score.sourceClaimId)
+                const claim = await this.props.repository.getClaim(score.sourceClaimId) || {} as Claim;
+
                 vizExport.push({
                     generation: score.generation,
                     id: this.shortId(score.id),
                     parentId: this.shortId(score.parentScoreId),
                     confidence: Math.max(0, Math.round(score.confidence * 100)),
                     pro: score.proMain ? 'pro' : 'con',
-                    content: `"` + claim?.content
-                            .slice(0, 100)
-                            .replaceAll("\r", "")
-                            .replaceAll('\n', '')
-                            .replaceAll(`"`,`'`) + 
-                            `"`,
+                    content: `"` + createMarkup(claim, score, '', '', true).__html
+                    .slice(0, 300)
+                    .replaceAll("\r", "")
+                    .replaceAll('\n', '')
+                    .replaceAll(`"`, `'`) +
+                    `"`,
                 })
             }
             exportString += Object.keys(vizExport[0]).join(",");
