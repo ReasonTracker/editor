@@ -3,6 +3,7 @@ import { RepositoryLocalPure, Messenger, calculateScoreActions, Action, ScoreTre
 import ScoreElement from './ScoreElement';
 import { selectElement } from './selectElement';
 import SearchElement from './SearchElement';
+import { stringify } from 'querystring';
 
 declare global {
     interface Window {
@@ -124,7 +125,59 @@ class Menu extends Component<MyProps, MyState> {
         return rsDataWithtouUndefined;
     }
 
-    handleImport = () => {
+    getVizualExport = async () => {
+        const vizExport = [];
+        let exportString = '';
+
+        if (this.state.scoreTree?.topScoreId) {
+            const scores = await this.props.repository.getDescendantScoresById(this.state.scoreTree.topScoreId);
+            const topScore = await this.props.repository.getScore(this.state.scoreTree.topScoreId)
+            if (topScore) scores.unshift(topScore);
+
+            for (const score of scores) {
+                const claim = await this.props.repository.getClaim(score.sourceClaimId)
+                vizExport.push({
+                    generation: score.generation,
+                    id: this.shortId(score.id),
+                    parentId: this.shortId(score.parentScoreId),
+                    confidence: Math.max(0, Math.round(score.confidence * 100)),
+                    pro: score.proMain ? 'pro' : 'con',
+                    content: `"` + claim?.content
+                            .slice(0, 100)
+                            .replaceAll("\r", "")
+                            .replaceAll('\n', '')
+                            .replaceAll(`"`,`'`) + 
+                            `"`,
+                })
+            }
+            exportString += Object.keys(vizExport[0]).join(",");
+            exportString += '\r\n';
+            for (const item of vizExport) {
+                exportString += Object.values(item).join(',');
+                exportString += '\r\n';
+            }
+        }
+        return exportString;
+    }
+
+    shortId = function () {
+        const ids: { [key: string]: number } = {}
+        let nextId = 1;
+        return function (id: string | null) {
+            if (id !== null) {
+                if (ids[id]) {
+                    return ids[id]
+                } else {
+                    ids[id] = nextId;
+                    nextId++;
+                    return ids[id];
+                }
+            }
+        }
+    }();
+
+
+    handleUpload = () => {
         //TODO: HACKs: File Import needs to be completely re-done
         const element = document.createElement('div');
         element.innerHTML = '<input type="file">';
@@ -160,29 +213,40 @@ class Menu extends Component<MyProps, MyState> {
         }
     }
 
-
-    handleExport = async () => {
+    download = async (data: any, suggestedFileName: string) => {
         // @ts-ignore
         if (window.showSaveFilePicker) {
             // @ts-ignore
             const fileHandle = await window.showSaveFilePicker();
             // Create a FileSystemWritableFileStream to write to.
-            const writable = await fileHandle.createWritable();
+            const writable = await fileHandle.createWritable(data);
             // Write the contents of the file to the stream.
-            await writable.write(JSON.stringify(this.getRsDataCleanedForTransfer()));
+            await writable.write();
             // Close the file and write the contents to disk.
             await writable.close();
         } else {
             if (window.confirm("Please use Chrome version 91 or above to download large files. Do you want to attepmt anyay?")) {
                 var hiddenElement = document.createElement('a');
-                hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(JSON.stringify(this.getRsDataCleanedForTransfer()));
+                hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(data);
                 hiddenElement.target = '_blank';
-                hiddenElement.download = 'rsData.json';
+                hiddenElement.download = suggestedFileName;
                 hiddenElement.click();
             }
         }
+    }
 
+    handleDownload = async () => {
+        this.download(
+            JSON.stringify(this.getRsDataCleanedForTransfer()),
+            'rsData.json'
+        )
+    }
 
+    handleExport = async () => {
+        this.download(
+            await this.getVizualExport(),
+            'GulliViz.csv'
+        )
     }
 
     toggleSettings = () => {
@@ -236,7 +300,8 @@ class Menu extends Component<MyProps, MyState> {
                             <button onClick={this.handleSave} type="button" value="Submit" className="btn btn-secondary">Save to cloud</button>
                         }
                         {settings.portData && <>
-                            <button onClick={this.handleImport} type="button" value="download" className="btn btn-secondary">Import</button>
+                            <button onClick={this.handleUpload} type="button" value="download" className="btn btn-secondary">Upload</button>
+                            <button onClick={this.handleDownload} type="button" value="download" className="btn btn-secondary">Download</button>
                             <button onClick={this.handleExport} type="button" value="download" className="btn btn-secondary">Export</button>
                         </>}
 

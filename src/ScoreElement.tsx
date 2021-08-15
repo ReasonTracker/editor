@@ -227,7 +227,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
             if (!score.parentScoreId) {
                 if (score.confidence < 0) sign = "-";
                 else sign = " ";
-                fractionalizedScore += "%";
+                //fractionalizedScore += "%";
             } else {
                 sign = proMain ? "+" : "-";
             }
@@ -272,8 +272,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     {(settings.showFractionalized || settings.showScore || settings.showBucket) && sign != " " ?
                                         <span className="sign">{sign}</span> : ""
                                     }
-                                    {settings.showFractionalized ? fractionalizedScore : ""}
-                                    {settings.showFractionalized && settings.showScore ? " : " : ""}
+                                    {settings.showFractionSimple ? Math.round(score.fractionSimple*100).toString().padStart(2," ") + "%|" : ""}
+                                    {settings.showFractionalized ? fractionalizedScore.padStart(2," ") + "%|" : ""}
                                     {settings.showScore ? scoreNumberText : ""}
                                     {settings.showBucket ? <BucketElement percentage={score.scaledWeight * 100}></BucketElement> : ""}
                                 </span>
