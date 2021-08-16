@@ -98,7 +98,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
         for (const highlight of matches) {
             for (const index of highlight.indices) {
                 const tempWord = highlight.value.substring(index[0], index[1] + 1);
-                if (tempWord === searchText){ // If an exact match is found then stop and use that
+                if (tempWord === searchText) { // If an exact match is found then stop and use that
                     return tempWord;
                 }
                 const tempWordLengthDiff = Math.abs(tempWord.length - searchText.length);
@@ -127,7 +127,7 @@ const SearchElement = ({ repository, mainScoreId }: MyProps) => {
 
     return (
         <div className="search">
-            <form >
+            <form onSubmit={e => { e.preventDefault(); }}>
                 <div className="form-row ">
                     <div className="form-group">
                         <label htmlFor="searchBox">Search this analysis</label>
