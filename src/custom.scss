@@ -134,6 +134,34 @@ rs-score, .rs-score {
     display: block;
   }
 
+
+  .more-info {
+    text-decoration: underline;
+    font-size: small;
+    opacity: 0.8;
+    display: inline-block;
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.5s;
+    vertical-align: text-bottom;
+    cursor: pointer;
+  }
+
+  .s-moreInfo .more-info {
+    max-width: 10em;
+  }
+
+  .scoreInfo {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.5s;
+    margin-left: 30px;
+    border-left: 1px solid var(--line-subtle);
+    padding-left: 12px;
+    opacity: 0.8;
+  }
+
   // expanders
   .expander {
     //TODO: remove old expander
@@ -175,21 +203,16 @@ rs-score, .rs-score {
   }
 
   > div > .claim-outer > .expander2-label,
-  //> div > .claim-outer > .expander3,
-  //.expander3:checked,
   .expander2:checked ~ .expander2-label {
     display: unset;
-    //opacity: 1;
   }
   .expander2:not(:checked) ~ ul > li > div > .claim-hider {
     max-height: 0px;
   }
   .expander2:checked ~ ul > li > div {
     > .expander2-label
-    // > .expander3
     {
       display: unset;
-      //opacity: 1;
     }
   }
 
@@ -208,39 +231,8 @@ rs-score, .rs-score {
     }
   }
 
-  // .children.hide li > div > .claim-hider {
-  //   max-height: 0px;
-  // }
-
   .expander2:checked ~ .claim-hider .more-info {
     max-width: 0;
-  }
-
-  .more-info {
-    text-decoration: underline;
-    font-size: small;
-    opacity: 0.8;
-    display: inline-block;
-    max-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    transition: 0.5s;
-    vertical-align: text-bottom;
-    cursor: pointer;
-  }
-
-  .s-moreInfo .more-info {
-    max-width: 10em;
-  }
-
-  .scoreInfo {
-    max-height: 0;
-    overflow: hidden;
-    transition: 0.5s;
-    margin-left: 30px;
-    border-left: 1px solid var(--line-subtle);
-    padding-left: 12px;
-    opacity: 0.8;
   }
 
   .expander2:checked ~ .scoreInfo {
