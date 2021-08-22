@@ -43,6 +43,7 @@ class Menu extends Component<MyProps, MyState> {
                     lines: true,
                     hideMainScore: false,
                     search: true,
+                    allowShowAll: true,
                     scoreDescriptions: {
                         impact: [
                             { min: -10, desc: "Myth" },
@@ -312,7 +313,9 @@ class Menu extends Component<MyProps, MyState> {
                             <button onClick={this.handleDownload} type="button" className="btn btn-secondary">Download</button>
                             <button onClick={this.handleExport} type="button" className="btn btn-secondary">Export</button>
                         </>}
-                        <button onClick={this.handleShowAll} type="button" className="btn btn-secondary">Show All</button>
+                        {settings.allowShowAll &&
+                            <button onClick={this.handleShowAll} type="button" className="btn btn-secondary">Show All</button>
+                        }
                     </div>
                     <div className="btn-group mr-3 float-right btn-settings" role="group" aria-label="Settings">
                         <svg onClick={this.toggleSettings} style={{ cursor: "pointer", height: "1em", fill: "#aaa", stroke: "none" }} viewBox="0 0 1280.000000 1280.000000">
