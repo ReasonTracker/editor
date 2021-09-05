@@ -230,7 +230,7 @@ class Menu extends Component<MyProps, MyState> {
             // Close the file and write the contents to disk.
             await writable.close();
         } else {
-            if (window.confirm("Please use Chrome version 91 or above to download large files. Do you want to attepmt anyay?")) {
+            if (window.confirm("Please use Chrome version 91 or above to download large files. Do you want to attempt anyay?")) {
                 var hiddenElement = document.createElement('a');
                 hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(data);
                 hiddenElement.target = '_blank';

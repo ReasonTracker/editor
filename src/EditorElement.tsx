@@ -189,7 +189,7 @@ class EditorElement extends React.Component<MyProps, MyState> {
                             <label htmlFor="claim.content">Content</label>
                             <textarea className="form-control" id="claim.content" value={this.state.claim.content} onChange={this.handleText} rows={2}></textarea>
                             <small className="form-text text-muted">
-                                For hyperlinks us <a href="https://commonmark.org/help/">commonMark</a> syntax:
+                                For hyperlinks use <a href="https://commonmark.org/help/">commonMark</a> syntax:
                                 This is [an example](http://example.com/) inline link.</small>
                         </div>
                         <div className="form-row  edit-lines">

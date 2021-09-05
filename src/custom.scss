@@ -60,16 +60,18 @@ rs-score, .rs-score {
     max-width: 600px;
   }
 
-  input[type="checkbox"].form-check {
+  input[type="checkbox"] {
     transform: scale(2);
     transform-origin: left;
     margin-right: 20px;
     top: 1px;
     position: relative;
+    width: 1em;
   }
 
   .form-check {
     padding-left: 1.75rem;
+    min-height: 2em;
   }
 
   label {
