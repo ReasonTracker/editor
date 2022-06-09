@@ -7,8 +7,6 @@
         "https://www.gstatic.com/firebasejs/7.3.0/firebase-firestore.js",
     ]
     const scripts2 = [
-        rootAddress + "/static/js/bundle.js",
-        rootAddress + "/static/js/0.chunk.js",
         rootAddress + "/static/js/main.chunk.js",
     ]
 

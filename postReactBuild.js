@@ -3,11 +3,11 @@
 const filesToReplace = [
     { regexString: "css/main" },
     { regexString: "js/main" },
-    { regexString: "js/\\d\\." },
+    // { regexString: "js/\\d\\." },
 ]
 
 const copyDestinations = [
-    "../gullibot.github.io/static-root/static",
+    // "../gullibot.github.io/static-root/static",
     "../reasonscore.github.io/static"
 ]
 
@@ -39,13 +39,18 @@ try {
 // indexHtml = indexHtml.replace(/"\/static\//g, '"static/');
 
 for (const fileInfo of filesToReplace) {
-    fileInfo.newfileName = indexHtml.match(
+    const newFileName = indexHtml.match(
         new RegExp(
             '"(/static/' +
             fileInfo.regexString +
             '[^"]*)'
         )
-    )[1]
+    )
+
+    if (newFileName) {
+        fileInfo.newfileName = newFileName[1]
+    }
+
 }
 
 // Replace the file names in the javascript file
