@@ -238,7 +238,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
         let scoreUrlText = `https://twitter.com/intent/tweet?text=${encodeURIComponent(scoreUrl.toString())}%20%40GulliBot`
 
         return (
-            <div className={'claim-outer'}>
+            <div className={'claim-outer'} style={score.parentScoreId ? {} : { overflow: "auto" }}>
                 <input id={"expander2-" + score.id} type="checkbox" className="expander2" onChange={this.handleChildrenVisible}></input>
                 <input id={"expander3-" + score.id} type="checkbox" className="expander3"></input>
                 <div className={'claim-hider' + (score.parentScoreId ? "" : " mainclaim")}>
@@ -272,8 +272,8 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                     {(settings.showFractionalized || settings.showScore || settings.showBucket) && sign != " " ?
                                         <span className="sign">{sign}</span> : ""
                                     }
-                                    {settings.showFractionSimple ? Math.round(score.fractionSimple*100).toString().padStart(2," ") + "%|" : ""}
-                                    {settings.showFractionalized ? fractionalizedScore.padStart(2," ") + "%|" : ""}
+                                    {settings.showFractionSimple ? Math.round(score.fractionSimple * 100).toString().padStart(2, " ") + "%|" : ""}
+                                    {settings.showFractionalized ? fractionalizedScore.padStart(2, " ") + "%|" : ""}
                                     {settings.showScore ? scoreNumberText : ""}
                                     {settings.showBucket ? <BucketElement percentage={score.scaledWeight * 100}></BucketElement> : ""}
                                 </span>
@@ -282,7 +282,7 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                                 title={scoreNumberText + '% confidence based on ' + basedOn}>
                                 {scoreDescription + basedOn}
                             </span>
-                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim,score, fractionalizedScore,sign)}></span>
+                            <span className={'rs-content'} dangerouslySetInnerHTML={createMarkup(claim, score, fractionalizedScore, sign)}></span>
                             <label className="more-info" htmlFor={"expander2-" + score.id} >
                                 More info&hellip;
                             </label>
@@ -302,16 +302,16 @@ class ScoreElement extends React.Component<MyProps, MyState> {
                         <p>
                             I assume this claim is 100% accurate because I have not been given a reason to doubt it yet. I am gullible.
                             If you feel this claim is incorrect please give me your specific reasons and evidence
-                        on <a target="_blank" href={scoreUrlText}>Twitter</a>&nbsp;
-                        or <a target="_blank" href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a target="_blank" href="https://GulliBot.com/score">How I score claims</a>.
+                            on <a target="_blank" href={scoreUrlText}>Twitter</a>&nbsp;
+                            or <a target="_blank" href="https://www.freesuggestionbox.com/pub/djfbumi">anonymously</a>. <a target="_blank" href="https://GulliBot.com/score">How I score claims</a>.
                         </p> :
-                        <p style={{marginBottom:`0`}}>
+                        <p style={{ marginBottom: `0` }}>
                             <a target="_blank" href={scoreUrlText}>Tweet about this claim ^^</a>
                         </p>
                     }
                     {score.scaledWeight < score.weight ? <p>
                         This claim has a lower impact because other claims in this section have a higher importance. Look at the claims with higher impact to see why they are more important.
-                        </p> : ""}
+                    </p> : ""}
                 </div>
                 <CSSTransition in={this.state.editorVisible} timeout={490} classNames="editor">
                     <div>
