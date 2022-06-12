@@ -34,12 +34,12 @@
 
       await window.RsRepository.notify(
         [{
-            "newData": {
-              [property]: content,
-            },
-            "type": "modify_claim",
-            "dataId": claimId
-          },]
+          "newData": {
+            [property]: content,
+          },
+          "type": "modify_claim",
+          "dataId": claimId
+        },]
       )
     }
 
@@ -145,7 +145,7 @@
       ]);
       await seconds(3);
       await typeOut("Would Fictional City benefit overall from converting Elm Street to pedestrian use only?", "mainClaim",
-        await PlayAudio('intro')
+        await PlayAudio('intro') + 1.5
       )
       await notify([{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },]);
       await seconds(await PlayAudio('circle'))
@@ -244,6 +244,7 @@
       scoreDescription: false,
       saveToCloud: false,
       moreInfo: false,
+      allowShowAll: false,
     }
 
     window.RsActions = [
@@ -314,8 +315,8 @@
       display: none;
     }
 
-    rs-score .expander2:not(:checked)~ul>li>div>.claim-hider {
-      max-height: 150px;
+    .expander2:not(:checked)~ul>li>div>.claim-hider {
+      max-height: 150px !important;
     }
 
     @media (max-width: 600px) {
