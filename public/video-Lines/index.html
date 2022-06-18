@@ -162,6 +162,7 @@
       await addClaim("", "footTraffic", "mainClaim", pro)
       await typeOut("This will increase foot traffic to local shops by 15%.", "footTraffic",
         await PlayAudio('foot-traffic'))
+      await seconds(.2);
       await addClaim("", "resedential", "mainClaim", con)
       await typeOut("The conversion will divert traffic down residential streets endangering the lives of children.", "resedential",
         await PlayAudio('resedential'))
@@ -245,6 +246,7 @@
       saveToCloud: false,
       moreInfo: false,
       allowShowAll: false,
+      search: false,
     }
 
     window.RsActions = [
