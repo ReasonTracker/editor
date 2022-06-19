@@ -139,12 +139,20 @@
       return audioBuffer.duration
     }
 
+    const status = { cancelled: false }
+
+    function cancel() { status.cancelled = true }
+
     async function videoScript() {
+      status.cancelled = false
       await notify([
         { newData: { confidence: 0, scaledWeight: 0 }, "type": "modify_score", "dataId": "mainClaimScore", },
       ]);
+      if (status.cancelled) return
       await seconds(3);
+      if (status.cancelled) return
       await typeOut("Would Fictional City benefit overall from converting Elm Street to pedestrian use only?", "mainClaim", 3)
+      if (status.cancelled) return
       await calculate();
     }
 
@@ -254,6 +262,8 @@
   </div>
   <br>
   <button onclick="videoScript();">Play</button>
+  <button onclick="cancel();">Cancel</button>
+
   <style>
     body {
       padding: 5%;
