@@ -6,6 +6,8 @@
   <script>
     //Video Script
     let speedMultiplier = 1;
+    const pause = .5;
+    const noPause = false;
     const u = undefined, pro = true, con = false;
     function seconds(seconds) {
       return new Promise(resolve => setTimeout(resolve, seconds * 1000 * speedMultiplier));
@@ -127,7 +129,7 @@
     //Audio
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
-    async function PlayAudio(fileName) {
+    async function PlayAudio(fileName, pause = true) {
       const filepath = `audio/${fileName}.mp3`
       const response = await fetch(filepath);
       const arrayBuffer = await response.arrayBuffer();
@@ -136,7 +138,7 @@
       sampleSource.buffer = audioBuffer;
       sampleSource.connect(audioContext.destination)
       sampleSource.start();
-      return audioBuffer.duration
+      return audioBuffer.duration + (pause ? .5 : 0);
     }
 
     async function videoScript() {
@@ -148,29 +150,24 @@
         await PlayAudio('intro') + 1.5
       )
       await notify([{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },]);
-      await seconds(await PlayAudio('circle'))
+      await seconds(await PlayAudio('circle', noPause))
       await typeOut("benefit", "mainClaim", await PlayAudio('label-benefits'), 'labelMax')
-      await seconds(await PlayAudio('convert'))
-      await seconds(await PlayAudio('or'))
+      await seconds(await PlayAudio('convert', noPause))
+      await seconds(await PlayAudio('or', noPause))
       await typeOut("disadvantage", "mainClaim", await PlayAudio('label-not'), 'labelMin')
-      await seconds(await PlayAudio('or'))
-      await seconds(await PlayAudio('if-it-is'))
+      await seconds(await PlayAudio('or', noPause))
+      await seconds(await PlayAudio('if-it-is', noPause))
       await typeOut("unknown", "mainClaim", await PlayAudio('unknown'), 'labelMid')
-      await seconds(.2);
       await seconds(await PlayAudio('based-on'))
-      await seconds(.2);
       await addClaim("", "footTraffic", "mainClaim", pro)
       await typeOut("This will increase foot traffic to local shops by 15%.", "footTraffic",
         await PlayAudio('foot-traffic'))
-      await seconds(.2);
       await addClaim("", "resedential", "mainClaim", con)
       await typeOut("The conversion will divert traffic down residential streets endangering the lives of children.", "resedential",
         await PlayAudio('resedential'))
-      await seconds(.2);
       await calculate();
       await seconds(await PlayAudio('zero'))
       await addClaim("", "children", "resedential", pro, "relevance")
-      await seconds(.2);
       await typeOut("Child safety is more important than local shops profit.", "children",
         await PlayAudio('safety'))
       await calculate();
@@ -180,10 +177,8 @@
         await PlayAudio('traintracks'))
       await calculate();
       await seconds(await PlayAudio('cancelled'));
-      await seconds(.25);
       await seconds(await PlayAudio('check-info'));
       await addClaim("", "cost", "mainClaim", con)
-      await seconds(.2);
       await typeOut("The conversion will cost 2 Million dollars.", "cost",
         await PlayAudio('cost'))
       await calculate();
@@ -193,9 +188,8 @@
       await typeOut("The increase in revenue is expected to pay off the expense in under 2 years.", "payoff",
         await PlayAudio('payoff'))
       await calculate();
-      await seconds('last-score');
+      await seconds(await PlayAudio('last-score'));
       await seconds(await PlayAudio('closing'));
-
     }
 
     function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
