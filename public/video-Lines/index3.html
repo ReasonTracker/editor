@@ -9,8 +9,13 @@
     const pause = .5;
     const noPause = false;
     const u = undefined, pro = true, con = false;
+    let isCancelled = false;
     function seconds(seconds) {
       return new Promise(resolve => setTimeout(resolve, seconds * 1000 * speedMultiplier));
+    }
+
+    function cancel() {
+      isCancelled = true;
     }
 
     async function typeOut(content, claimId, duration, property) {
@@ -143,6 +148,8 @@
 
     async function videoScript() {
 
+      isCancelled = false;
+
       const script = [
         { notify: [{ newData: { confidence: -1 }, "type": "modify_score", "dataId": "mainClaimScore", },] },
         { seconds: 3 },
@@ -185,7 +192,9 @@
       ]
 
       for (const item of script) {
-        console.log(item)
+        if (isCancelled) {
+          return;
+        }
 
         if (item.notify !== undefined) {
           await notify(item.notify);
@@ -317,6 +326,8 @@
   </div>
   <br>
   <button onclick="videoScript();">Play</button>
+  <button onclick="cancel();">Cancel</button>
+
   <style>
     body {
       padding: 5%;
