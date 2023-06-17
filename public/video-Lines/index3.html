@@ -145,89 +145,43 @@
 
       const script = [
         { notify: [{ newData: { confidence: -1 }, "type": "modify_score", "dataId": "mainClaimScore", },] },
-        // await seconds(3);
         { seconds: 3 },
-        // await typeOut("Would Fictional City benefit overall from converting Elm Street to pedestrian use only?", "mainClaim",
-        //   await PlayAudio('intro') + 1.5
-        // )
         { typeOut: "Would Fictional City benefit overall from converting Elm Street to pedestrian use only?", claimId: "mainClaim", PlayAudio: 'intro' },
-        //   await notify([{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },]);
         { notify: [{ newData: { confidence: 1 }, "type": "modify_score", "dataId": "mainClaimScore", },] },
-        // await seconds(await PlayAudio('circle', noPause))
         { PlayAudio: 'circle', pause: false },
-        // await typeOut("benefit", "mainClaim", await PlayAudio('label-benefits'), 'labelMax')
         { typeOut: "benefit", claimId: "mainClaim", PlayAudio: 'label-benefits', property: 'labelMax' },
-        // await seconds(await PlayAudio('convert', noPause))
         { PlayAudio: 'convert', pause: false },
-        // await seconds(await PlayAudio('or', noPause))
         { PlayAudio: 'or', pause: false },
-        // await typeOut("disadvantage", "mainClaim", await PlayAudio('label-not'), 'labelMin')
         { typeOut: "disadvantage", claimId: "mainClaim", PlayAudio: 'label-not', property: 'labelMin' },
-        // await seconds(await PlayAudio('or', noPause))
         { PlayAudio: 'or', pause: false },
-        // await seconds(await PlayAudio('if-it-is', noPause))
         { PlayAudio: 'if-it-is', pause: false },
-        // await typeOut("unknown", "mainClaim", await PlayAudio('unknown'), 'labelMid')
         { typeOut: "unknown", claimId: "mainClaim", PlayAudio: 'unknown', property: 'labelMid' },
-        // await seconds(await PlayAudio('based-on'))
         { PlayAudio: 'based-on', pause: false },
-        // await addClaim("", "footTraffic", "mainClaim", pro)
         { addClaim: "", claimId: "footTraffic", parentClaimId: "mainClaim", isPro: true },
-        // await typeOut("This will increase foot traffic to local shops by 15%.", "footTraffic",
-        //   await PlayAudio('foot-traffic'))
         { typeOut: "This will increase foot traffic to local shops by 15%.", claimId: "footTraffic", PlayAudio: 'foot-traffic' },
-        // await addClaim("", "resedential", "mainClaim", con)
         { addClaim: "", claimId: "resedential", parentClaimId: "mainClaim", isPro: false },
-        // await typeOut("The conversion will divert traffic down residential streets endangering the lives of children.", "resedential",
-        //   await PlayAudio('resedential'))
         { typeOut: "The conversion will divert traffic down residential streets endangering the lives of children.", claimId: "resedential", PlayAudio: 'resedential' },
-        // await calculate();
         { calculate: true },
-        // await seconds(await PlayAudio('zero'))
         { PlayAudio: 'zero' },
-        // await addClaim("", "children", "resedential", pro, "relevance")
         { addClaim: "", claimId: "children", parentClaimId: "resedential", isPro: true, affects: "relevance" },
-        // await typeOut("Child safety is more important than local shops profit.", "children",
-        //   await PlayAudio('safety'))
         { typeOut: "Child safety is more important than local shops profit.", claimId: "children", PlayAudio: 'safety' },
-        // await calculate();
         { calculate: true },
-        // await seconds(await PlayAudio('should-not'))
         { PlayAudio: 'should-not' },
-        // await addClaim("", "traintracks", "resedential", con)
         { addClaim: "", claimId: "traintracks", parentClaimId: "resedential", isPro: false },
-        // await typeOut("A set of railroad tracks are no longer in use and the City can convert that to a new street.", "traintracks",
-        //   await PlayAudio('traintracks'))
         { typeOut: "A set of railroad tracks are no longer in use and the City can convert that to a new street.", claimId: "traintracks", PlayAudio: 'traintracks' },
-        // await calculate();
         { calculate: true },
-        // await seconds(await PlayAudio('cancelled'));
         { PlayAudio: 'cancelled' },
-        // await seconds(await PlayAudio('check-info'));
         { PlayAudio: 'check-info' },
-        // await addClaim("", "cost", "mainClaim", con)
         { addClaim: "", claimId: "cost", parentClaimId: "mainClaim", isPro: false },
-        // await typeOut("The conversion will cost 2 Million dollars.", "cost",
-        //   await PlayAudio('cost'))
         { typeOut: "The conversion will cost 2 Million dollars.", claimId: "cost", PlayAudio: 'cost' },
-        // await calculate();
         { calculate: true },
-        // await seconds(await PlayAudio('zero-again'));
         { PlayAudio: 'zero-again' },
-        // await seconds(await PlayAudio('check-info-2'));
         { PlayAudio: 'check-info-2' },
-        // await addClaim("", "payoff", "footTraffic", pro, "relevance")
         { addClaim: "", claimId: "payoff", parentClaimId: "footTraffic", isPro: true, affects: "relevance" },
-        // await typeOut("The increase in revenue is expected to pay off the expense in under 2 years.", "payoff",
-        //   await PlayAudio('payoff'))
         { typeOut: "The increase in revenue is expected to pay off the expense in under 2 years.", claimId: "payoff", PlayAudio: 'payoff' },
-        // await calculate();
         { calculate: true },
-        // await seconds(await PlayAudio('last-score'));
         { PlayAudio: 'last-score' },
-        // await seconds(await PlayAudio('closing'));
         { PlayAudio: 'closing' },
-
       ]
 
       for (const item of script) {
